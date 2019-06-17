@@ -1,10 +1,15 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+import './assets/less/common/element-variable.scss'
+import './assets/less/common/index.less'
+import './assets/less/project/index.less'
 import App from './App.vue'
-import router from './routers/router'
+import router from './router/router'
 import store from './stores/store'
 import './registerServiceWorker'
+import '@/util/common/vue-prototype/vue-prototype'
+import {i18n} from '@/config/i18n-config'
+import '@/components/index'
 
 Vue.use(ElementUI, {
   size: 'mini',
@@ -13,6 +18,7 @@ Vue.use(ElementUI, {
 Vue.config.productionTip = false
 
 new Vue({
+  i18n,
   router,
   store,
   render: (h) => h(App),
