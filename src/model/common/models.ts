@@ -14,3 +14,6 @@ export const langList = [
     value: 'en',
   },
 ]
+// 模式
+export declare type pattern = 'create' | 'view' | 'edit'
+

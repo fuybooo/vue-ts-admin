@@ -23,7 +23,8 @@
                <el-checkbox v-model="formModel.remember" checked>{{$t('login.remember')}}</el-checkbox>
              </el-col>
               <el-col :span="12" class="tar">
-                <router-link to="/register">{{$t('login.register')}}</router-link>/
+                <router-link to="/register">{{$t('login.register')}}</router-link>
+                /
                 <router-link to="/forgot">{{$t('login.forgot')}}</router-link>
               </el-col>
             </el-row>
@@ -41,6 +42,7 @@
   import {Component, Vue} from 'vue-property-decorator'
   import './assets/less/index.less'
   import {transferRules} from '@/util/common/fns/fns-form'
+  import urlMap from '@/util/project/urls/urls'
 
   const rules = {
     name: [
@@ -55,24 +57,27 @@
   @Component({})
   export default class Login extends Vue {
     public formModel = {
-      name: '',
-      pwd: '',
+      name: '1',
+      pwd: '1',
       remember: true,
     }
     public rules: any = rules
-    public created () {
+    private created () {
       this.rules = transferRules.bind(this)(rules)
     }
     public login () {
-      const form = this.$refs.form as Vue
-      form.validate((valid: boolean) => {
+      (this.$refs.form as Vue).validate((valid: boolean) => {
         if (!valid) {
           this.$error(this.$t('login.tip.userNameOrPasswordError'))
           return false
         } else {
-          this.$success(this.$t('login.tip.loginSuccess'))
+          this.$req(urlMap.login.login, {}).then(res => {
+            if (res.head.errCode === 0) {
+              this.$success(this.$t('login.tip.loginSuccess'))
+              this.$router.push('main')
+            }
+          })
         }
-        this.$router.push('main')
       })
     }
   }

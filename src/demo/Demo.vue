@@ -1,12 +1,12 @@
 <template>
-  <div>register</div>
+  <router-view></router-view>
 </template>
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
 
   @Component({})
-  export default class Register extends Vue {
+  export default class Demo extends Vue {
   }
 </script>
 <style scoped lang="less">

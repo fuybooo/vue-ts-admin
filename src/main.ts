@@ -12,7 +12,7 @@ import {i18n} from '@/config/i18n-config'
 import '@/components/index'
 
 Vue.use(ElementUI, {
-  size: 'mini',
+  size: 'small',
   zIndex: 3000,
 })
 Vue.config.productionTip = false

@@ -3,6 +3,7 @@ export default {
   validate: {
     max: '最多不大于{n}个字符',
     min: '最少不小于{n}个字符',
+    required: '必填项',
   },
   // 提示语
   tip: {
@@ -18,6 +19,12 @@ export default {
   common: {
     pleaseSelect: '请选择',
     Tip: '提示',
+  },
+  title: {
+    THC: '尚医至信',
+    Login: '登录',
+    Forgot: '找回密码',
+    Register: '注册',
   },
   // 登录模块
   login: {

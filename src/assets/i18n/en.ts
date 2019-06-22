@@ -20,6 +20,12 @@ export default {
     pleaseSelect: 'please select',
     Tip: 'Tip',
   },
+  title: {
+    THC: 'Tomorrow Health Care',
+    Login: 'Login',
+    Forgot: 'Forgot',
+    Register: 'Register',
+  },
   // 登录模块
   login: {
     title: 'Login System',

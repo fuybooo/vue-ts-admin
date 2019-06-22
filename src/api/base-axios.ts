@@ -2,6 +2,10 @@ import axios, {AxiosInstance} from 'axios'
 import config from '@/config/base-config'
 import {IUrl, staticPath, urlType} from '@/util/project/urls/urls'
 
+axios.interceptors.response.use((res) => {
+  return res.data
+})
+
 function create (options?: any): AxiosInstance {
   const localAxios = axios.create({
     ...(options || {}),
@@ -17,6 +21,7 @@ function create (options?: any): AxiosInstance {
   })
   return localAxios
 }
+
 const getSafeUrl = (url: string): string => {
   return url.endsWith('/') ? url : url + '/'
 }

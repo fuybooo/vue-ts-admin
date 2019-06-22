@@ -4,15 +4,20 @@ export interface IUrl {
   isStatic?: boolean
   staticPath?: string
 }
-export const staticPath = ''
+export const staticPath = 'mock/'
 export declare type urlType = string | IUrl
+const prefix = {
+  base: 'platform/',
+}
+interface IUrlMap {
+  [k: string]: any | IUrl | IUrlMap
+}
 const urlMap = {
-  follow: {
-    demo: {
-      test: {
-        add: {url: 'add'},
-      },
-    },
+  login: {
+    login: {url: 'login', isStatic: true, prefix: prefix.base},
+    forgot: {url: 'forgot', isStatic: true, prefix: prefix.base},
+    register: {url: 'register', isStatic: true, prefix: prefix.base},
+    logout: {url: 'logout', isStatic: true, prefix: prefix.base},
   },
 }
 export default urlMap
