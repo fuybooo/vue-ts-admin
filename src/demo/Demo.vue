@@ -1,5 +1,10 @@
 <template>
-  <router-view></router-view>
+  <el-container class="h">
+    <el-main class="common-el-main-padding h">
+      <router-view></router-view>
+    </el-main>
+  </el-container>
+
 </template>
 
 <script lang="ts">

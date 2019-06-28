@@ -7,7 +7,7 @@ import format from 'date-fns/format'
 
 Vue.component('BaseForm', {
   render (createElement) {
-    // el-form 的原生属性
+    // el-form 的attr属性
     const defaultFormAttrs = {
       ref: 'form',
       class: 'base-form',

@@ -1,18 +1,21 @@
-export interface IUrl {
-  url: string
-  prefix?: string
-  isStatic?: boolean
-  staticPath?: string
+import Vue from 'vue'
+import {prefix, urlType} from '@/util/project/urls/url-util'
+// 该接口与urls保持一致，保证使用this.$urls时能够通过"."得到提示
+export interface Urls {
+  demo: {
+    table: urlType,
+  },
+  login: {
+    login: urlType,
+    forgot: urlType,
+    register: urlType,
+    logout: urlType,
+  },
 }
-export const staticPath = 'mock/'
-export declare type urlType = string | IUrl
-const prefix = {
-  base: 'platform/',
-}
-interface IUrlMap {
-  [k: string]: any | IUrl | IUrlMap
-}
-const urlMap = {
+const urls: Urls = {
+  demo: {
+    table: {url: 'table/get', isStatic: true, prefix: prefix.demo},
+  },
   login: {
     login: {url: 'login', isStatic: true, prefix: prefix.base},
     forgot: {url: 'forgot', isStatic: true, prefix: prefix.base},
@@ -20,4 +23,4 @@ const urlMap = {
     logout: {url: 'logout', isStatic: true, prefix: prefix.base},
   },
 }
-export default urlMap
+Vue.prototype.$urls = urls

@@ -46,7 +46,6 @@
   import {Component, Vue} from 'vue-property-decorator'
   import './assets/less/index.less'
   import {transferRules} from '@/util/common/fns/fns-form'
-  import urlMap from '@/util/project/urls/urls'
 
   const rules = {
     name: [
@@ -75,7 +74,7 @@
           this.$error(this.$t('login.tip.userNameOrPasswordError'))
           return false
         } else {
-          this.$req(urlMap.login.login, {}).then(res => {
+          this.$req(this.$urls.login.login, this.formModel).then(res => {
             if (res.head.errCode === 0) {
               this.$success(this.$t('login.tip.loginSuccess'))
               this.$router.push('main')

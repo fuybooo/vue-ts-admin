@@ -1,6 +1,7 @@
+import Vue from 'vue'
 import axios, {AxiosInstance} from 'axios'
 import config from '@/config/base-config'
-import {IUrl, staticPath, urlType} from '@/util/project/urls/urls'
+import {IUrl, staticPath, urlType} from '@/util/project/urls/url-util'
 
 axios.interceptors.response.use((res) => {
   return res.data
@@ -59,7 +60,7 @@ const methods: any = {
   },
 }
 const defAxios = create()
-export const request = (url: urlType, data = {}, method = 'post', axiosInstance = defAxios) => {
+const request = (url: urlType, data = {}, method = 'post', axiosInstance = defAxios) => {
   return methods[method](url, data, axiosInstance)
 }
 export default {
@@ -67,3 +68,5 @@ export default {
   ...methods,
   create,
 }
+// 在vue原型上挂载常用函数
+Vue.prototype.$req = request

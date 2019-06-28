@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container class="h">
     <el-header class="main-header" height="50px">
       <el-row type="flex" justify="center" align="middle">
       <el-col :span="8">
@@ -22,7 +22,7 @@
       </el-col>
     </el-row>
     </el-header>
-    <el-main>
+    <el-main class="h">
       <router-view></router-view>
     </el-main>
   </el-container>

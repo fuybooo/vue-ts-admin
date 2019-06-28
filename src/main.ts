@@ -7,8 +7,10 @@ import App from './App.vue'
 import router from './router/router'
 import store from './stores/store'
 import './registerServiceWorker'
-import '@/util/common/vue-prototype/vue-prototype'
 import {i18n} from '@/config/i18n-config'
+// 在vue实例上绑定属性
+import '@/util/common/vue-prototype/vue-prototype'
+// 导入公共组件
 import '@/components/index'
 
 Vue.use(ElementUI, {
