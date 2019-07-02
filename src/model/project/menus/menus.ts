@@ -19,4 +19,8 @@ export const demoMenus = [
     to: '/main/demo/function-test',
     name: 'function-test',
   },
+  {
+    to: '/main/demo/input',
+    name: 'input-demo',
+  },
 ]

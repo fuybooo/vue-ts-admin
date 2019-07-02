@@ -1,10 +1,11 @@
 export interface Column {
   prop?: string
   label?: string
-  props?: any
+  props?: ColumnProps
   slot?: string
   headerSlot?: string
 }
+// baseTable中tableProps
 export interface TableProps {
   data?: [],
   size?: string,
@@ -41,4 +42,34 @@ export interface TableProps {
   treeProps?: any,
   lazy?: boolean,
   load?: any
+}
+// 列的属性
+export interface ColumnProps {
+  type?: '' | 'index' | 'selection'
+  className?: string
+  labelClassName?: string
+  property?: string
+  width?: string | number
+  minWidth?: string | number
+  renderHeader?: any
+  sortable?: string | boolean
+  sortMethod?: any
+  sortBy?: string | any | any[]
+  resizable?: boolean
+  columnKey?: string
+  align?: string
+  headerAlign?: string
+  showTooltipWhenOverflow?: boolean
+  showOverflowTooltip?: boolean
+  fixed?: string | boolean
+  formatter?: any
+  selectable?: any
+  reserveSelection?: any
+  filterMethod?: any
+  filteredValue?: any[]
+  filters?: any[]
+  filterPlacement?: string
+  filterMultiple?: boolean
+  index?: number | any
+  sortOrders?: null | 'ascending' | 'descending'
 }

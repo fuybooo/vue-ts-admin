@@ -5,6 +5,7 @@ import Checkbox from '@/demo/views/checkbox/Checkbox.vue'
 import SlotFormDemo from '@/demo/views/form/SlotFormDemo.vue'
 import BaseTableDemo from '@/demo/views/table/BaseTableDemo.vue'
 import FunctionTest from '@/demo/views/html/FunctionTest.vue'
+import Input from '@/demo/views/input/Input.vue'
 
 const demoRouter: RouteConfig = {
   path: 'demo',
@@ -30,6 +31,10 @@ const demoRouter: RouteConfig = {
     {
       path: 'function-test',
       component: FunctionTest,
+    },
+    {
+      path: 'input',
+      component: Input,
     },
   ],
 }

@@ -91,7 +91,9 @@ function createColumns (createElement: typeof Vue.prototype.$CreateElement): VNo
   const me = this
   let columns: VNodeChildren
   columns = me.columns.map((col: Column) => {
-    if (col.prop) {
+    if (col.slot) {
+      // todo 根据headerSlot判断是否需要header
+    } else if (col.prop) {
       return createElement('el-table-column', {
         props: getColumnProps.bind(me)(col),
       })
