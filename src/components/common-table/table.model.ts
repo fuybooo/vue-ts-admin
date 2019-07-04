@@ -4,6 +4,7 @@ export interface Column {
   props?: ColumnProps
   slot?: string
   headerSlot?: string
+  contentSlot?: string
 }
 // baseTable中tableProps
 export interface TableProps {
@@ -45,7 +46,7 @@ export interface TableProps {
 }
 // 列的属性
 export interface ColumnProps {
-  type?: '' | 'index' | 'selection'
+  type?: '' | 'index' | 'selection' | null | undefined
   className?: string
   labelClassName?: string
   property?: string

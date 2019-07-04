@@ -91,8 +91,41 @@ function createColumns (createElement: typeof Vue.prototype.$CreateElement): VNo
   const me = this
   let columns: VNodeChildren
   columns = me.columns.map((col: Column) => {
-    if (col.slot) {
-      // todo 根据headerSlot判断是否需要header
+    if (col.slot || col.headerSlot || col.contentSlot) {
+      // 使用全slot
+      if (col.slot && !col.headerSlot && !col.contentSlot) {
+        return me.$slots[col.slot]
+      } else {
+        if (col.headerSlot) {
+          if (col.contentSlot) {
+            // header + content
+            return createElement('el-table-column', {
+              props: getColumnProps.bind(me)(col),
+              // @ts-ignore
+              // tslint:disable-next-line:max-line-length
+              scopedSlots: {default: (props: any) => createElement('span', me.$scopedSlots[col.contentSlot]({...props})), header: (props: any) => createElement('span', me.$scopedSlots[col.headerSlot]({...props}))},
+            })
+          } else {
+            // only header
+            return createElement('el-table-column', {
+              props: getColumnProps.bind(me)(col),
+              // @ts-ignore
+              // tslint:disable-next-line:max-line-length
+              scopedSlots: {header: (props: any) => createElement('span', me.$scopedSlots[col.headerSlot]({...props}))},
+            })
+          }
+        } else {
+          if (col.contentSlot) {
+            // only content
+            return createElement('el-table-column', {
+              props: getColumnProps.bind(me)(col),
+              // @ts-ignore
+              // tslint:disable-next-line:max-line-length
+              scopedSlots: {default: (props: any) => createElement('span', me.$scopedSlots[col.contentSlot]({...props}))},
+            })
+          }
+        }
+      }
     } else if (col.prop) {
       return createElement('el-table-column', {
         props: getColumnProps.bind(me)(col),
