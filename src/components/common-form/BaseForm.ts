@@ -40,7 +40,8 @@ Vue.component('BaseForm', {
         props: formProps,
         ...formAttrs,
       },
-      formItems,
+      // @ts-ignore
+      this.isRow ? [createElement('el-row', {}, formItems)] : formItems,
     )
   },
   methods: {},
@@ -58,6 +59,10 @@ Vue.component('BaseForm', {
     isRow: {
       type: Boolean,
       default: false,
+    },
+    span: {
+      type: Number,
+      default: 24,
     },
     inline: {
       type: Boolean,
@@ -143,11 +148,12 @@ function createFormItem (createElement: typeof Vue.prototype.$createElement, ite
         prop: item.prop,
         label: item.label,
       },
-      ...(item.formItemAttrs || {}),
+      ...getFormItemAttrs(item),
     },
     [formControl], // 此处的参数必须为数组
   )
-  return formItem
+  return me.isRow ? createElement('el-col', {props: {span: item.span || me.span}}, [formItem]) : formItem
+  // return formItem
 }
 
 /**
@@ -165,7 +171,7 @@ function createFormControl (createElement: typeof Vue.prototype.$createElement, 
   const tag = compMap[item.comp || 'input']
   formControl = createElement(tag, {
     props: getFormControlProps.bind(me)(item),
-    attrs: item.attrs || {},
+    attrs: getFormControlAttrs.bind(me)(item),
     ...getElementDataObject.bind(me)(item),
   }, vNodeChildren)
   return formControl
@@ -212,20 +218,38 @@ function createFormControlVNodeChildren (createElement: typeof Vue.prototype.$cr
 function getFormControlProps (item: Schema) {
   // @ts-ignore
   const me = this
-  const props: any = {
+  return {
     value: item.prop ? getProp.bind(me.value)(item.prop) : '',
     ...getDefaultProps.bind(me)(item),
     ...(item.props || {}),
   }
-  return props
+}
+/**
+ * 根据单个Schema 获取当前表单控件的attrs属性
+ * @param item
+ */
+function getFormControlAttrs (item: Schema) {
+  const attrs: any = item.attrs || {}
+  if (!item.comp || item.comp === 'input' || item.comp === 'select') {
+    attrs.placeholder = attrs.placeholder || item.label
+  }
+  return attrs
 }
 
 function getDefaultProps (item: Schema) {
   const defaultProps: any = {}
-  if (!item.comp || item.comp === 'select') {
+  if (!item.comp || item.comp === 'input' || item.comp === 'select') {
     defaultProps.clearable = true
     if (item.comp === 'select') {
       defaultProps.filterable = true
+    }
+  } else if (item.comp === 'date') {
+    const props = item.props || {}
+    if (props.type.includes('range')) {
+      defaultProps['start-placeholder'] = '开始'
+      defaultProps['end-placeholder'] = '结束'
+    } else {
+      defaultProps.placeholder = props.placeholder || item.label
     }
   }
   return defaultProps
@@ -362,5 +386,9 @@ function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
       },
     },
   }, [me.btn.text || (me.inline ? '创建' : '保存')])])
-  return me.$slots.default || (me.isRow ? createElement('el-col', {}, btnFormItem) : btnFormItem)
+  return me.$slots.default || (me.isRow ? [createElement('el-col', {}, [btnFormItem])] : btnFormItem)
+}
+function getFormItemAttrs (item: Schema) {
+  // todo 给每个item加上样式，以控制不同的控件的展示
+  return item.formItemAttrs || {}
 }

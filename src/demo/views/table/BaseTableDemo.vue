@@ -8,9 +8,10 @@
         :columns="columns"
         :url="url"
         :params="params"
+        :handle-result="handleResult"
       >
-        <template slot="address">
-          <el-table-column prop="address" label="slot地址"></el-table-column>
+        <template v-slot:address="{row}">
+          <span>{{row.address}}</span>
         </template>
 <!--        此处一般不需要作用域，根据需要进行解构 v-slot:ageHeader={column}-->
         <template v-slot:ageHeader>
@@ -32,16 +33,18 @@
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
-  import {Column, defaultFilterSplit} from '@/components/common-table/table.model'
+  import {Column, columnWidth, defaultFilterSplit} from '@/components/common-table/table.model'
   import {Schema} from '@/components/common-form/form.model'
   import {fb} from '@/util/common/fns/fns-form'
   import list from '@/components/common-table/table.query.mixin'
   import format from 'date-fns/format'
+  import {setProperty} from '@/util/common/fns/fns-common'
 
   @Component({
     mixins: [list]
   })
   export default class BaseTableDemo extends Vue {
+    public input = ''
     public schema: Schema[] = [
       {
         label: '搜索',
@@ -74,8 +77,9 @@
       {
         prop: 'name',
         label: '姓名',
+        headerSlot: 'nameHeader',
         props: {
-          width: 200,
+          width: columnWidth.w160,
           formatter (r: any, c: any, v: any, i: number) {
             return v + i
           },
@@ -85,13 +89,13 @@
             {text: '李四', value: '2' + defaultFilterSplit + 'name'},
           ],
         },
-        headerSlot: 'nameHeader',
       },
       {
         prop: 'gender',
         label: '性别',
         contentSlot: 'genderContent',
         props: {
+          width: columnWidth.w200,
           filters: [
             {text: 1, value: 11 + defaultFilterSplit + 'gender'},
             {text: 2, value: 22 + defaultFilterSplit + 'gender'},
@@ -105,20 +109,39 @@
         headerSlot: 'ageHeader',
       },
       {
-        slot: 'address'
+        prop: 'customAge',
+        label: 'custom年龄',
+        props: {
+          width: columnWidth.w120
+        },
+      },
+      {
+        prop: 'address',
+        label: '地址',
+        // contentSlot: 'address',
+        props: {
+          width: columnWidth.w200,
+          formatter (row, col, value) {
+            return value.repeat(4).slice(0, 6)
+          },
+        },
       },
       {
         prop: 'birthday',
         label: '生日',
         props: {
           formatter (row, col, value) {
-            return value ? format(value, 'YYYY-MM-DD') : ''
-          }
+            return value ? format(value, 'YYYY-MM-DD HH:mm:ss') : ''
+          },
+          width: columnWidth.dateTimeAll,
         },
       }
     ]
     public handleClick = () => {
       console.log('click')
+    }
+    public handleResult = (data: any) => {
+      return data.results.map((item: any) => ({...item, customAge: item.age}))
     }
   }
 </script>

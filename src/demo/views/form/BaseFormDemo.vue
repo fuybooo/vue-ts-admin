@@ -1,7 +1,7 @@
 <template>
   <div class="h">
     {{form}}
-    <base-form :schema="schema" v-model="form"></base-form>
+    <base-form :schema="schema" v-model="form" :inline="false" is-row :span="8"></base-form>
     <div class="h"></div>
   </div>
 </template>
@@ -34,7 +34,8 @@
         },
         attrs: {
           placeholder: '这是placeholder',
-        }
+        },
+        span: 24,
       },
       {
         label: '日期框',
@@ -196,6 +197,7 @@
         label: '穿梭框',
         prop: 'transfer',
         comp: 'transfer',
+        span: 24,
       },
     ]
     public form = fb(this.schema)

@@ -3,6 +3,7 @@ import {Column, defaultFilterSplit} from '@/components/common-table/table.model'
 import {HttpRes} from '@/util/project/urls/url-util'
 import {debounce, deepClone, deepTrim} from '@/util/common/fns/fns'
 import {getClientHeight, getSpaceHeight} from '@/util/common/fns/fns-dom'
+
 Vue.component('BaseTable', {
   render (createElement: typeof Vue.prototype.$CreateElement) {
     const defaultTableAttrs = {
@@ -23,7 +24,7 @@ Vue.component('BaseTable', {
       ...defaultTableProps,
       ...this.tableProps,
       // @ts-ignore
-      ...(this.remoteData.length === 0 ? {} : { data: this.remoteData }),
+      ...(this.remoteData.length === 0 ? {} : {data: this.remoteData}),
     }
     const me = this
     return createElement('div', {
@@ -102,8 +103,8 @@ Vue.component('BaseTable', {
         if (res.head.errCode === 0) {
           // 改变remoteData之后会自动执行render
           me.innerLoading = false
-          me.remoteData = res.data.results
-          me.total = res.data.total
+          me.remoteData = me.handleResult ? me.handleResult(res.data) : res.data.results
+          me.total = me.handleTotal ? me.handleTotal(res.data) : res.data.total
         }
       })
     }),
@@ -204,6 +205,9 @@ Vue.component('BaseTable', {
         return {}
       },
     },
+    // 当后端返回的数据需要前端进行处理时，可以使用该函数
+    handleResult: Function,
+    handleTotal: Function,
   },
 })
 
@@ -212,41 +216,45 @@ function createColumns (createElement: typeof Vue.prototype.$CreateElement): VNo
   const me = this
   let columns: VNodeChildren
   columns = me.columns.map((col: Column) => {
-    if (col.slot || col.headerSlot || col.contentSlot) {
-      // 使用全slot
-      if (col.slot && !col.headerSlot && !col.contentSlot) {
-        return me.$slots[col.slot]
-      } else {
-        if (col.headerSlot) {
-          if (col.contentSlot) {
-            // header + content
-            return createElement('el-table-column', {
-              props: getColumnProps.bind(me)(col),
+    if (col.headerSlot || col.contentSlot) {
+      // if (col.slot || col.headerSlot || col.contentSlot) {
+      // 使用全slot todo 全slot方式不推荐使用
+      // if (col.slot && !col.headerSlot && !col.contentSlot) {
+      //   return me.$slots[col.slot]
+      // } else {
+      if (col.headerSlot) {
+        if (col.contentSlot) {
+          // header + content
+          return createElement('el-table-column', {
+            props: getColumnProps.bind(me)(col),
+            scopedSlots: {
               // @ts-ignore
-              // tslint:disable-next-line:max-line-length
-              scopedSlots: {default: (props: any) => createElement('span', me.$scopedSlots[col.contentSlot]({...props})), header: (props: any) => createElement('span', me.$scopedSlots[col.headerSlot]({...props}))},
-            })
-          } else {
-            // only header
-            return createElement('el-table-column', {
-              props: getColumnProps.bind(me)(col),
+              default: (props: any) => createElement('span', me.$scopedSlots[col.contentSlot]({...props})),
               // @ts-ignore
-              // tslint:disable-next-line:max-line-length
-              scopedSlots: {header: (props: any) => createElement('span', me.$scopedSlots[col.headerSlot]({...props}))},
-            })
-          }
+              header: (props: any) => createElement('span', me.$scopedSlots[col.headerSlot]({...props})),
+            },
+          })
         } else {
-          if (col.contentSlot) {
-            // only content
-            return createElement('el-table-column', {
-              props: getColumnProps.bind(me)(col),
-              // @ts-ignore
-              // tslint:disable-next-line:max-line-length
-              scopedSlots: {default: (props: any) => createElement('span', me.$scopedSlots[col.contentSlot]({...props}))},
-            })
-          }
+          // only header
+          return createElement('el-table-column', {
+            props: getColumnProps.bind(me)(col),
+            // @ts-ignore
+            // tslint:disable-next-line:max-line-length
+            scopedSlots: {header: (props: any) => createElement('span', me.$scopedSlots[col.headerSlot]({...props}))},
+          })
+        }
+      } else {
+        if (col.contentSlot) {
+          // only content
+          return createElement('el-table-column', {
+            props: getColumnProps.bind(me)(col),
+            // @ts-ignore
+            // tslint:disable-next-line:max-line-length
+            scopedSlots: {default: (props: any) => createElement('span', me.$scopedSlots[col.contentSlot]({...props}))},
+          })
         }
       }
+      // }
     } else if (col.prop) {
       return createElement('el-table-column', {
         props: getColumnProps.bind(me)(col),
@@ -255,6 +263,7 @@ function createColumns (createElement: typeof Vue.prototype.$CreateElement): VNo
   })
   return columns
 }
+
 function getColumnProps (col: Column) {
   const defaultColumnProps = {
     prop: col.prop,
@@ -265,6 +274,7 @@ function getColumnProps (col: Column) {
     ...(col.props || {}),
   }
 }
+
 // el-table绑定的事件
 function getTableEvent () {
   // @ts-ignore
@@ -350,6 +360,7 @@ function getTableEvent () {
     },
   }
 }
+
 // 表格高度
 function getHeight () {
   // @ts-ignore
@@ -362,6 +373,7 @@ function getHeight () {
     return null
   }
 }
+
 // 表格高度
 function calcHeight () {
   // @ts-ignore
@@ -370,7 +382,7 @@ function calcHeight () {
   const paginationHeight = me.isPagination && ({
     data: [],
     ...me.tableProps,
-    ...(me.remoteData.length === 0 ? {} : { data: me.remoteData }),
+    ...(me.remoteData.length === 0 ? {} : {data: me.remoteData}),
   }).data.length ? 32 : 0
   const wrapperHeight = getSpaceHeight('.common-el-main-padding.el-main')
   const tableSpaceHeight = getSpaceHeight('.base-table')
@@ -401,6 +413,7 @@ function getParams () {
     ...me.filterParams,
   }
 }
+
 function changeRouteParams (params: any) {
   // @ts-ignore
   const me = this

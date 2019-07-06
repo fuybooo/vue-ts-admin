@@ -40,6 +40,8 @@ export interface Schema {
   endInitValue?: any
   // 单个日期时需要指定该值作为真实传到后台的值
   aliasProp?: string
+  // 栅格化时当前列占的宽
+  span?: number
 }
 export const compMap = {
   input: 'el-input',

@@ -77,3 +77,19 @@ export interface ColumnProps {
   sortOrders?: null | 'ascending' | 'descending'
 }
 export const defaultFilterSplit = '____'
+// 在表格内容出现换行时需要考虑将列的宽度限制一下
+export const columnWidth = {
+  w2: 51, // 两个字 44时换行 45 + 6
+  w3: 63, // 三个字 56时换行 57 + 6
+  w4: 75, // 四个字
+  w5: 87, // 五个字
+  w6: 99, // 六个字
+  w120: 120,
+  w160: 160,
+  w200: 200,
+  w260: 260,
+  w320: 320,
+  date: 90, // 83时换行 YYYY-MM-DD 84 + 6
+  dateTime: 124, // 117时换行 YYYY-MM-DD HH:mm 118 + 6
+  dateTimeAll: 140, // 133时换行 YYYY-MM-DD HH:mm:ss 134 + 6
+}
