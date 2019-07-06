@@ -65,7 +65,7 @@ export interface ColumnProps {
   showTooltipWhenOverflow?: boolean
   showOverflowTooltip?: boolean
   fixed?: string | boolean
-  formatter?: any
+  formatter?: (row: any, column: any, cellValue: any, index: number) => any
   selectable?: any
   reserveSelection?: any
   filterMethod?: any

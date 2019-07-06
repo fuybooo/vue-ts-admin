@@ -23,13 +23,17 @@ Vue.component('BaseForm', {
     const formProps = {
       ...defaultFormProps,
       ...this.formProps,
+      inline: this.inline,
     }
-    if (!this.formProps.inline) {
+    if (!this.inline) {
       formProps.labelWidth = this.formProps.labelWidth || '120px'
       formProps.labelPosition = this.formProps.labelPosition || 'right'
     }
-    // el-form-item的属性
     const formItems: VNodeChildren = createFormItems.bind(this)(createElement)
+    if (this.showBtn) {
+      // @ts-ignore
+      formItems.push(createBtnItem.bind(this)(createElement))
+    }
     return createElement(
       'el-form',
       {
@@ -54,6 +58,20 @@ Vue.component('BaseForm', {
     isRow: {
       type: Boolean,
       default: false,
+    },
+    inline: {
+      type: Boolean,
+      default: true,
+    },
+    showBtn: {
+      type: Boolean,
+      default: true,
+    },
+    btn: {
+      type: Object,
+      default () {
+        return {}
+      },
     },
     // el-form的props属性
     formProps: {
@@ -201,6 +219,7 @@ function getFormControlProps (item: Schema) {
   }
   return props
 }
+
 function getDefaultProps (item: Schema) {
   const defaultProps: any = {}
   if (!item.comp || item.comp === 'select') {
@@ -233,6 +252,7 @@ function getElementDataObject (item: Schema) {
     },
   }
 }
+
 // 给控件绑定输入事件
 function onInput (val: any, item: Schema) {
   // @ts-ignore
@@ -250,6 +270,7 @@ function onInput (val: any, item: Schema) {
   }
   me.$emit('change', changeEvent)
 }
+
 function onChange (val: any, item: Schema) {
   // @ts-ignore
   const me = this
@@ -260,6 +281,7 @@ function onChange (val: any, item: Schema) {
   }
   me.$emit('change', changeEvent)
 }
+
 // 给控件的子元素绑定change事件
 function onChildrenChange (val: any, tag: string, item: Schema, option: Option) {
   // @ts-ignore
@@ -286,21 +308,24 @@ function onChildrenChange (val: any, tag: string, item: Schema, option: Option) 
     setProp.bind(me.value)(item.prop, options)
   }
 }
+
 // input时 设置表单额外的属性
 function setExtraValue (item: Schema, val: any) {
   // @ts-ignore
   const me = this
   if (isDateRange(item)) {
     if (item.startProp && item.endProp) {
+      const startDate = new Date(val[0])
+      const endDate = new Date(val[1])
       // 设置默认的日期文本
-      let start: string = format(new Date(val[0]), 'YYYY-MM-DD')
-      let end: string = format(new Date(val[0]), 'YYYY-MM-DD')
+      let start: string = format(startDate, 'YYYY-MM-DD')
+      let end: string = format(endDate, 'YYYY-MM-DD')
       if (item.props.type === 'datetimerange') {
-        start = format(new Date(val[0]), 'YYYY-MM-DD HH:mm:ss')
-        end = format(new Date(val[1]), 'YYYY-MM-DD HH:mm:ss')
+        start = format(startDate, 'YYYY-MM-DD HH:mm:ss')
+        end = format(endDate, 'YYYY-MM-DD HH:mm:ss')
       } else if (item.props.type === 'monthrange') {
-        start = format(new Date(val[0]), 'YYYY-MM')
-        end = format(new Date(val[1]), 'YYYY-MM')
+        start = format(startDate, 'YYYY-MM')
+        end = format(endDate, 'YYYY-MM')
       }
       setProp.bind(me.value)(item.startProp, val.length === 2 ? start : '')
       setProp.bind(me.value)(item.endProp, val.length === 2 ? end : '')
@@ -318,6 +343,24 @@ function setExtraValue (item: Schema, val: any) {
     } else if (item.props.type === 'week') {
       date = val
     }
-    setProp.bind(me.value)('_' + item.prop, date)
+    if (item.aliasProp) {
+      setProp.bind(me.value)(item.aliasProp, date)
+    }
   }
+}
+function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
+  // @ts-ignore
+  const me = this
+  // tslint:disable-next-line:max-line-length
+  const btnFormItem = createElement('el-form-item', {class: me.btn.class || (me.inline ? 'fr' : '')}, [createElement('el-button', {
+    props: {
+      type: me.btn.type || 'primary',
+    },
+    nativeOn: {
+      click () {
+        me.$emit('btn-click')
+      },
+    },
+  }, [me.btn.text || (me.inline ? '创建' : '保存')])])
+  return me.$slots.default || (me.isRow ? createElement('el-col', {}, btnFormItem) : btnFormItem)
 }

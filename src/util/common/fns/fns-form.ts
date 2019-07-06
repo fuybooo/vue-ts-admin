@@ -37,8 +37,8 @@ export function formBuilder (schema: Schema[]): any {
         setProp.bind(form)(item.endProp, item.endInitValue === undefined ? '' : item.endInitValue)
       }
       setProp.bind(form)(item.prop, getInitValue(item))
-      if (isDateButNotRange(item)) {
-        setProp.bind(form)('_' + item.prop, '')
+      if (isDateButNotRange(item) && item.aliasProp) {
+        setProp.bind(form)(item.aliasProp, '')
       }
     }
   })

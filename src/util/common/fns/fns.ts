@@ -78,7 +78,12 @@ export function deepTrim (obj: any, filterNone = false, onlyClone = false) {
       if (Array.isArray(obj)) {
         type = 'array'
       } else if (obj) {
-        type = 'object'
+        if (obj instanceof Date || obj instanceof RegExp) {
+          // 简单对象 如date regexp 等
+          type = 'simple'
+        } else {
+          type = 'object'
+        }
       }
       break
     case 'string':
@@ -87,7 +92,7 @@ export function deepTrim (obj: any, filterNone = false, onlyClone = false) {
       return obj
   }
   const newObj: any = type === 'array' ? [] : (type === 'object' ? {} : obj)
-  if (type) {
+  if (type === 'array' || type === 'object') {
     for (const i in obj) {
       if (obj.hasOwnProperty(i)) {
         const objValue = obj[i]
@@ -105,6 +110,14 @@ export function deepTrim (obj: any, filterNone = false, onlyClone = false) {
 // 深克隆
 export function deepClone (obj: any) {
   return deepTrim(obj, false, true)
+}
+export function isEmptyObject (obj: any) {
+  if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+    if (JSON.stringify(obj) === '{}') {
+      return true
+    }
+  }
+  return false
 }
 
 /**

@@ -28,16 +28,18 @@ export interface Schema {
   class?: string
   ref?: string
   // 属性字段
-  formItemProps?: any // FormItem 的props属性
+  formItemProps?: FormItemProps // FormItem 的props属性
   formItemAttrs?: any // FormItem 的标签属性
   // 备选字段 应尽量避免使用
   labelKeyOfOption?: string // 自定义的labelKey
   valueKeyOfOption?: string // 自定义的valueKey
   // 范围字段 如日期字段，可以给日期增加两个字段分别为开始日期和结束日期
-  startProp?: any
-  endProp?: any
+  startProp?: string
+  endProp?: string
   startInitValue?: any
   endInitValue?: any
+  // 单个日期时需要指定该值作为真实传到后台的值
+  aliasProp?: string
 }
 export const compMap = {
   input: 'el-input',
@@ -116,4 +118,32 @@ export interface FormChangeEvent {
   item: Schema
   value: any
   option?: Option
+}
+export interface FormProps {
+  model?: any
+  rules?: any
+  labelPosition?: string
+  labelWidth?: string
+  labelSuffix?: string
+  inline?: boolean
+  inlineMessage?: boolean
+  statusIcon?: boolean
+  showMessage?: boolean
+  size?: string
+  disabled?: boolean
+  validateOnRuleChange?: boolean
+  hideRequiredAsterisk?: boolean
+}
+export interface FormItemProps {
+  label?: string
+  labelWidth?: string
+  prop?: string
+  required?: boolean
+  rules?: any
+  error?: string
+  validateStatus?: string
+  for?: string
+  inlineMessage?: string | boolean
+  showMessage?: boolean
+  size?: string
 }

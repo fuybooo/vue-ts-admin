@@ -402,7 +402,6 @@ function getParams () {
   }
 }
 function changeRouteParams (params: any) {
-  console.log(params)
   // @ts-ignore
   const me = this
   const query = me.$route.query

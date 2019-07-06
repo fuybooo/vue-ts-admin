@@ -2,7 +2,7 @@
   <el-container class="h">
     <el-main class="h">
       <div class="common-query">
-        <base-form :schema="schema" v-model="form"></base-form>
+        <base-form :schema="schema" v-model="form" inline @btn-click="handleClick"></base-form>
       </div>
       <base-table
         :columns="columns"
@@ -36,6 +36,7 @@
   import {Schema} from '@/components/common-form/form.model'
   import {fb} from '@/util/common/fns/fns-form'
   import list from '@/components/common-table/table.query.mixin'
+  import format from 'date-fns/format'
 
   @Component({
     mixins: [list]
@@ -45,6 +46,25 @@
       {
         label: '搜索',
         prop: 'keyword',
+      },
+      {
+        label: '出生日期',
+        prop: 'birthday',
+        comp: 'date',
+        props: {
+          type: 'daterange',
+        },
+        startProp: 'startBirthday',
+        endProp: 'endBirthday',
+      },
+      {
+        label: '生日',
+        prop: 'birth',
+        comp: 'date',
+        props: {
+          type: 'date',
+        },
+        aliasProp: 'birthDate',
       }
     ]
     public form = fb(this.schema)
@@ -86,8 +106,20 @@
       },
       {
         slot: 'address'
+      },
+      {
+        prop: 'birthday',
+        label: '生日',
+        props: {
+          formatter (row, col, value) {
+            return value ? format(value, 'YYYY-MM-DD') : ''
+          }
+        },
       }
     ]
+    public handleClick = () => {
+      console.log('click')
+    }
   }
 </script>
 <style scoped lang="less">
