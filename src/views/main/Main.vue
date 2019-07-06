@@ -1,6 +1,6 @@
 <template>
   <el-container class="h">
-    <el-header class="main-header" height="50px">
+    <el-header class="main-header" id="main-header" height="50px">
       <el-row type="flex" justify="center" align="middle">
       <el-col :span="8">
         <el-dropdown @command="handleCommand">

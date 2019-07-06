@@ -9,8 +9,9 @@
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
   import {Option, Schema} from '@/components/common-form/form.model'
-  import {fb, setOptions, setProps} from '@/util/common/fns/fns-form'
+  import {fb} from '@/util/common/fns/fns-form'
   import {cascaderOptions} from '@/demo/model/demo.model'
+  import {setProperty} from '@/util/common/fns/fns-common'
 
   @Component({})
   export default class BaseFormDemo extends Vue {
@@ -209,14 +210,14 @@
           label: '选项二'
         },
       ]
-      setOptions(this.schema, 'select', options.map(item => ({id: item.id, label: `${item.label}(${item.id})`})))
-      setOptions(this.schema, 'mulSelect', options)
-      setOptions(this.schema, 'radio', options)
-      setOptions(this.schema, 'checkbox', options)
-      setOptions(this.schema, 'cascader', cascaderOptions)
-      setProps(this.schema, 'transfer', {data: Array(15).fill(0).map((item, i) => ({
-        key: i, label: `备选项${i}`, disabled: i % 4 === 0
-      }))})
+      setProperty(this.schema, 'select', {props: {options: options.map(item => ({id: item.id, label: `${item.label}(${item.id})`}))}})
+      setProperty(this.schema, 'mulSelect', {props: {options}})
+      setProperty(this.schema, 'radio', {props: {options}})
+      setProperty(this.schema, 'checkbox', {props: {options}})
+      setProperty(this.schema, 'cascader', {props: {options: cascaderOptions}})
+      setProperty(this.schema, 'transfer', {props: {data: Array(15).fill(0).map((item, i) => ({
+            key: i, label: `备选项${i}`, disabled: i % 4 === 0
+          }))}})
       // 赋值
       // this.form.name = 3
       // this.form.date = '2019-06-23'

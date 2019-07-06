@@ -1,9 +1,13 @@
 <template>
   <el-container class="h">
     <el-main class="h">
+      <div class="common-query">
+        <base-form :schema="schema" v-model="form"></base-form>
+      </div>
       <base-table
         :columns="columns"
         :url="url"
+        :params="params"
       >
         <template slot="address">
           <el-table-column prop="address" label="slot地址"></el-table-column>
@@ -28,10 +32,23 @@
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
-  import {Column} from '@/components/common-table/table.model'
+  import {Column, defaultFilterSplit} from '@/components/common-table/table.model'
+  import {Schema} from '@/components/common-form/form.model'
+  import {fb} from '@/util/common/fns/fns-form'
+  import list from '@/components/common-table/table.query.mixin'
 
-  @Component({})
+  @Component({
+    mixins: [list]
+  })
   export default class BaseTableDemo extends Vue {
+    public schema: Schema[] = [
+      {
+        label: '搜索',
+        prop: 'keyword',
+      }
+    ]
+    public form = fb(this.schema)
+    public params = this.form
     public url = this.$urls.demo.table
     public columns: Column[] = [
       {
@@ -41,7 +58,12 @@
           width: 200,
           formatter (r: any, c: any, v: any, i: number) {
             return v + i
-          }
+          },
+          sortable: 'custom',
+          filters: [
+            {text: '张三', value: '1' + defaultFilterSplit + 'name'}, // 此处的'name'使用filterProp || prop 分隔符 defaultFilterSplit 一般使用该值即可
+            {text: '李四', value: '2' + defaultFilterSplit + 'name'},
+          ],
         },
         headerSlot: 'nameHeader',
       },
@@ -49,6 +71,12 @@
         prop: 'gender',
         label: '性别',
         contentSlot: 'genderContent',
+        props: {
+          filters: [
+            {text: 1, value: 11 + defaultFilterSplit + 'gender'},
+            {text: 2, value: 22 + defaultFilterSplit + 'gender'},
+          ],
+        }
       },
       {
         prop: 'age',

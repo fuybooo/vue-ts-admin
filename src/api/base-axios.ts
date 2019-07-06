@@ -2,6 +2,7 @@ import Vue from 'vue'
 import axios, {AxiosInstance} from 'axios'
 import config from '@/config/base-config'
 import {IUrl, staticPath, urlType} from '@/util/project/urls/url-util'
+import {deepTrim} from '@/util/common/fns/fns'
 
 axios.interceptors.response.use((res) => {
   return res.data
@@ -61,11 +62,10 @@ const methods: any = {
 }
 const defAxios = create()
 const request = (url: urlType, data = {}, method = 'post', axiosInstance = defAxios) => {
-  return methods[method](url, data, axiosInstance)
+  return methods[method](url, deepTrim(data, true), axiosInstance)
 }
 export default {
   request,
-  ...methods,
   create,
 }
 // 在vue原型上挂载常用函数

@@ -45,3 +45,31 @@ export function toggleClassName (el: Element, className: string): void {
   }
 }
 
+export function getStyle (selector: string, attr: string, isNumber = true) {
+  const el = document.querySelector(selector)
+  if (el) {
+    if (isNumber) {
+      // @ts-ignore
+      return Number.parseFloat(window.getComputedStyle(el)[attr]) || 0
+    } else {
+      // @ts-ignore
+      return window.getComputedStyle(el)[attr]
+    }
+  }
+  return 0
+}
+export function getClientHeight (selector: string) {
+  const el = document.querySelector(selector)
+  if (el) {
+    return el.clientHeight +
+      getStyle(selector, 'margin-top') +
+      getStyle(selector, 'margin-bottom')
+  }
+  return 0
+}
+export function getSpaceHeight (selector: string) {
+  return getStyle(selector, 'padding-top') +
+    getStyle(selector, 'padding-bottom') +
+    getStyle(selector, 'margin-top') +
+    getStyle(selector, 'margin-bottom')
+}

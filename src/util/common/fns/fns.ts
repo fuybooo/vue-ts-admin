@@ -13,6 +13,7 @@ export function ls (key: string, value: string): void {
   localStorage.setItem(key, value)
 }
 
+// 生成uuid
 export function guid () {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     // tslint:disable-next-line:no-bitwise
@@ -35,7 +36,7 @@ export function getProp (prop: string): any {
   // tslint:disable-next-line:max-line-length
   return prop.split('.').reduce((p, c) => (p && p[c] && typeof p[c] === 'string') ? p[c] : ((p && typeof p[c] !== 'undefined') ? p[c] : null), this)
 }
-
+// 根据属性set值
 export function setProp (prop: string | undefined, value: any): void {
   if (!prop) {
     return
@@ -101,7 +102,33 @@ export function deepTrim (obj: any, filterNone = false, onlyClone = false) {
   }
   return newObj
 }
-
+// 深克隆
 export function deepClone (obj: any) {
   return deepTrim(obj, false, true)
+}
+
+/**
+ * 可取消的防抖函数
+ * @param func 原函数
+ * @param delay 延迟多久执行
+ * @param immediate 是否立即执行
+ * @return 返回一个新的可取消的防抖函数
+ * @example const d = debounce(function () {}) 执行该函数 d() 取消执行 d.cancel()
+ */
+export function debounce (func: () => any, delay = 400, immediate = false) {
+  let timer: any = null
+  const result = function (...args: any) {
+    // @ts-ignore
+    const cxt = this
+    if (timer) { clearTimeout(timer) }
+    if (immediate) {
+      const callNow = !timer
+      timer = setTimeout(() => timer = null, delay)
+      if (callNow) { func.apply(cxt, args) }
+    } else {
+      timer = setTimeout(() => func.apply(cxt, args), delay)
+    }
+  }
+  result.cancel = () => clearTimeout(timer)
+  return result
 }

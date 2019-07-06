@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import '@/components/common-table/BaseTable.less'
 import LangSetting from '@/components/lang-setting/LangSetting.vue'
 import '@/components/common-form/BaseForm'
 import '@/components/common-table/BaseTable'

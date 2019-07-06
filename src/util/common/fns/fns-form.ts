@@ -65,56 +65,6 @@ export {
   formBuilder as fb, // 重命名一个简写的名称
 }
 
-/**
- * 给schema对应的prop设置options
- * @param schema
- * @param prop
- * @param options
- */
-export function setOptions (schema: Schema[], prop: string, options: Option[]) {
-  let formItem
-  if (prop) {
-    formItem = schema.find(item => item.prop === prop)
-    if (formItem) {
-      if (!formItem.props) {
-        formItem.props = {}
-      }
-      formItem.props.options = options
-    }
-  }
-}
-export function setProperty (schema: Schema[], prop: string, value: any) {
-  let formItem: any
-  if (prop) {
-    formItem = schema.find(item => item.prop === prop)
-    if (formItem) {
-      if (!value || typeof value !== 'object') {
-        return
-      }
-      Object.keys(value).forEach(key => {
-        formItem[key] = value[key]
-      })
-    }
-  }
-}
-export function setProps (schema: Schema[], prop: string, value: any) {
-  let formItem: any
-  if (prop) {
-    formItem = schema.find(item => item.prop === prop)
-    if (formItem) {
-      if (!formItem.props) {
-        formItem.props = {}
-      }
-      if (!value || typeof value !== 'object') {
-        return
-      }
-      Object.keys(value).forEach(key => {
-        formItem.props[key] = value[key]
-      })
-    }
-  }
-}
-
 export function getValueOfOption (option: Option, item: Schema) {
   let res
   if ('id' in option) {

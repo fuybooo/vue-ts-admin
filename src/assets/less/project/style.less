@@ -17,3 +17,7 @@
 .common-el-main-padding.el-main {
   padding: 20px;
 }
+.common-query {
+  // 设置overflow为auto之后，该元素会触发bfc，使其计算高度时能够正确计算其子元素的margin值
+  overflow: inherit;
+}

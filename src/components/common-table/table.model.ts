@@ -5,6 +5,8 @@ export interface Column {
   slot?: string
   headerSlot?: string
   contentSlot?: string
+  // 用于过滤的字段名
+  filterProp?: string
 }
 // baseTable中tableProps
 export interface TableProps {
@@ -74,3 +76,4 @@ export interface ColumnProps {
   index?: number | any
   sortOrders?: null | 'ascending' | 'descending'
 }
+export const defaultFilterSplit = '____'

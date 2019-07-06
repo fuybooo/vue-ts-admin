@@ -196,9 +196,20 @@ function getFormControlProps (item: Schema) {
   const me = this
   const props: any = {
     value: item.prop ? getProp.bind(me.value)(item.prop) : '',
+    ...getDefaultProps.bind(me)(item),
     ...(item.props || {}),
   }
   return props
+}
+function getDefaultProps (item: Schema) {
+  const defaultProps: any = {}
+  if (!item.comp || item.comp === 'select') {
+    defaultProps.clearable = true
+    if (item.comp === 'select') {
+      defaultProps.filterable = true
+    }
+  }
+  return defaultProps
 }
 
 /**
