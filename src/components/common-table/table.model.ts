@@ -1,10 +1,9 @@
 export interface Column {
-  prop?: string
-  label?: string
+  prop?: string // 若没有 prop 则 contentSlot 是必须的
+  label: string
   props?: ColumnProps
-  slot?: string
   headerSlot?: string
-  contentSlot?: string
+  contentSlot?: string // 若没有 contentSlot 则 prop 是必须的
   // 用于过滤的字段名
   filterProp?: string
 }

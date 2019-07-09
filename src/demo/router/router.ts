@@ -6,6 +6,8 @@ import SlotFormDemo from '@/demo/views/form/SlotFormDemo.vue'
 import BaseTableDemo from '@/demo/views/table/BaseTableDemo.vue'
 import FunctionTest from '@/demo/views/html/FunctionTest.vue'
 import Input from '@/demo/views/input/Input.vue'
+import FormDetailDemo from '@/demo/views/form/FormDetailDemo.vue'
+import ParentPage from '@/demo/views/html/iframe-test/ParentPage.vue'
 
 const demoRouter: RouteConfig = {
   path: 'demo',
@@ -35,6 +37,14 @@ const demoRouter: RouteConfig = {
     {
       path: 'input',
       component: Input,
+    },
+    {
+      path: 'form-detail/:pattern/:id?',
+      component: FormDetailDemo,
+    },
+    {
+      path: 'html/iframe/parent-page',
+      component: ParentPage,
     },
   ],
 }

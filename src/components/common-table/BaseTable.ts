@@ -1,18 +1,21 @@
 import Vue, {VNodeChildren} from 'vue'
 import {Column, defaultFilterSplit} from '@/components/common-table/table.model'
 import {HttpRes} from '@/util/project/urls/url-util'
-import {debounce, deepClone, deepTrim} from '@/util/common/fns/fns'
+import {debounce, deepClone, deepTrim, guid} from '@/util/common/fns/fns'
 import {getClientHeight, getSpaceHeight} from '@/util/common/fns/fns-dom'
+import {setProperty} from '@/util/common/fns/fns-common'
 
 Vue.component('BaseTable', {
   render (createElement: typeof Vue.prototype.$CreateElement) {
-    const defaultTableAttrs = {
+    const defaultNodeAttrs = {
       ref: 'table',
       class: 'base-table',
     }
-    const tableAttrs = {
-      ...defaultTableAttrs,
-      ...this.tableAttrs,
+    const nodeAttrs = {
+      ...defaultNodeAttrs,
+      ...this.nodeAttrs,
+      ref: defaultNodeAttrs.ref, // ref无法被覆盖
+      class: (this.nodeAttrs.class || '') + ' ' + defaultNodeAttrs.class, // class 必须保持默认class名
     }
     const defaultTableProps = {
       data: [],
@@ -31,8 +34,12 @@ Vue.component('BaseTable', {
       class: 'base-table-wrap',
     }, [createElement('el-table', {
       props: tableProps,
-      ...tableAttrs,
-      on: getTableEvent.bind(this)(),
+      ...nodeAttrs,
+      // todo 暂时只支持覆盖事件，需要改为既支持自定义事件，又支持通用事件，还支持可配置是否完全覆盖的参数
+      on: {
+        ...getTableEvent.bind(this)(),
+        ...(nodeAttrs.on || {}),
+      },
       directives: [
         {
           name: 'loading',
@@ -71,11 +78,28 @@ Vue.component('BaseTable', {
       }) : null])
   },
   created () {
-    // 根据url页码初始化分页参数
-    // @ts-ignore
-    const params = JSON.parse(this.$route.query[this.queryKey] || '{}')
-    this.currentPage = params.currentPage || 1
-    this.pageSize = params.pageSize || 20
+    if (this.recordParams) {
+      // 根据url页码初始化分页参数
+      // @ts-ignore
+      const params = JSON.parse(this.$route.query[this.queryKey] || '{}')
+      this.currentPage = params.currentPage || 1
+      this.pageSize = params.pageSize || 20
+      // 给过滤项赋值
+      // @ts-ignore
+      const filteredPropList = this.columns.filter((col: Column) => col.props && col.props.filters).map((col: Column) => col.filterProp || col.prop)
+      filteredPropList.forEach((item: string) => {
+        if (params[item] !== undefined) {
+          // @ts-ignore
+          setProperty(this.columns, item, {props: {filteredValue: params[item].split(',').map(v => v + (this.filterSplit || defaultFilterSplit) + item)}})
+          this.$emit('update:columns', this.columns)
+        }
+      })
+      // 给表单赋值
+      // @ts-ignore
+      this.$emit('update:params', {...this.params, ...params})
+    } else {
+      this.$emit('update:params', {...this.params, _uuid: guid()})
+    }
     if (this.autoHeight || this.fixedElements || this.fixedHeight) {
       // 添加监听事件
       window.addEventListener('resize', this.resize)
@@ -115,10 +139,10 @@ Vue.component('BaseTable', {
   watch: {
     params: {
       handler (params: any = {}) {
-        this.search(params._first)
+        this.search(!this.isFirstSearch)
+        this.isFirstSearch = !this.isFirstSearch
       },
       deep: true,
-      immediate: true,
     },
   },
   data () {
@@ -133,6 +157,7 @@ Vue.component('BaseTable', {
       localHeight: null,
       filterMap: {},
       filterParams: {},
+      isFirstSearch: true, // 第一进入页面时根据浏览器地址栏上的分页参数查询，之后改变条件时都会从第页开始查询
     }
   },
   props: {
@@ -193,7 +218,7 @@ Vue.component('BaseTable', {
       type: String,
       default: 'results',
     },
-    tableAttrs: {
+    nodeAttrs: {
       type: Object,
       default () {
         return {}
@@ -239,7 +264,6 @@ function createColumns (createElement: typeof Vue.prototype.$CreateElement): VNo
           return createElement('el-table-column', {
             props: getColumnProps.bind(me)(col),
             // @ts-ignore
-            // tslint:disable-next-line:max-line-length
             scopedSlots: {header: (props: any) => createElement('span', me.$scopedSlots[col.headerSlot]({...props}))},
           })
         }
@@ -249,7 +273,6 @@ function createColumns (createElement: typeof Vue.prototype.$CreateElement): VNo
           return createElement('el-table-column', {
             props: getColumnProps.bind(me)(col),
             // @ts-ignore
-            // tslint:disable-next-line:max-line-length
             scopedSlots: {default: (props: any) => createElement('span', me.$scopedSlots[col.contentSlot]({...props}))},
           })
         }
@@ -394,7 +417,6 @@ function calcHeight () {
   })
   // 默认会排除的高度 这意味着 当查询条件使用 common-query 时无需传参数即可自动计算
   const defaultFixedElementHeight = getClientHeight('.common-query')
-  // tslint:disable-next-line:max-line-length
   me.localHeight = window.innerHeight - headerHeight - paginationHeight - wrapperHeight - tableSpaceHeight - borderHeight - me.fixedHeight - defaultFixedElementHeight
 }
 

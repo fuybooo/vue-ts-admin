@@ -1,13 +1,15 @@
 <template>
-  <div>
-    <h1>只有复杂的无法用组件实现的表单元素才用slot插槽实现</h1>
-    {{form}}
-    <base-form :schema="schema" v-model="form">
-      <template slot="name">
-        <el-input v-model="form.name" placeholder="这里是slot的内容"></el-input>
-      </template>
-    </base-form>
-  </div>
+  <el-container class="h">
+    <el-main class="h">
+      <h1>只有复杂的无法用组件实现的表单元素才用slot插槽实现</h1>
+      {{form}}
+      <base-form :schema="schema" v-model="form">
+        <template slot="name">
+          <el-input v-model="form.name" placeholder="这里是slot的内容"></el-input>
+        </template>
+      </base-form>
+    </el-main>
+  </el-container>
 </template>
 
 <script lang="ts">

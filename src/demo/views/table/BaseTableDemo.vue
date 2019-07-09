@@ -2,14 +2,18 @@
   <el-container class="h">
     <el-main class="h">
       <div class="common-query">
-        <base-form :schema="schema" v-model="form" inline @btn-click="handleClick"></base-form>
+        <base-form :schema="schema" v-model="form" inline @create="handleClick"></base-form>
       </div>
       <base-table
-        :columns="columns"
+        :columns.sync="columns"
         :url="url"
-        :params="params"
+        :params.sync="form"
         :handle-result="handleResult"
+        :node-attrs="tableAttrs"
       >
+        <template v-slot:id="{row}">
+          <router-link :to="'/main/demo/form-detail/view/' + row.id">No0001-9999-{{row.id}}</router-link>
+        </template>
         <template v-slot:address="{row}">
           <span>{{row.address}}</span>
         </template>
@@ -20,11 +24,16 @@
         <template v-slot:ageContent="{row}">
           <span>不仅仅是内容{{row}}</span>
         </template>
-        <template slot="nameHeader">
+        <template v-slot:nameHeader>
           <span>slot name header</span>
         </template>
-        <template slot="genderContent">
+        <template v-slot:genderContent>
           <span>slot genderContent</span>
+        </template>
+        <template v-slot:op="{row}">
+          <el-button type="primary" plain @click="toEdit(row)">编辑</el-button>
+<!--          todo 使用 popover -->
+          <el-button type="danger" plain @click="toDel(row)">删除</el-button>
         </template>
       </base-table>
     </el-main>
@@ -36,13 +45,9 @@
   import {Column, columnWidth, defaultFilterSplit} from '@/components/common-table/table.model'
   import {Schema} from '@/components/common-form/form.model'
   import {fb} from '@/util/common/fns/fns-form'
-  import list from '@/components/common-table/table.query.mixin'
   import format from 'date-fns/format'
-  import {setProperty} from '@/util/common/fns/fns-common'
 
-  @Component({
-    mixins: [list]
-  })
+  @Component({})
   export default class BaseTableDemo extends Vue {
     public input = ''
     public schema: Schema[] = [
@@ -68,12 +73,19 @@
           type: 'date',
         },
         aliasProp: 'birthDate',
-      }
+      },
     ]
     public form = fb(this.schema)
-    public params = this.form
     public url = this.$urls.demo.table
     public columns: Column[] = [
+      {
+        prop: 'id',
+        label: '编号',
+        contentSlot: 'id',
+        props: {
+          width: columnWidth.w120,
+        }
+      },
       {
         prop: 'name',
         label: '姓名',
@@ -135,13 +147,31 @@
           },
           width: columnWidth.dateTimeAll,
         },
+      },
+      {
+        label: '操作',
+        contentSlot: 'op',
+        props: {
+          width: columnWidth.w160
+        }
       }
     ]
-    public handleClick = () => {
-      console.log('click')
-    }
     public handleResult = (data: any) => {
       return data.results.map((item: any) => ({...item, customAge: item.age}))
+    }
+    public tableAttrs = {
+      on: {
+        'row-click' () {
+          console.log('row.click')
+        }
+      },
+    }
+    public handleClick () {
+      this.$router.push('/main/demo/form-detail/create')
+    }
+    public toDel (row: any) {}
+    public toEdit (row: any) {
+      this.$router.push('/main/demo/form-detail/edit/' + row.id)
     }
   }
 </script>

@@ -1,20 +1,23 @@
 import Vue, {VNodeChildren} from 'vue'
 import {childrenCompMap, compMap, Schema, Option, FormChangeEvent} from '@/components/common-form/form.model'
-import {pattern} from '@/model/common/models'
+import {Pattern} from '@/model/common/models'
 import {getProp, guid, setProp} from '@/util/common/fns/fns'
 import {getLabelOfOption, getValueOfOption, isCheckbox, isDate, isDateRange, isSelect} from '@/util/common/fns/fns-form'
 import format from 'date-fns/format'
+import './BaseForm.less'
 
 Vue.component('BaseForm', {
   render (createElement) {
-    // el-form 的attr属性
-    const defaultFormAttrs = {
+    // el-form 的虚拟节点属性
+    const defaultNodeAttrs = {
       ref: 'form',
       class: 'base-form',
     }
-    const formAttrs = {
-      ...defaultFormAttrs,
-      ...this.formAttrs,
+    const nodeAttrs = {
+      ...defaultNodeAttrs,
+      ...this.nodeAttrs,
+      ref: defaultNodeAttrs.ref, // ref无法被覆盖
+      class: (this.nodeAttrs.class || '') + ' ' + defaultNodeAttrs.class, // class 必须保持默认class名
     }
     // el-form的props属性
     const defaultFormProps = {
@@ -24,6 +27,8 @@ Vue.component('BaseForm', {
       ...defaultFormProps,
       ...this.formProps,
       inline: this.inline,
+      model: this.value,
+      hideRequiredAsterisk: this.formPattern === 'view' || this.formProps.hideRequiredAsterisk,
     }
     if (!this.inline) {
       formProps.labelWidth = this.formProps.labelWidth || '120px'
@@ -38,7 +43,7 @@ Vue.component('BaseForm', {
       'el-form',
       {
         props: formProps,
-        ...formAttrs,
+        ...nodeAttrs,
       },
       // @ts-ignore
       this.isRow ? [createElement('el-row', {}, formItems)] : formItems,
@@ -61,21 +66,27 @@ Vue.component('BaseForm', {
       default: false,
     },
     span: {
-      type: Number,
+      type: [Number, String],
       default: 24,
     },
     inline: {
       type: Boolean,
       default: true,
     },
+    // 是否显示base-form自定义的按钮，若为true，则按钮事件也是默认的
     showBtn: {
       type: Boolean,
       default: true,
     },
+    // 显示的按钮的一些属性
     btn: {
       type: Object,
       default () {
-        return {}
+        return {
+          class: '',
+          type: '',
+          text: '',
+        }
       },
     },
     // el-form的props属性
@@ -86,7 +97,7 @@ Vue.component('BaseForm', {
       },
     },
     // el-form的attrs属性
-    formAttrs: {
+    nodeAttrs: {
       type: Object,
       default () {
         return {}
@@ -94,7 +105,6 @@ Vue.component('BaseForm', {
     },
     formPattern: {
       type: String,
-      default: 'create',
     },
   },
 })
@@ -110,14 +120,13 @@ function createFormItems (createElement: typeof Vue.prototype.$createElement): V
   const schema: Schema[] = me.schema
   // todo 判断表单的模式 渲染成输入框或者文本
   // const formPattern: pattern = this.formPattern
-  const formItems = schema.map(item => {
+  // @ts-ignore
+  return schema.map(item => {
     let formItem
     // todo 处理slot方式的表单项
     formItem = createFormItem.bind(me)(createElement, item)
     return formItem
   })
-  // @ts-ignore
-  return formItems
 }
 
 /**
@@ -139,7 +148,6 @@ function createFormItem (createElement: typeof Vue.prototype.$createElement, ite
     // 处理 prop 为空时的情况
   }
   let formItem: VNodeChildren
-  // todo 第一个版本先创建原生的el-form 也不包含slot的方式 之后在创建栅格化的表单
   formItem = createElement(
     'el-form-item',
     {
@@ -148,11 +156,12 @@ function createFormItem (createElement: typeof Vue.prototype.$createElement, ite
         prop: item.prop,
         label: item.label,
       },
-      ...getFormItemAttrs(item),
+      ...(item.formItemNodeProperty || {}),
+      class: ((item.formItemNodeProperty || {}).class || '') + getClassName(item, 'base-form-item'),
     },
     [formControl], // 此处的参数必须为数组
   )
-  return me.isRow ? createElement('el-col', {props: {span: item.span || me.span}}, [formItem]) : formItem
+  return me.isRow ? createElement('el-col', {props: {span: +(item.span || me.span)}}, [formItem]) : formItem
   // return formItem
 }
 
@@ -167,13 +176,23 @@ function createFormControl (createElement: typeof Vue.prototype.$createElement, 
   let vNodeChildren: VNodeChildren
   vNodeChildren = createFormControlVNodeChildren.bind(me)(createElement, item)
   let formControl: VNodeChildren
-  // @ts-ignore
-  const tag = compMap[item.comp || 'input']
-  formControl = createElement(tag, {
-    props: getFormControlProps.bind(me)(item),
-    attrs: getFormControlAttrs.bind(me)(item),
-    ...getElementDataObject.bind(me)(item),
-  }, vNodeChildren)
+  if (me.formPattern === 'view') {
+    formControl = createElement(item.viewComponent || 'base-view-html', {
+      props: {
+        formItem: item,
+        // @ts-ignore
+        value: getProp.bind(me.value)(item.prop),
+      },
+    })
+  } else {
+    // @ts-ignore
+    const tag = compMap[item.comp || 'input']
+    formControl = createElement(tag, {
+      props: getFormControlProps.bind(me)(item),
+      attrs: getFormControlAttrs.bind(me)(item),
+      ...getElementDataObject.bind(me)(item),
+    }, vNodeChildren)
+  }
   return formControl
 }
 
@@ -182,7 +201,6 @@ function createFormControl (createElement: typeof Vue.prototype.$createElement, 
  * @param createElement
  * @param item
  */
-// tslint:disable-next-line:max-line-length
 function createFormControlVNodeChildren (createElement: typeof Vue.prototype.$createElement, item: Schema): VNodeChildren {
   // @ts-ignore
   const me = this
@@ -190,7 +208,7 @@ function createFormControlVNodeChildren (createElement: typeof Vue.prototype.$cr
   // @ts-ignore
   const tag = childrenCompMap[item.comp || 'input']
   // 目前只支持 select radio checkbox 2019-06-25
-  if (tag) {
+  if (tag && me.formPattern !== 'view') {
     vNodeChildren = ((item.props || {}).options || []).map((option: Option) => createElement(tag, {
       props: {
         key: getValueOfOption(option, item),
@@ -229,9 +247,9 @@ function getFormControlProps (item: Schema) {
  * @param item
  */
 function getFormControlAttrs (item: Schema) {
-  const attrs: any = item.attrs || {}
+  const attrs: any = (item.nodeProperty || {}).attrs || {}
   if (!item.comp || item.comp === 'input' || item.comp === 'select') {
-    attrs.placeholder = attrs.placeholder || item.label
+    attrs.placeholder = item.placeholder || attrs.placeholder || item.label
   }
   return attrs
 }
@@ -262,9 +280,10 @@ function getDefaultProps (item: Schema) {
 function getElementDataObject (item: Schema) {
   // @ts-ignore
   const me = this
+  const properties = item.nodeProperty || {}
   return {
-    class: item.class,
-    ref: item.ref,
+    class: (properties.class || '') + getClassName(item),
+    ref: properties.ref,
     refInFor: true,
     on: {
       input (val: any) {
@@ -372,23 +391,74 @@ function setExtraValue (item: Schema, val: any) {
     }
   }
 }
+// todo 操作按钮时，改变路由状态
 function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
   // @ts-ignore
   const me = this
-  // tslint:disable-next-line:max-line-length
   const btnFormItem = createElement('el-form-item', {class: me.btn.class || (me.inline ? 'fr' : '')}, [createElement('el-button', {
     props: {
       type: me.btn.type || 'primary',
     },
     nativeOn: {
       click () {
-        me.$emit('btn-click')
+        // todo 执行默认的保存，编辑等操作
+        if (me.formPattern === 'view') {
+          me.$emit('update:formPattern', 'edit')
+        }
+        me.$emit(me.inline ? 'create' : me.formPattern === 'view' ? 'edit' : 'submit')
       },
     },
-  }, [me.btn.text || (me.inline ? '创建' : '保存')])])
+  }, [me.btn.text || (me.inline ? '创建' : me.formPattern === 'view' ? '编辑' : '保存')]), ...(me.inline ? [] : [createElement('el-button', {
+    nativeOn: {
+      click () {
+        // todo 执行取消操作
+        if (me.formPattern === 'edit') {
+          // todo 提示保存页面
+          me.$emit('update:formPattern', 'view')
+        } else if (me.formPattern === 'create') {
+          // todo 提示保存页面
+          window.history.back()
+        } else if (me.formPattern === 'view') {
+          // 直接返回
+          window.history.back()
+        }
+      },
+    },
+  }, me.formPattern === 'view' ? '返回' : '取消')])])
   return me.$slots.default || (me.isRow ? [createElement('el-col', {}, [btnFormItem])] : btnFormItem)
 }
-function getFormItemAttrs (item: Schema) {
-  // todo 给每个item加上样式，以控制不同的控件的展示
-  return item.formItemAttrs || {}
+function getFormControlClassType (item: Schema) {
+  let type = ''
+  let fixedHeight = false
+  if (!item.comp || item.comp === 'input') {
+    type = 'input'
+    if (item.props) {
+      if (item.props.type === 'textarea') {
+        type = 'textarea'
+        fixedHeight = true
+      }
+    }
+  } else if (item.comp === 'select') {
+    type = 'select'
+    if (item.props) {
+      if (item.props.multiple) {
+        type = 'select-multiple'
+        fixedHeight = true
+      }
+    }
+  } else if (item.comp === 'date') {
+    type = 'date'
+  } else if (item.comp === 'transfer') {
+    fixedHeight = true
+  } else if (item.comp === 'radio') {
+    fixedHeight = true
+  }
+  return {
+    type: type || item.comp,
+    fixedHeight,
+  }
+}
+function getClassName (item: Schema, prefix = 'base-form-control') {
+  const classType = getFormControlClassType(item)
+  return ` ${prefix} ${prefix}-${classType.type}${classType.fixedHeight ? ` ${prefix}-fixed-height` : ''}`
 }

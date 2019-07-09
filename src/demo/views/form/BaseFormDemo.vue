@@ -1,9 +1,11 @@
 <template>
-  <div class="h">
-    {{form}}
-    <base-form :schema="schema" v-model="form" :inline="false" is-row :span="8"></base-form>
-    <div class="h"></div>
-  </div>
+  <el-container class="h">
+    <el-main class="h">
+      {{form}}
+      <base-form :schema="schema" v-model="form" :inline="false" is-row :span="8" :form-props="formProps"></base-form>
+      <div class="h"></div>
+    </el-main>
+  </el-container>
 </template>
 
 <script lang="ts">
@@ -13,15 +15,15 @@
   import {cascaderOptions} from '@/demo/model/demo.model'
   import {setProperty} from '@/util/common/fns/fns-common'
 
+  /**
+   * 该demo展示了base-form表单基本组件的基础用法
+   */
   @Component({})
   export default class BaseFormDemo extends Vue {
     public schema: Schema[] = [
       {
         label: '名称',
         prop: 'name',
-        props: {
-          type: 'number',
-        },
         attrs: {
           placeholder: '这是placeholder',
         }
@@ -224,6 +226,16 @@
       // this.form.name = 3
       // this.form.date = '2019-06-23'
       // this.form.datetimeRange = ['2019-06-11 12:00:00', '2019-06-13 13:13:13']
+    }
+    public formProps = {
+      rules: {
+        name: [
+          {
+            required: true,
+            message: '必填'
+          }
+        ]
+      }
     }
   }
 </script>

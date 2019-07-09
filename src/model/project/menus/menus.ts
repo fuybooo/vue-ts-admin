@@ -23,4 +23,8 @@ export const demoMenus = [
     to: '/main/demo/input',
     name: 'input-demo',
   },
+  {
+    to: '/main/demo/html/iframe/parent-page',
+    name: 'iframe',
+  },
 ]

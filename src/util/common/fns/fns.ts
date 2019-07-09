@@ -33,7 +33,6 @@ export function getProp (prop: string): any {
     return null
   }
   // @ts-ignore
-  // tslint:disable-next-line:max-line-length
   return prop.split('.').reduce((p, c) => (p && p[c] && typeof p[c] === 'string') ? p[c] : ((p && typeof p[c] !== 'undefined') ? p[c] : null), this)
 }
 // 根据属性set值

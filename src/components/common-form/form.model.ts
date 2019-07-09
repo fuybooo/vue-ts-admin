@@ -23,13 +23,12 @@ export interface Schema {
   // 常用的字段
   initValue?: any
   props?: any // 控件的props属性
-  attrs?: any // 控件的标签属性
-  // 可选字段
-  class?: string
-  ref?: string
+  nodeProperty?: any // 控件的虚拟节点属性
+  // 常用的属性提取到外层
+  placeholder?: any
   // 属性字段
   formItemProps?: FormItemProps // FormItem 的props属性
-  formItemAttrs?: any // FormItem 的标签属性
+  formItemNodeProperty?: any // FormItem 的虚拟节点属性
   // 备选字段 应尽量避免使用
   labelKeyOfOption?: string // 自定义的labelKey
   valueKeyOfOption?: string // 自定义的valueKey
@@ -42,6 +41,12 @@ export interface Schema {
   aliasProp?: string
   // 栅格化时当前列占的宽
   span?: number
+  // 当formPattern为view时使用的组件
+  viewComponent?: string
+  viewValue?: any
+  viewClassName?: string
+  viewFilter?: any
+  viewDefaultValue?: string | number
 }
 export const compMap = {
   input: 'el-input',
