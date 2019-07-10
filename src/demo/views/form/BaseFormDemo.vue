@@ -24,9 +24,7 @@
       {
         label: '名称',
         prop: 'name',
-        attrs: {
-          placeholder: '这是placeholder',
-        }
+        placeholder: '这是placeholder',
       },
       {
         label: '文本域',
@@ -34,9 +32,7 @@
         props: {
           type: 'textarea',
         },
-        attrs: {
-          placeholder: '这是placeholder',
-        },
+        placeholder: '这是placeholder',
         span: 24,
       },
       {

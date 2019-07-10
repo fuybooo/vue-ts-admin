@@ -1,9 +1,10 @@
 import Vue, {VNodeChildren} from 'vue'
-import {Column, defaultFilterSplit} from '@/components/common-table/table.model'
+import {Column, ContentType, defaultFilterSplit} from '@/components/common-table/table.model'
 import {HttpRes} from '@/util/project/urls/url-util'
 import {debounce, deepClone, deepTrim, guid} from '@/util/common/fns/fns'
 import {getClientHeight, getSpaceHeight} from '@/util/common/fns/fns-dom'
 import {setProperty} from '@/util/common/fns/fns-common'
+import './BaseTable.less'
 
 Vue.component('BaseTable', {
   render (createElement: typeof Vue.prototype.$CreateElement) {
@@ -28,6 +29,7 @@ Vue.component('BaseTable', {
       ...this.tableProps,
       // @ts-ignore
       ...(this.remoteData.length === 0 ? {} : {data: this.remoteData}),
+      ...mergeTableFunctionProps.bind(this)(),
     }
     const me = this
     return createElement('div', {
@@ -38,7 +40,6 @@ Vue.component('BaseTable', {
       // todo 暂时只支持覆盖事件，需要改为既支持自定义事件，又支持通用事件，还支持可配置是否完全覆盖的参数
       on: {
         ...getTableEvent.bind(this)(),
-        ...(nodeAttrs.on || {}),
       },
       directives: [
         {
@@ -97,6 +98,9 @@ Vue.component('BaseTable', {
       // 给表单赋值
       // @ts-ignore
       this.$emit('update:params', {...this.params, ...params})
+      // 展示选中的行
+      this.rememberRow = params._rememberRow
+      this.rememberRowKey = params._rememberRowKey
     } else {
       this.$emit('update:params', {...this.params, _uuid: guid()})
     }
@@ -120,7 +124,7 @@ Vue.component('BaseTable', {
       const params = getParams.bind(me)()
       // 更改浏览器参数
       if (me.recordParams) {
-        changeRouteParams.bind(me)(params)
+        changeRouteParams.bind(me)()
       }
       // 分页 防抖 滚动加载
       me.$req(me.url, params).then((res: HttpRes) => {
@@ -138,7 +142,7 @@ Vue.component('BaseTable', {
   },
   watch: {
     params: {
-      handler (params: any = {}) {
+      handler () {
         this.search(!this.isFirstSearch)
         this.isFirstSearch = !this.isFirstSearch
       },
@@ -158,6 +162,9 @@ Vue.component('BaseTable', {
       filterMap: {},
       filterParams: {},
       isFirstSearch: true, // 第一进入页面时根据浏览器地址栏上的分页参数查询，之后改变条件时都会从第页开始查询
+      rememberRow: '', // 要记住的行的值
+      rememberRowKey: '', // 要记住的行的key
+      rememberRowStatus: true, // 初次为true，点击行之后变为false
     }
   },
   props: {
@@ -205,6 +212,11 @@ Vue.component('BaseTable', {
       type: Boolean,
       default: true,
     },
+    // 是否记录行，点击详情离开界面之后，返回来时能够记住离开时点击的行
+    recordRow: {
+      type: Boolean,
+      default: true,
+    },
     queryKey: {
       type: String,
       default: 'q',
@@ -241,43 +253,26 @@ function createColumns (createElement: typeof Vue.prototype.$CreateElement): VNo
   const me = this
   let columns: VNodeChildren
   columns = me.columns.map((col: Column) => {
-    if (col.headerSlot || col.contentSlot) {
-      // if (col.slot || col.headerSlot || col.contentSlot) {
-      // 使用全slot todo 全slot方式不推荐使用
-      // if (col.slot && !col.headerSlot && !col.contentSlot) {
-      //   return me.$slots[col.slot]
-      // } else {
-      if (col.headerSlot) {
-        if (col.contentSlot) {
-          // header + content
-          return createElement('el-table-column', {
-            props: getColumnProps.bind(me)(col),
-            scopedSlots: {
-              // @ts-ignore
-              default: (props: any) => createElement('span', me.$scopedSlots[col.contentSlot]({...props})),
-              // @ts-ignore
-              header: (props: any) => createElement('span', me.$scopedSlots[col.headerSlot]({...props})),
-            },
-          })
-        } else {
-          // only header
-          return createElement('el-table-column', {
-            props: getColumnProps.bind(me)(col),
-            // @ts-ignore
-            scopedSlots: {header: (props: any) => createElement('span', me.$scopedSlots[col.headerSlot]({...props}))},
-          })
-        }
-      } else {
-        if (col.contentSlot) {
-          // only content
-          return createElement('el-table-column', {
-            props: getColumnProps.bind(me)(col),
-            // @ts-ignore
-            scopedSlots: {default: (props: any) => createElement('span', me.$scopedSlots[col.contentSlot]({...props}))},
-          })
-        }
-      }
-      // }
+    if (col.content) {
+      return createElement('el-table-column', {
+        props: getColumnProps.bind(me)(col),
+        scopedSlots: {
+          // @ts-ignore
+          default: (props: any) => createElement('span', getContent.bind(me)(createElement, col, props)),
+          // @ts-ignore
+          ...(col.headerSlot ? {header: (props: any) => createElement('span', me.$scopedSlots[col.headerSlot]({...props}))} : {}),
+        },
+      })
+    } else if (col.headerSlot || col.contentSlot) {
+      return createElement('el-table-column', {
+        props: getColumnProps.bind(me)(col),
+        scopedSlots: {
+          // @ts-ignore
+          ...(col.contentSlot ? {default: (props: any) => createElement('span', me.$scopedSlots[col.contentSlot]({...props}))} : {}),
+          // @ts-ignore
+          ...(col.headerSlot ? {header: (props: any) => createElement('span', me.$scopedSlots[col.headerSlot]({...props}))} : {}),
+        },
+      })
     } else if (col.prop) {
       return createElement('el-table-column', {
         props: getColumnProps.bind(me)(col),
@@ -302,42 +297,12 @@ function getColumnProps (col: Column) {
 function getTableEvent () {
   // @ts-ignore
   const me = this
+  const onEvent = (me.nodeAttrs || {}).on || {}
   return {
-    'select' () {
-      me.$emit('select', ...arguments)
-    },
-    'select-all' () {
-      me.$emit('select-all', ...arguments)
-    },
-    'selection-change' () {
-      me.$emit('selection-change', ...arguments)
-    },
-    'cell-mouse-enter' () {
-      me.$emit('cell-mouse-enter', ...arguments)
-    },
-    'cell-mouse-leave' () {
-      me.$emit('cell-mouse-leave', ...arguments)
-    },
-    'cell-click' () {
-      me.$emit('cell-click', ...arguments)
-    },
-    'cell-dblclick' () {
-      me.$emit('cell-dblclick', ...arguments)
-    },
     'row-click' () {
-      me.$emit('row-click', ...arguments)
-    },
-    'row-contextmenu' () {
-      me.$emit('row-contextmenu', ...arguments)
-    },
-    'row-dblclick' () {
-      me.$emit('row-dblclick', ...arguments)
-    },
-    'header-click' () {
-      me.$emit('header-click', ...arguments)
-    },
-    'header-contextmenu' () {
-      me.$emit('header-contextmenu', ...arguments)
+      me.rememberRowStatus = false
+      // tslint:disable-next-line:no-unused-expression
+      onEvent['row-click'] && onEvent['row-click']()
     },
     'sort-change' () {
       // todo 若排序需要支持同时按多个字段排序则需要增加逻辑
@@ -345,7 +310,8 @@ function getTableEvent () {
       me.sortField = prop
       me.sortOrder = order
       me.search(true)
-      me.$emit('sort-change', ...arguments)
+      // tslint:disable-next-line:no-unused-expression
+      onEvent['sort-change'] && onEvent['sort-change']()
     },
     'filter-change' () {
       // @ts-ignore
@@ -370,16 +336,8 @@ function getTableEvent () {
         }
       })
       me.search(true)
-      me.$emit('filter-change', ...arguments)
-    },
-    'current-change' () {
-      me.$emit('current-change', ...arguments)
-    },
-    'header-dragend' () {
-      me.$emit('header-dragend', ...arguments)
-    },
-    'expand-change' () {
-      me.$emit('expand-change', ...arguments)
+      // tslint:disable-next-line:no-unused-expression
+      onEvent['filter-change'] && onEvent['filter-change']()
     },
   }
 }
@@ -436,15 +394,84 @@ function getParams () {
   }
 }
 
-function changeRouteParams (params: any) {
+function changeRouteParams () {
   // @ts-ignore
   const me = this
+  const params = getParams.bind(me)()
   const query = me.$route.query
   me.$router.replace({
     path: me.$route.path,
     query: {
       ...query,
-      [me.queryKey]: JSON.stringify(deepTrim(params, true)),
+      [me.queryKey]: JSON.stringify(deepTrim({
+        ...params,
+        ...(me.recordRow ? (me.rememberRow ? {_rememberRow: me.rememberRow, _rememberRowKey: me.rememberRowKey} : {}) : {}),
+      }, true)),
     },
   })
+}
+function getContent (createElement: typeof Vue.prototype.$CreateElement, col: Column, props: any): VNodeChildren {
+  // @ts-ignore
+  const me = this
+  let vNode: VNodeChildren = null
+  // @ts-ignore
+  const type: ContentType = col.content.type
+  switch (type) {
+    case 'link':
+      // @ts-ignore
+      if (!col.content.route) {
+        throw Error('当type为link时，route为必须')
+      }
+      // @ts-ignore
+      vNode = createElement('router-link', {props: {to: col.content.route(props.row)}}, [createElement('a', {on: getContentEvent.bind(me)(type, col, props)}, [col.content.value ? col.content.value(props.row) : props.row[col.prop]])])
+      break
+    case 'btn':
+      break
+    case 'event':
+      break
+  }
+  return [vNode]
+}
+function getContentEvent (type: ContentType, col: Column, props: any) {
+  // @ts-ignore
+  const me = this
+  const eventObj: any = {}
+  switch (type) {
+    case 'link':
+      eventObj.click = () => {
+        // todo 在跳转到其他页面之前需要添加的事情
+        if (me.recordRow) {
+          // @ts-ignore
+          me.rememberRow = props.row[col.content.key || col.prop] + ''
+          // @ts-ignore
+          me.rememberRowKey = col.content.key || col.prop
+        }
+        if (me.recordParams) {
+          changeRouteParams.bind(me)()
+        }
+      }
+      break
+    case 'event':
+      break
+  }
+  return eventObj
+}
+function mergeTableFunctionProps () {
+  // @ts-ignore
+  const me = this
+  return {
+    'row-class-name' (arg: any) {
+      let outerRowClassName: any = me.tableProps['row-class-name'] || ''
+      if (outerRowClassName) {
+        if (typeof outerRowClassName === 'function') {
+          outerRowClassName = outerRowClassName(arg)
+        }
+      }
+      let innerRowClassName = ''
+      if (me.rememberRowStatus && me.recordParams && me.recordRow && me.rememberRow && me.rememberRow === arg.row[me.rememberRowKey] + '') {
+        innerRowClassName = 'remember-row'
+      }
+      return `${outerRowClassName} ${innerRowClassName}`
+    },
+  }
 }

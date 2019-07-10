@@ -11,9 +11,6 @@
         :handle-result="handleResult"
         :node-attrs="tableAttrs"
       >
-        <template v-slot:id="{row}">
-          <router-link :to="'/main/demo/form-detail/view/' + row.id">No0001-9999-{{row.id}}</router-link>
-        </template>
         <template v-slot:address="{row}">
           <span>{{row.address}}</span>
         </template>
@@ -32,8 +29,8 @@
         </template>
         <template v-slot:op="{row}">
           <el-button type="primary" plain @click="toEdit(row)">编辑</el-button>
-<!--          todo 使用 popover -->
-          <el-button type="danger" plain @click="toDel(row)">删除</el-button>
+          <base-confirm class="ml10" @confirm="del(row)"></base-confirm>
+<!--          <el-button type="danger" plain @click="toDel(row)">删除</el-button>-->
         </template>
       </base-table>
     </el-main>
@@ -81,10 +78,15 @@
       {
         prop: 'id',
         label: '编号',
-        contentSlot: 'id',
         props: {
           width: columnWidth.w120,
-        }
+        },
+        content: {
+          type: 'link',
+          route (row: any) {
+            return `/main/demo/form-detail/view/${row.id}`
+          }
+        },
       },
       {
         prop: 'name',
@@ -159,6 +161,7 @@
     public handleResult = (data: any) => {
       return data.results.map((item: any) => ({...item, customAge: item.age}))
     }
+    // 监听表格的各种事件
     public tableAttrs = {
       on: {
         'row-click' () {
@@ -169,7 +172,9 @@
     public handleClick () {
       this.$router.push('/main/demo/form-detail/create')
     }
-    public toDel (row: any) {}
+    public del (row: any) {
+      console.log('删除：', row)
+    }
     public toEdit (row: any) {
       this.$router.push('/main/demo/form-detail/edit/' + row.id)
     }

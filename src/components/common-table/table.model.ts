@@ -1,11 +1,18 @@
+export declare type ContentType = 'link' | 'event' | 'btn'
 export interface Column {
-  prop?: string // 若没有 prop 则 contentSlot 是必须的
-  label: string
+  prop?: string
+  label?: string
   props?: ColumnProps
   headerSlot?: string
-  contentSlot?: string // 若没有 contentSlot 则 prop 是必须的
+  contentSlot?: string
   // 用于过滤的字段名
   filterProp?: string
+  content?: {
+    type: ContentType,
+    key?: string, // 默认为 id
+    route? (row: any): string, // 路由 当type为link时 route 为必须
+    value? (row: any): string | number, // 当传该值时，优先用该值渲染，否则用当前列当值渲染
+  }
 }
 // baseTable中tableProps
 export interface TableProps {
