@@ -1,10 +1,10 @@
 import Vue, {VNodeChildren} from 'vue'
 import {Column, ContentType, defaultFilterSplit} from '@/components/common-table/table.model'
-import {HttpRes} from '@/util/project/urls/url-util'
 import {debounce, deepClone, deepTrim, guid} from '@/util/common/fns/fns'
 import {getClientHeight, getSpaceHeight} from '@/util/common/fns/fns-dom'
 import {setProperty} from '@/util/common/fns/fns-common'
 import './BaseTable.less'
+import {HttpRes} from '@/model/common/models'
 
 Vue.component('BaseTable', {
   render (createElement: typeof Vue.prototype.$CreateElement) {
@@ -117,6 +117,9 @@ Vue.component('BaseTable', {
     search: debounce(function (first = false) {
       // @ts-ignore
       const me = this
+      if (!(me.beforeList ? me.beforeList() : true)) {
+        return
+      }
       if (first) {
         me.currentPage = 1
       }
@@ -245,6 +248,8 @@ Vue.component('BaseTable', {
     // 当后端返回的数据需要前端进行处理时，可以使用该函数
     handleResult: Function,
     handleTotal: Function,
+    // 查询之前可以根据该函数进行拦截处理
+    beforeList: Function,
   },
 })
 

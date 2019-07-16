@@ -17,10 +17,10 @@
 
   @Component({})
   export default class BaseConfirm extends Vue {
-    @Prop({default: 'top'}) placement: string | undefined
-    @Prop({default: '160'}) width: string | undefined
-    @Prop({default: '确认删除？'}) content: string | undefined
-    @Prop({default: '删除'}) btnText: string | undefined
+    @Prop({default: 'top'}) placement!: string
+    @Prop({default: '160'}) width!: string
+    @Prop({default: '确认删除？'}) content!: string
+    @Prop({default: '删除'}) btnText!: string
     public visible = false
     public handleOk () {
       this.$emit('confirm')

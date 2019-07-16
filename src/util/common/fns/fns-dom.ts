@@ -45,6 +45,7 @@ export function toggleClassName (el: Element, className: string): void {
   }
 }
 
+/* 获取元素的指定属性值 */
 export function getStyle (selector: string, attr: string, isNumber = true) {
   const el = document.querySelector(selector)
   if (el) {
@@ -58,6 +59,7 @@ export function getStyle (selector: string, attr: string, isNumber = true) {
   }
   return 0
 }
+/* 根据选择器获取元素所占高度 */
 export function getClientHeight (selector: string) {
   const el = document.querySelector(selector)
   if (el) {
@@ -67,9 +69,14 @@ export function getClientHeight (selector: string) {
   }
   return 0
 }
+/* 获取元素在垂直方向的padding 和margin 之和 */
 export function getSpaceHeight (selector: string) {
   return getStyle(selector, 'padding-top') +
     getStyle(selector, 'padding-bottom') +
     getStyle(selector, 'margin-top') +
     getStyle(selector, 'margin-bottom')
+}
+/* 获取浏览器URL的参数 */
+export function getUrlParams () {
+  return window.location.search.slice(1).split('&').map(item => ({[item.split('=')[0]]: item.split('=')[1]})).reduce((p, c) => ({...p, ...c}), {})
 }

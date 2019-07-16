@@ -3,6 +3,7 @@ export default {
   validate: {
     max: 'cannot be longer then {n} characters',
     min: 'cannot be shorter then 1 character | should not more then {n} characters',
+    limit: 'length should be between {min} and {max}',
     required: 'this field is required',
   },
   // 提示语

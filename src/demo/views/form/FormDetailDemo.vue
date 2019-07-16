@@ -1,9 +1,6 @@
 <template>
   <el-container class="h">
-    <el-header height="24" class="p0i">
-      <el-page-header @back="goBack" :content="pageTitle"></el-page-header>
-    </el-header>
-    <el-main class="h pt20i">
+    <el-main class="h">
       <el-row>
         <el-col :span="8">
           {{form}}
@@ -14,8 +11,8 @@
             is-row
             :inline="false"
             :form-props="formProps"
-            @submit="save"
             :form-pattern.sync="formPattern"
+            @submit="submit"
           ></base-form>
         </el-col>
       </el-row>
@@ -25,50 +22,89 @@
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
-  import {getPageTitle} from '@/util/project/fns/fns-project'
-  import {Pattern} from '@/model/common/models'
+  import {Pattern, HttpRes} from '@/model/common/models'
   import {Schema} from '@/components/common-form/form.model'
-  import {fb} from '@/util/common/fns/fns-form'
+  import {fb, setFormData} from '@/util/common/fns/fns-form'
+  import {genderList} from '@/model/project/models'
 
   @Component({})
   export default class FormDetailDemo extends Vue {
-    public pageTitle = ''
-    public formPattern = 'create'
+    public formPattern: Pattern = 'create'
+    public id = ''
+    // 验证规则写在Schema中
     public schema: Schema[] = [
       {
         prop: 'name',
         label: '名称',
         formItemProps: {
           rules: [
-            {required: true, message: '必填'},
-            {max: 10, min: 3, message: '不合法'},
+            {required: true},
+            {max: 6, min: 2},
           ],
         },
+      },
+      {
+        prop: 'age',
+        label: '年龄',
+        formItemProps: {
+          rules: [
+            {required: true, message: '必填'},
+          ],
+        },
+      },
+      {
+        prop: 'gender',
+        label: '性别',
+        comp: 'radio',
+        initValue: 1,
+        props: {
+          options: genderList
+        },
+        formItemProps: {
+          rules: [
+            {required: true, message: '必填'},
+          ],
+        },
+      },
+      {
+        label: '地址',
+        prop: 'address',
+        props: {
+          type: 'textarea',
+        },
+        placeholder: '请填写地址',
       },
     ]
     public form = fb(this.schema)
     public formProps = {
-      // rules: {
-      //   name: [
-      //     {required: true, massage: '必填'},
-      //     {max: 10, min: 3, massage: '不合法'},
-      //   ]
-      // }
     }
 
     public created () {
-      this.formPattern = this.$route.params.pattern
-      this.pageTitle = getPageTitle(this.$route.params.pattern as Pattern)
+      this.formPattern = this.$route.params.pattern as Pattern
+      if (this.formPattern === 'view' || this.formPattern === 'edit') {
+        this.id = this.$route.params.id
+        this.search()
+      }
     }
 
-    public goBack = () => {
-      window.history.back()
+    public search () {
+      this.$req(this.$urls.demo.table.getById, {id: this.id}).then((res: HttpRes) => {
+        if (res.head.errCode === 0) {
+          this.updateForm(res.data)
+        }
+      })
     }
 
-    public save () {
+    public updateForm (formData: any) {
+      setFormData(this.form, formData)
+    }
+
+    public submit () {
       (this.$refs.form as any).$refs.form.validate((valid: boolean) => {
         if (valid) {
           // todo 使用mongodb保存数据
+          // todo 跳转的id从后端获取
+          this.$router.push({name: 'demo-form-detail', params: {pattern: 'view', id: this.id || 'id-001'}})
           this.formPattern = 'view'
         } else {
           return false

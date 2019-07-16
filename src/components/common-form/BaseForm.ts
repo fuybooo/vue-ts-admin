@@ -1,8 +1,15 @@
 import Vue, {VNodeChildren} from 'vue'
 import {childrenCompMap, compMap, Schema, Option, FormChangeEvent} from '@/components/common-form/form.model'
-import {Pattern} from '@/model/common/models'
-import {getProp, guid, setProp} from '@/util/common/fns/fns'
-import {getLabelOfOption, getValueOfOption, isCheckbox, isDate, isDateRange, isSelect} from '@/util/common/fns/fns-form'
+import {debounce, getProp, setProp} from '@/util/common/fns/fns'
+import {
+  getLabelOfOption,
+  getValueOfOption,
+  isCheckbox,
+  isDate,
+  isDateRange,
+  isSelect,
+  transferRule,
+} from '@/util/common/fns/fns-form'
 import format from 'date-fns/format'
 import './BaseForm.less'
 
@@ -50,6 +57,42 @@ Vue.component('BaseForm', {
     )
   },
   methods: {},
+  watch: {
+    value: {
+      handler () {
+        const me: any = this
+        if (me.formPattern === 'edit') {
+          // isFirstChange 表示是否第一次变化（第一次一般是赋值）
+          if (!me.isFirstChange) {
+            // isEdited 表示form是否被编辑过
+            me.isEdited = true
+          }
+        } else {
+          me.isEdited = true
+        }
+        me.isFirstChange = false
+      },
+      deep: true,
+    },
+    $route: {
+      handler (crtRoute) {
+        const me = this
+        debounce(() => {
+          if (me.autoRouter) {
+            me.$emit('update:formPattern', crtRoute.params.pattern)
+          }
+        }, 100)()
+      },
+      deep: true,
+    },
+  },
+  data () {
+    return {
+      isFirstChange: true,
+      isEdited: false,
+      fromRoute: {},
+    }
+  },
   props: {
     // 表单的结构
     schema: {
@@ -106,6 +149,11 @@ Vue.component('BaseForm', {
     formPattern: {
       type: String,
     },
+    // auto change route
+    autoRouter: {
+      type: Boolean,
+      default: true,
+    },
   },
 })
 
@@ -148,13 +196,15 @@ function createFormItem (createElement: typeof Vue.prototype.$createElement, ite
     // 处理 prop 为空时的情况
   }
   let formItem: VNodeChildren
+  const itemProps = item.formItemProps || {}
   formItem = createElement(
     'el-form-item',
     {
       props: {
-        ...(item.formItemProps || {}),
+        ...itemProps,
         prop: item.prop,
         label: item.label,
+        ...(itemProps.rules ? {rules: transferRule.bind(me)(itemProps.rules)} : {}),
       },
       ...(item.formItemNodeProperty || {}),
       class: ((item.formItemNodeProperty || {}).class || '') + getClassName(item, 'base-form-item'),
@@ -399,28 +449,61 @@ function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
     props: {
       type: me.btn.type || 'primary',
     },
+    // 绑定确定事件
     nativeOn: {
       click () {
-        // todo 执行默认的保存，编辑等操作
+        // 从编辑切换为显示状态 默认行为
         if (me.formPattern === 'view') {
+          if (me.autoRouter) {
+            me.$router.replace({
+              name: me.$route.name,
+              params: {...(me.$route.params || {}), pattern: 'edit'},
+            })
+          }
+          // 刚刚点击编辑，用户还来不及对数据进行修改，所以此时表单应该是未编辑状态
+          me.isEdited = false
           me.$emit('update:formPattern', 'edit')
+        } else {
+          me.$emit(me.inline ? 'create' : me.formPattern === 'view' ? 'edit' : 'submit')
         }
-        me.$emit(me.inline ? 'create' : me.formPattern === 'view' ? 'edit' : 'submit')
       },
     },
   }, [me.btn.text || (me.inline ? '创建' : me.formPattern === 'view' ? '编辑' : '保存')]), ...(me.inline ? [] : [createElement('el-button', {
+    // 绑定取消事件
     nativeOn: {
       click () {
-        // todo 执行取消操作
         if (me.formPattern === 'edit') {
-          // todo 提示保存页面
-          me.$emit('update:formPattern', 'view')
+          // 如果页面被编辑过，则进行询问
+          if (me.isEdited) {
+            confirmLeave.bind(me)().then(() => {
+              me.$emit('update:formPattern', 'view')
+              // 取消编辑，发送事件之后，在外部进行跳转逻辑，并且重新给form赋值
+              me.$emit('cancel', 'edited')
+            }).catch(() => {
+            })
+          } else {
+            if (me.autoRouter) {
+              me.$router.replace({
+                name: me.$route.name,
+                params: {...(me.$route.params || {}), pattern: 'view'},
+              })
+            }
+            me.$emit('update:formPattern', 'view')
+            me.$emit('cancel', 'edit')
+            me.isEdited = false
+          }
         } else if (me.formPattern === 'create') {
-          // todo 提示保存页面
-          window.history.back()
+          if (me.isEdited) {
+            confirmLeave.bind(me)().then(() => {
+              goBack.bind(me)()
+            }).catch(() => {
+            })
+          } else {
+            goBack.bind(me)()
+          }
         } else if (me.formPattern === 'view') {
           // 直接返回
-          window.history.back()
+          goBack.bind(me)()
         }
       },
     },
@@ -461,4 +544,15 @@ function getFormControlClassType (item: Schema) {
 function getClassName (item: Schema, prefix = 'base-form-control') {
   const classType = getFormControlClassType(item)
   return ` ${prefix} ${prefix}-${classType.type}${classType.fixedHeight ? ` ${prefix}-fixed-height` : ''}`
+}
+function confirmLeave () {
+  // @ts-ignore
+  const me = this
+  return me.$confirm('离开页面将会丢失未保存的数据，请确认是否离开', '确认提示')
+}
+function goBack () {
+  // @ts-ignore
+  const me = this
+  // me.$router.push({name: me.$route.meta.parentName})
+  me.$router.back()
 }

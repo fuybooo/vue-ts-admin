@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router, {Route} from 'vue-router'
 import Login from '@/views/login/Login.vue'
-import Main from '@/views/main/Main.vue'
 import Forgot from '@/views/login/Forgot.vue'
 import Register from '@/views/login/Register.vue'
 import {lg} from '@/util/common/fns/fns'
@@ -9,55 +8,55 @@ import {KEY_LANG} from '@/model/project/local-storage-keys/keys'
 import {i18n, loadLanguageAsync} from '@/config/i18n-config'
 import store from '@/stores/store'
 import {toggleLangSetting} from '@/stores/mutation-types'
-import demoRouter from '@/demo/router/router'
+import {ProRouteConfig} from '@/model/project/route/route.model'
+import {mainRoute} from '@/router/main.router'
 
 Vue.use(Router)
+
+const routes: ProRouteConfig[] = [
+  {
+    path: '/',
+    alias: '/login',
+    name: 'login',
+    component: Login,
+    meta: {
+      langSetting: true,
+      title: 'title.Login',
+    },
+  },
+  {
+    path: '/forgot',
+    name: 'forgot',
+    component: Forgot,
+    meta: {
+      langSetting: true,
+      title: 'title.Forgot',
+    },
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register,
+    meta: {
+      langSetting: true,
+      title: 'title.Register',
+    },
+  },
+  // demoRouter, // 与main平级的demo 必须写在 /main/demo之上
+  mainRoute,
+  {
+    path: '*',
+    name: '*',
+    redirect: 'login',
+    meta: {
+      title: '*',
+    },
+  },
+]
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      alias: '/login',
-      name: 'login',
-      component: Login,
-      meta: {
-        langSetting: true,
-        title: 'title.Login',
-      },
-    },
-    {
-      path: '/forgot',
-      name: 'forgot',
-      component: Forgot,
-      meta: {
-        langSetting: true,
-        title: 'title.Forgot',
-      },
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: Register,
-      meta: {
-        langSetting: true,
-        title: 'title.Register',
-      },
-    },
-    demoRouter, // 与main平级的demo 必须写在 /main/demo之上
-    {
-      path: '/main',
-      name: 'main',
-      component: Main,
-      children: [
-        demoRouter, // 在main中的demo
-      ],
-    },
-    {
-      path: '*',
-      redirect: 'login',
-    },
-  ],
+  routes,
 })
 // 前置守卫
 router.beforeEach((to, from, next) => {
@@ -77,6 +76,7 @@ function toggleLangSettingByTo (to: Route) {
 }
 export function setTitle (to: Route) {
   const defaultTitle = 'title.THC'
+  const title = to.meta ? to.meta.title || defaultTitle : defaultTitle
   // @ts-ignore
-  document.title = i18n.t(to.meta ? to.meta.title || defaultTitle : defaultTitle)
+  document.title = title === defaultTitle ? defaultTitle : (i18n.t(defaultTitle) + ' - ' + i18n.t(to.meta ? to.meta.title || defaultTitle : defaultTitle))
 }

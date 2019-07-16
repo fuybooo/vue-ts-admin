@@ -5,10 +5,12 @@
         <base-form :schema="schema" v-model="form" inline @create="handleClick"></base-form>
       </div>
       <base-table
+        ref="table"
         :columns.sync="columns"
         :url="url"
         :params.sync="form"
         :handle-result="handleResult"
+        :before-list="beforeList"
         :node-attrs="tableAttrs"
       >
         <template v-slot:address="{row}">
@@ -19,7 +21,7 @@
           <span>不仅仅是标题</span>
         </template>
         <template v-slot:ageContent="{row}">
-          <span>不仅仅是内容{{row}}</span>
+          <span>不仅仅是内容{{row.age}}</span>
         </template>
         <template v-slot:nameHeader>
           <span>slot name header</span>
@@ -43,6 +45,8 @@
   import {Schema} from '@/components/common-form/form.model'
   import {fb} from '@/util/common/fns/fns-form'
   import format from 'date-fns/format'
+  import {HttpRes} from '@/model/common/models'
+  import {guid} from '@/util/common/fns/fns'
 
   @Component({})
   export default class BaseTableDemo extends Vue {
@@ -73,7 +77,7 @@
       },
     ]
     public form = fb(this.schema)
-    public url = this.$urls.demo.table
+    public url = this.$urls.demo.table.get
     public columns: Column[] = [
       {
         prop: 'id',
@@ -165,7 +169,6 @@
     public tableAttrs = {
       on: {
         'row-click' () {
-          console.log('row.click')
         }
       },
     }
@@ -173,10 +176,23 @@
       this.$router.push('/main/demo/form-detail/create')
     }
     public del (row: any) {
-      console.log('删除：', row)
+      this.$req(this.$urls.demo.table.del, {id: row.id}).then((res: HttpRes) => {
+        if (res.head.errCode === 0) {
+          // 从第一页查询
+          // this.form._uuid = guid();
+          // 从当前页查询
+          (this.$refs.table as any).search()
+        }
+        // 根据请求结果进行提示
+        this.$tip(res)
+      })
     }
     public toEdit (row: any) {
       this.$router.push('/main/demo/form-detail/edit/' + row.id)
+    }
+    public beforeList () {
+      // 满足某些条件时才进行查询
+      return this.form.keyword.length < 10
     }
   }
 </script>

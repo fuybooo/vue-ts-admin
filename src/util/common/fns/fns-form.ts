@@ -9,27 +9,35 @@ import {setProp} from '@/util/common/fns/fns'
 export function transferRules (rules: any) {
   const newRules: any = {}
   const keys = Object.keys(rules)
-  keys.forEach(item => newRules[item] = rules[item].map((rule: any) => {
-    let message: string
+  // @ts-ignore
+  keys.forEach(item => newRules[item] = transferRule.bind(this)(rules[item]))
+  return newRules
+}
+export function transferRule (itemRule: any[]) {
+  // @ts-ignore
+  const me = this
+  return itemRule.map((rule: any) => {
+    let message: string = ''
     if ('required' in rule) {
-      // @ts-ignore
-      message = this.$t(rule.message)
+      message = me.$t(rule.message || 'validate.required')
     } else if ('max' in rule || 'min' in rule) {
-      // @ts-ignore
-      message = this.$tc(rule.message, rule.max || rule.min)
+      if ('max' in rule && 'min' in rule) {
+        message = me.$t(rule.message || 'validate.limit', rule)
+      } else {
+        message = me.$tc(rule.message || ('max' in rule ? 'validate.max' : 'validate.min'), rule.max || rule.min)
+      }
     } else {
-      // @ts-ignore
-      message = this.$t(rule.message)
+      // todo 给其他情况赋值
+      message = me.$t(rule.message)
     }
     return {
       ...rule,
       message,
     }
-  }))
-  return newRules
+  })
 }
 export function formBuilder (schema: Schema[]): any {
-  const form: any = {}
+  const form: any = {_uuid: ''}
   schema.forEach(item => {
     if (item.prop) {
       if (item.startProp && item.endProp) {
@@ -107,4 +115,13 @@ export function isDateButNotRange (item: Schema) {
 }
 export function isDateRange (item: Schema) {
   return item.comp === 'date' && item.props && item.props.type && item.props.type.includes('range')
+}
+// 基础设值 如果后端返回的结果与前端表单的字段名一一对应则直接调用该方法即可
+export function setFormData (form: any, formData?: any) {
+  const localForm = formData || {}
+  for (const p in form) {
+    if (form.hasOwnProperty(p)) {
+      form[p] = localForm[p]
+    }
+  }
 }

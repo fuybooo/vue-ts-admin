@@ -49,12 +49,12 @@
 
   const rules = {
     name: [
-      {required: true, message: 'validate.required'},
-      {max: 30, message: 'validate.max'},
+      {required: true},
+      {max: 30},
     ],
     pwd: [
-      {required: true, message: 'validate.required'},
-      {max: 20, message: 'validate.max'},
+      {required: true},
+      {max: 20},
     ],
   }
   @Component({})
@@ -69,14 +69,14 @@
       this.rules = transferRules.bind(this)(rules)
     }
     public login () {
-      (this.$refs.form as Vue).validate((valid: boolean) => {
+      (this.$refs.form as any).validate((valid: boolean) => {
         if (!valid) {
-          this.$error(this.$t('login.tip.userNameOrPasswordError'))
+          this.$error(this.$t('login.tip.userNameOrPasswordError') as string)
           return false
         } else {
           this.$req(this.$urls.login.login, this.formModel).then(res => {
             if (res.head.errCode === 0) {
-              this.$success(this.$t('login.tip.loginSuccess'))
+              this.$success(this.$t('login.tip.loginSuccess') as string)
               this.$router.push('main')
             }
           })

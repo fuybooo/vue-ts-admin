@@ -10,15 +10,5 @@ export const prefix = {
   demo: 'demo/',
   base: 'platform/',
 }
-export interface HttpRes {
-  code: string
-  head: any | {
-    errorCode: number,
-  }
-  msg: string
-  data: any | {
-    results: any[],
-    total?: number,
-  }
-}
+
 

@@ -3,6 +3,7 @@ export default {
   validate: {
     max: '最多不大于{n}个字符',
     min: '最少不小于{n}个字符',
+    limit: '长度应该在{min}到{max}之间',
     required: '必填项',
   },
   // 提示语

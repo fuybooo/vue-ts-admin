@@ -10,8 +10,12 @@
 <body>
 <button id="btn">iframe</button>
 <script>
+  function getUrlParams () {
+    return window.location.search.slice(1).split('&').map(item => ({[item.split('=')[0]]: item.split('=')[1]})).reduce((p, c) => ({...p, ...c}), {})
+  }
   document.getElementById('btn').addEventListener('click', function () {
     console.log('click:btn')
+    console.log('click:btnparams:', getUrlParams())
     window.parent.postMessage({
       name: 'postMessage iframe name',
       type: 'postMessage iframe type',

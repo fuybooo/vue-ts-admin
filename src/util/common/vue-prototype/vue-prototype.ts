@@ -4,8 +4,9 @@ import '@/api/base-axios'
 import {Notification} from 'element-ui'
 import {MessageType} from 'element-ui/types/message'
 import {i18n} from '@/config/i18n-config'
+import {HttpRes} from '@/model/common/models'
 // notify 通知
-function notify (type: MessageType, message: string, title: string | undefined) {
+function notify (type: MessageType, message: string, title?: string | undefined) {
   // @ts-ignore
   Notification[type]({message, title:  title || i18n.t('common.Tip')})
 }
@@ -14,5 +15,9 @@ Vue.prototype.$error = (message: string, title?: string) => {
 }
 Vue.prototype.$success = (message: string, title?: string) => {
   notify('success', message, title)
+}
+Vue.prototype.$tip = (res: HttpRes) => {
+  // 判断条件根据项目实际情况定义
+  notify(res.head.errCode === 0 ? 'success' : 'error', res.msg)
 }
 

@@ -1,50 +1,24 @@
 <template>
   <el-container class="h">
     <el-header class="main-header" id="main-header" height="50px">
-      <el-row type="flex" justify="center" align="middle">
-      <el-col :span="8">
-        <el-dropdown @command="handleCommand">
-          <span class="el-dropdown-link">
-            DEMO菜单<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="(item, index) of demoMenuList" :key="index" :command="item.name">
-              <router-link :to="item.to">{{item.name}}</router-link>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </el-col>
-      <el-col :span="8" class="tac">
-        当前菜单：<span class="text-primary">{{current}}</span>
-      </el-col>
-      <el-col :span="8" class="tar">
-        <el-button type="text" @click="logout">{{$t('sys.logout')}}</el-button>
-      </el-col>
-    </el-row>
+      <main-header></main-header>
     </el-header>
     <el-main class="h">
-      <router-view></router-view>
+      <el-container class="h">
+        <el-header height="24">
+          <page-header class="pt20"></page-header>
+        </el-header>
+        <el-main class="h"><router-view></router-view></el-main>
+      </el-container>
     </el-main>
   </el-container>
 </template>
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
-  import {demoMenus} from '@/model/project/menus/menus'
-  import {listDestValue} from '@/util/common/fns/fns-array'
+  import MainHeader from '@/views/main/MainHeader.vue'
 
-  @Component({})
+  @Component({components: {MainHeader}})
   export default class Main extends Vue {
-    public demoMenuList = demoMenus
-    public current = 'main'
-    public created () {
-      this.current = listDestValue(demoMenus, this.$route.path, 'to')
-    }
-    public logout () {
-      this.$router.push('login')
-    }
-    public handleCommand (command: string) {
-      this.current = command
-    }
   }
 </script>
