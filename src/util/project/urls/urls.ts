@@ -29,7 +29,7 @@ const urls: Urls = {
     },
   },
   login: {
-    login: {url: 'login', isStatic: true, prefix: prefix.base},
+    login: {url: 'unify/userLogin', isStatic: false, prefix: prefix.base},
     forgot: {url: 'forgot', isStatic: true, prefix: prefix.base},
     register: {url: 'register', isStatic: true, prefix: prefix.base},
     logout: {url: 'logout', isStatic: true, prefix: prefix.base},

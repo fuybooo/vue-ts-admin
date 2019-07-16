@@ -1,5 +1,5 @@
 <template>
-  <div>home</div>
+  <div>{{msg}}</div>
 </template>
 
 <script lang="ts">
@@ -7,6 +7,10 @@
 
   @Component({})
   export default class MainHome extends Vue {
+    public msg = ''
+    public created () {
+      this.msg = 'welcome'
+    }
   }
 </script>
 <style scoped lang="less">

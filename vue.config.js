@@ -7,6 +7,10 @@ module.exports = {
       },
     },
   },
+  configureWebpack: config => {
+    const date = new Date()
+    process.env.VUE_APP_VERSION = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+  },
   devServer: {
     // 环境配置
     host: "localhost",

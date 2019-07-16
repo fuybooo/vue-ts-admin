@@ -3,6 +3,7 @@
  * @author fuyongbo@everjiankang.com
  * @date 2019-06-17
  */
+
 // 简化localStorage.getItem的写法
 export function lg (key: string): string {
   return localStorage.getItem(key) || ''
@@ -11,6 +12,20 @@ export function lg (key: string): string {
 // 简化localStorage.setItem的写法
 export function ls (key: string, value: string): void {
   localStorage.setItem(key, value)
+}
+/* 存取cookie */
+export function sc (key: string, value: string, expMs: number = 3650  * 24 * 60 * 60 * 1000) {
+  const expires = new Date()
+  expires.setTime(expires.getTime() + expMs)
+  document.cookie = `${key}=${escape(value)};expires=${expires.toUTCString()}`
+}
+export function gc (key: string) {
+  const reg = new RegExp('(^| )' + key + '=([^;]*)(;|$)')
+  const res = document.cookie.match(reg)
+  return res ? unescape(res[2]) : null
+}
+export function dc (key: string) {
+  sc(key, '', -1)
 }
 
 // 生成uuid

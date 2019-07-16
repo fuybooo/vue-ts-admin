@@ -46,6 +46,8 @@
   import {Component, Vue} from 'vue-property-decorator'
   import './assets/less/index.less'
   import {transferRules} from '@/util/common/fns/fns-form'
+  import {dc, gc, sc} from '@/util/common/fns/fns'
+  import {KEY_PASSWORD, KEY_TOKEN, KEY_USERNAME} from '@/model/project/local-storage-keys/keys'
 
   const rules = {
     name: [
@@ -60,12 +62,15 @@
   @Component({})
   export default class Login extends Vue {
     public formModel = {
-      name: '1',
-      pwd: '1',
+      name: '13260357718',
+      pwd: 'Aa111111',
       remember: true,
     }
     public rules: any = rules
     private created () {
+      if (gc(KEY_TOKEN)) {
+        this.$router.push('/main')
+      }
       this.rules = transferRules.bind(this)(rules)
     }
     public login () {
@@ -74,8 +79,20 @@
           this.$error(this.$t('login.tip.userNameOrPasswordError') as string)
           return false
         } else {
-          this.$req(this.$urls.login.login, this.formModel).then(res => {
+          this.$req(this.$urls.login.login, {
+            name: this.formModel.name,
+            password: this.formModel.pwd,
+          }).then(res => {
             if (res.head.errCode === 0) {
+              // 设置token 用户信息等
+              dc(KEY_TOKEN)
+              dc(KEY_USERNAME)
+              dc(KEY_PASSWORD)
+              sc(KEY_TOKEN, res.data.token)
+              if (this.formModel.remember) {
+                sc(KEY_USERNAME, this.formModel.name)
+                sc(KEY_PASSWORD, this.formModel.pwd)
+              }
               this.$success(this.$t('login.tip.loginSuccess') as string)
               this.$router.push('main')
             }

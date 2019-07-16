@@ -2,8 +2,10 @@ import Vue from 'vue'
 import axios, {AxiosInstance} from 'axios'
 import config from '@/config/base-config'
 import {IUrl, staticPath, urlType} from '@/util/project/urls/url-util'
-import {deepTrim} from '@/util/common/fns/fns'
-
+import {deepTrim, gc} from '@/util/common/fns/fns'
+import {debugReq} from '@/config/dev-config'
+import {KEY_TOKEN} from '@/model/project/local-storage-keys/keys'
+// 原始axios
 axios.interceptors.response.use((res) => {
   return res.data
 })
@@ -15,6 +17,14 @@ function create (options?: any): AxiosInstance {
   })
   localAxios.interceptors.request.use((req) => {
     // 添加处理入参的代码
+    // 针对不同的接口使用不同的环境
+    if (process.env.VUE_APP_MODE === 'dev') {
+      debugReq(req)
+    }
+    const token = gc(KEY_TOKEN)
+    if (token) {
+      req.headers['x-access-token'] = token
+    }
     return req
   })
   localAxios.interceptors.response.use((res) => {

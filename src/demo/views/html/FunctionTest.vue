@@ -63,6 +63,7 @@
       v1.a.a.a = '变1'
       console.log(v3)
       console.log(v2)
+
     }
   }
 </script>

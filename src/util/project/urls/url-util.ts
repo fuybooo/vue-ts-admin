@@ -8,7 +8,7 @@ export const staticPath = '/mock/'
 export declare type urlType = string | IUrl
 export const prefix = {
   demo: 'demo/',
-  base: 'platform/',
+  base: 'thc-platform-core/',
 }
 
 

@@ -8,6 +8,7 @@ export interface RouteMeta {
   parentName?: string // 当路由只是作为路由，不作为菜单时，这种路由将不会显示在菜单栏中 刷新页面时 将会根据 parentName 高亮对应的菜单
   pagePath?: ProRouteConfig[]
   hideBread?: boolean // 是否隐藏面包屑
+  needNotToken?: boolean // 不需要token的路由
 }
 export interface ProRouteConfig extends RouteConfig {
   meta: RouteMeta

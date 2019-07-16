@@ -3,8 +3,8 @@ import Router, {Route} from 'vue-router'
 import Login from '@/views/login/Login.vue'
 import Forgot from '@/views/login/Forgot.vue'
 import Register from '@/views/login/Register.vue'
-import {lg} from '@/util/common/fns/fns'
-import {KEY_LANG} from '@/model/project/local-storage-keys/keys'
+import {gc, lg} from '@/util/common/fns/fns'
+import {KEY_LANG, KEY_TOKEN} from '@/model/project/local-storage-keys/keys'
 import {i18n, loadLanguageAsync} from '@/config/i18n-config'
 import store from '@/stores/store'
 import {toggleLangSetting} from '@/stores/mutation-types'
@@ -22,6 +22,7 @@ const routes: ProRouteConfig[] = [
     meta: {
       langSetting: true,
       title: 'title.Login',
+      needNotToken: true,
     },
   },
   {
@@ -31,6 +32,7 @@ const routes: ProRouteConfig[] = [
     meta: {
       langSetting: true,
       title: 'title.Forgot',
+      needNotToken: true,
     },
   },
   {
@@ -40,6 +42,7 @@ const routes: ProRouteConfig[] = [
     meta: {
       langSetting: true,
       title: 'title.Register',
+      needNotToken: true,
     },
   },
   // demoRouter, // 与main平级的demo 必须写在 /main/demo之上
@@ -66,7 +69,12 @@ router.beforeEach((to, from, next) => {
   loadLanguageAsync(lg(KEY_LANG) || 'cn').then(() => {
     // 根据语言设置title
     setTitle(to)
-    next()
+    const isLogin = !!gc(KEY_TOKEN)
+    if (isLogin || (!isLogin && to.meta.needNotToken)) {
+      next()
+    } else {
+      next('/login')
+    }
   })
 })
 export default router

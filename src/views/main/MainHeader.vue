@@ -13,7 +13,8 @@
   import {Component, Vue, Watch} from 'vue-property-decorator'
   import {getDefaultMenus} from '@/components/common-menu/menu.fn'
   import {ProRouteConfig} from '@/model/project/route/route.model'
-  import {debounce} from '@/util/common/fns/fns'
+  import {debounce, dc} from '@/util/common/fns/fns'
+  import {KEY_TOKEN} from '@/model/project/local-storage-keys/keys'
 
   @Component({})
   export default class MainHeader extends Vue {
@@ -35,6 +36,7 @@
     }
 
     public logout () {
+      dc(KEY_TOKEN)
       this.$router.push('login')
     }
   }
