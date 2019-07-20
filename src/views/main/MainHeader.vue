@@ -26,6 +26,7 @@
     @Watch('$route', {immediate: true})
     routeChange (crtRoute: ProRouteConfig) {
       const me = this
+      console.log(crtRoute)
       debounce(function () {
         me.activeIndex = crtRoute.meta.parentName || crtRoute.name
       }, 100)()

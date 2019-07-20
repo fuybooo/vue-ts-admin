@@ -29,12 +29,17 @@
       debounce(function () {
         // 自动根据路由关系生成面包屑导航只能展示简单的通用的导航信息，如果导航信息过于复杂，则需要通过自定义实现
         me.hidden = !!crtRoute.meta.hideBread
-        me.breadList = [...me.baseBread, ...(crtRoute.meta.pagePath ? crtRoute.meta.pagePath.map((item: ProRouteConfig, i: number) => {
+        me.breadList = [...me.baseBread, ...((crtRoute.meta.pagePath && crtRoute.meta.pagePath.length) ? crtRoute.meta.pagePath.map((item: ProRouteConfig, i: number) => {
           return {
             name: item.name,
             title: i === crtRoute.meta.pagePath.length - 1 ? (crtRoute.params.pattern ? getPageTitle(crtRoute.params.pattern as Pattern) : item.meta.title) : item.meta.title,
           }
-        }) : [])]
+        }) : [
+          {
+            name: crtRoute.name,
+            title: crtRoute.meta.title,
+          }
+        ])]
       }, 100)()
     }
     public goBack () {

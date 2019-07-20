@@ -1,5 +1,5 @@
 import {ProRouteConfig} from '@/model/project/route/route.model'
-import Demo from '@/demo/Demo.vue'
+import Demo from '@/demo/views/Demo.vue'
 import BaseFormDemo from '@/demo/views/form/BaseFormDemo.vue'
 import Checkbox from '@/demo/views/checkbox/Checkbox.vue'
 import SlotFormDemo from '@/demo/views/form/SlotFormDemo.vue'
@@ -12,13 +12,10 @@ import ParentPage from '@/demo/views/html/iframe-test/ParentPage.vue'
 const demoRouter: ProRouteConfig = {
   path: 'demo',
   name: 'demo',
-  alias: '/demo', // 与main平级的demo
-  redirect: {name: 'demo-base-form'},
   component: Demo,
   children: [
     {
       path: 'base-form',
-      alias: '',
       name: 'demo-base-form', // 请注意name的唯一性 在多个地方引用同一路由时，需要改变name之后再引用，否则可能导致刷新页面时不能正确激活当前路由
       component: BaseFormDemo,
       meta: {

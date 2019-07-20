@@ -371,6 +371,7 @@ function calcHeight () {
     ...(me.remoteData.length === 0 ? {} : {data: me.remoteData}),
   }).data.length ? 32 : 0
   const wrapperHeight = getSpaceHeight('.common-el-main-padding.el-main')
+  const pageHeaderHeight = getClientHeight('.common-el-page-padding.el-page-header')
   const tableSpaceHeight = getSpaceHeight('.base-table')
   const borderHeight = 1
   // 计算fixed element的高度
@@ -380,7 +381,7 @@ function calcHeight () {
   })
   // 默认会排除的高度 这意味着 当查询条件使用 common-query 时无需传参数即可自动计算
   const defaultFixedElementHeight = getClientHeight('.common-query')
-  me.localHeight = window.innerHeight - headerHeight - paginationHeight - wrapperHeight - tableSpaceHeight - borderHeight - me.fixedHeight - defaultFixedElementHeight
+  me.localHeight = window.innerHeight - headerHeight - paginationHeight - wrapperHeight - pageHeaderHeight - tableSpaceHeight - borderHeight - me.fixedHeight - defaultFixedElementHeight
 }
 
 function getParams () {

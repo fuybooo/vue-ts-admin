@@ -6,8 +6,8 @@
       </div>
       <base-table
         ref="table"
-        :columns.sync="columns"
         :url="url"
+        :columns.sync="columns"
         :params.sync="form"
         :handle-result="handleResult"
         :before-list="beforeList"

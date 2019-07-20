@@ -1,7 +1,8 @@
-import demoRouter from '@/demo/router/router'
-import Main from '@/views/main/Main.vue'
 import {ProRouteConfig} from '@/model/project/route/route.model'
+import Main from '@/views/main/Main.vue'
 import MainHome from '@/views/main/MainHome.vue'
+import demoRouter from '@/demo/router/router'
+import systemRouter from '@/modules/system/router/router'
 
 export const mainRoute: ProRouteConfig = {
   path: '/main',
@@ -17,7 +18,8 @@ export const mainRoute: ProRouteConfig = {
         hideBread: true,
       },
     },
-    demoRouter, // 在main中的demo
+    demoRouter,
+    systemRouter,
   ],
   meta: {
     title: 'main',
