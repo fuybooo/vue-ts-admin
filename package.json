@@ -5,6 +5,7 @@
   "scripts": {
     "s": "vue-cli-service serve",
     "b": "vue-cli-service build && bash ./scripts/commit-helper/commit-gh-page.sh",
+    "bl": "export BUILD_MODE=l&& vue-cli-service build -- && yarn l",
     "l": "lite-server",
     "cm": "node scripts/dev-helper/create-module.js",
     "lint": "vue-cli-service lint",
