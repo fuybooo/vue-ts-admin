@@ -4,6 +4,10 @@ self.__precacheManifest = [
     "url": "/vue-ts-admin/index.html"
   },
   {
+    "revision": "4ad45766d88bdaa210a004e88d59284d",
+    "url": "/vue-ts-admin/mock/platform/login.json"
+  },
+  {
     "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
     "url": "/vue-ts-admin/robots.txt"
   },
@@ -12,20 +16,12 @@ self.__precacheManifest = [
     "url": "/vue-ts-admin/mock/demo/table/create.json"
   },
   {
-    "revision": "61d4c043a6f1801b4c0a",
-    "url": "/vue-ts-admin/js/chunk-vendors.c9475c3f.js"
+    "revision": "9023cb98277e1007fff6",
+    "url": "/vue-ts-admin/js/lang-en.cef41184.js"
   },
   {
     "revision": "d54df857e13fd59a490927d33a55175b",
     "url": "/vue-ts-admin/mock/demo/table/getById.json"
-  },
-  {
-    "revision": "4ad45766d88bdaa210a004e88d59284d",
-    "url": "/vue-ts-admin/mock/platform/login.json"
-  },
-  {
-    "revision": "9a4540367fc9b85746eb4e20e9fce88e",
-    "url": "/vue-ts-admin/mock/demo/table/get.json"
   },
   {
     "revision": "6682b53aae4458179bb909d71ab7d842",
@@ -36,8 +32,12 @@ self.__precacheManifest = [
     "url": "/vue-ts-admin/mock/demo/table/del.json"
   },
   {
-    "revision": "9023cb98277e1007fff6",
-    "url": "/vue-ts-admin/js/lang-en.cef41184.js"
+    "revision": "9a4540367fc9b85746eb4e20e9fce88e",
+    "url": "/vue-ts-admin/mock/demo/table/get.json"
+  },
+  {
+    "revision": "61d4c043a6f1801b4c0a",
+    "url": "/vue-ts-admin/js/chunk-vendors.c9475c3f.js"
   },
   {
     "revision": "d21b3dd4da0427695257",
