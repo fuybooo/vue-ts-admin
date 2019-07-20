@@ -40,3 +40,5 @@
       --port    指定 port (默认值：8080)
       --https   使用 https (默认值：false)
     ```
+## 2019-07-20
+1. 将代码部署到github上去 git subtree push --prefix=dist origin gh-pages

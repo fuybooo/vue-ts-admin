@@ -1,3 +1,4 @@
+const package = require('./package')
 module.exports = {
   assetsDir: './',
   css: {
@@ -20,4 +21,5 @@ module.exports = {
     port: 4001,
   },
   lintOnSave: true, // 是否在保存的时候检查
+  publicPath: `/${package.name}`,
 };
