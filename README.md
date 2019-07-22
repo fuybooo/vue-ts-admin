@@ -42,3 +42,7 @@
     ```
 ## 2019-07-20
 1. 将代码部署到github上去 git subtree push --prefix=dist origin gh-pages
+## 2019-07-22
+1. 开始使用node + mongodb 提供服务端功能
+    1. 搭建node开发环境
+    2. 搭建框架 - 到达 controller 层

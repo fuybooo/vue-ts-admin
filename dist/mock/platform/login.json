@@ -1,10 +1,12 @@
 {
-  "code": 200,
+  "msg": "success",
   "head": {
-    "errCode": 0
+    "errCode": 0,
+    "errMsg": "success"
   },
-  "msg": "",
+  "code": 0,
   "data": {
-    "loginStatus": 200
+    "token": "1",
+    "rIDList": []
   }
 }

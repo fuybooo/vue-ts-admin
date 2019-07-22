@@ -5,6 +5,7 @@ import {getClientHeight, getSpaceHeight} from '@/util/common/fns/fns-dom'
 import {setProperty} from '@/util/common/fns/fns-common'
 import './BaseTable.less'
 import {HttpRes} from '@/model/common/models'
+import config from '@/config/base-config'
 
 Vue.component('BaseTable', {
   render (createElement: typeof Vue.prototype.$CreateElement) {
@@ -381,7 +382,7 @@ function calcHeight () {
   })
   // 默认会排除的高度 这意味着 当查询条件使用 common-query 时无需传参数即可自动计算
   const defaultFixedElementHeight = getClientHeight('.common-query')
-  me.localHeight = window.innerHeight - headerHeight - paginationHeight - wrapperHeight - pageHeaderHeight - tableSpaceHeight - borderHeight - me.fixedHeight - defaultFixedElementHeight
+  me.localHeight = Math.max(config.MIN_WIN_HEIGHT, window.innerHeight) - headerHeight - paginationHeight - wrapperHeight - pageHeaderHeight - tableSpaceHeight - borderHeight - me.fixedHeight - defaultFixedElementHeight
 }
 
 function getParams () {

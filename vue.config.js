@@ -21,5 +21,6 @@ module.exports = {
     port: 4001,
   },
   lintOnSave: true, // 是否在保存的时候检查
-  publicPath: process.env.BUILD_MODE === 'l' ? '/' : `/${package.name}`,
+  publicPath: process.env.BUILD_MODE === 'dev' ? '/prd' : `/${package.name}/prd`,
+  outputDir: 'dist/prd'
 };

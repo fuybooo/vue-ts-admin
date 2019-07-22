@@ -17,7 +17,7 @@ export function ls (key: string, value: string): void {
 export function sc (key: string, value: string, expMs: number = 3650  * 24 * 60 * 60 * 1000) {
   const expires = new Date()
   expires.setTime(expires.getTime() + expMs)
-  document.cookie = `${key}=${escape(value)};expires=${expires.toUTCString()}`
+  document.cookie = `${key}=${escape(value)};expires=${expires.toUTCString()};path=/;`
 }
 export function gc (key: string) {
   const reg = new RegExp('(^| )' + key + '=([^;]*)(;|$)')
@@ -127,7 +127,7 @@ export function deepClone (obj: any) {
 }
 export function isEmptyObject (obj: any) {
   if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
-    if (JSON.stringify(obj) === '{}') {
+    if (Object.keys({}).length === 0) {
       return true
     }
   }

@@ -18,7 +18,7 @@
 
   @Component({})
   export default class PageHeader extends Vue {
-    hidden = false
+    hidden = true
     baseBread = [{name: 'home', title: '首页'}]
     breadList = [...this.baseBread]
     public created () {

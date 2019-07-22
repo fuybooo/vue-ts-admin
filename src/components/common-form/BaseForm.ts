@@ -445,7 +445,7 @@ function setExtraValue (item: Schema, val: any) {
 function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
   // @ts-ignore
   const me = this
-  const btnFormItem = createElement('el-form-item', {class: me.btn.class || (me.inline ? 'fr' : '')}, [createElement('el-button', {
+  const btnFormItem = createElement('el-form-item', {class: me.btn.class || (me.inline ? 'fr mr0i' : '')}, [createElement('el-button', {
     props: {
       type: me.btn.type || 'primary',
     },
