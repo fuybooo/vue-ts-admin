@@ -3,13 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Koa = require("koa");
 const KoaStatic = require("koa-static");
 const koaWebsocket = require("koa-websocket");
+const cors = require("koa-cors");
 const common_1 = require("./common");
 const base_1 = require("./base");
 const router_1 = require("./router");
+const db_1 = require("./utils/db");
+db_1.default.connect();
 // tslint:disable-next-line:no-var-requires
 const koaBody = require('koa-body');
 const app = koaWebsocket(new Koa());
 app.use(koaBody({ multipart: true, jsonLimit: '2mb', formLimit: '1mb', textLimit: '1mb' }));
+app.use(cors());
 app.use(router_1.default.routes());
 app.use(router_1.default.allowedMethods());
 app.use(KoaStatic(base_1.default.staticDir, {

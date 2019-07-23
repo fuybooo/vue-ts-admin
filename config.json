@@ -1,4 +1,13 @@
 {
   "port": 3002,
-  "projectPrefix": "FUYBOOO_"
+  "projectPrefix": "FUYBOOO_",
+  "db": {
+    "servername": "127.0.0.1",
+    "DATABASE": "vue-ts-admin",
+    "port": 27017,
+    "user": "fuybooo",
+    "pass": "fuybooo",
+    "authSource": "admin",
+    "options": ""
+  }
 }

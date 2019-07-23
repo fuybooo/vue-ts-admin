@@ -6,7 +6,7 @@ import {KEY_SUB_API} from '@/model/project/local-storage-keys/keys'
  */
 let debugMap: any = {
   // 如果匹配到url中包含 /unify/ 则将请求发送到 http://api.dev4.everjiankang.com.cn/ 中去
-  '/unify/': 'http://api.dev4.everjiankang.com.cn/',
+  // '/unify/': 'http://api.dev4.everjiankang.com.cn/',
 }
 export function debugReq (req: any) {
   // 从localStorage中匹配

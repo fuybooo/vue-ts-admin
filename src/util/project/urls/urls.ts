@@ -29,7 +29,7 @@ const urls: Urls = {
     },
   },
   login: {
-    login: {url: 'unify/userLogin', isStatic: false, prefix: prefix.base},
+    login: process.env.VUE_APP_SERVICE === 'LOCAL_NODE' ? 'login' : {url: 'unify/userLogin', isStatic: false, prefix: prefix.base},
     forgot: {url: 'forgot', isStatic: true, prefix: prefix.base},
     register: {url: 'register', isStatic: true, prefix: prefix.base},
     logout: {url: 'logout', isStatic: true, prefix: prefix.base},

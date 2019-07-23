@@ -13,3 +13,12 @@ export interface Route {
   method?: string
   withoutToken?: boolean
 }
+export interface FieldConfig {
+  required: boolean
+  type: 'string' | 'boolean' | 'object' | 'array' | 'number',
+  max?: number
+  min?: number
+}
+export interface SchemaMap {
+  [f: string]: FieldConfig | SchemaMap
+}

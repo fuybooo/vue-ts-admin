@@ -1,14 +1,17 @@
 import * as Koa from 'koa'
 import * as KoaStatic from 'koa-static'
 import * as koaWebsocket from 'koa-websocket'
+import * as cors from 'koa-cors'
 import common from './common'
 import base from './base'
 import router from './router'
+import db from './utils/db'
+db.connect()
 // tslint:disable-next-line:no-var-requires
 const koaBody = require('koa-body')
 const app = koaWebsocket(new Koa())
 app.use(koaBody({ multipart: true, jsonLimit: '2mb', formLimit: '1mb', textLimit: '1mb' }))
-
+app.use(cors())
 app.use(router.routes())
 app.use(router.allowedMethods())
 app.use(KoaStatic(base.staticDir, {

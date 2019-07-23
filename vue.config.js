@@ -19,8 +19,15 @@ module.exports = {
     https: false,
     open: true, // 配置自动启动浏览器,
     port: 4001,
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:3002',
+    //     ws: true,
+    //     changeOrigin: true,
+    //   }
+    // }
   },
   lintOnSave: true, // 是否在保存的时候检查
-  publicPath: process.env.BUILD_MODE === 'dev' ? '/prd' : `/${package.name}/prd`,
+  publicPath: process.env.BUILD_MODE === 'dev' ? '/' : `/${package.name}/prd`,
   outputDir: 'dist/prd'
 };
