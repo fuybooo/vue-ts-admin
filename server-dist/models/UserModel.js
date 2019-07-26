@@ -22,14 +22,5 @@ class UserModel extends BaseModel_1.default {
             },
         };
     }
-    findById(id) {
-        return this.model.findOne({ _id: id });
-    }
-    findByUsername(username) {
-        return this.model.findOne({ username });
-    }
-    save(data) {
-        return new this.model(data).save();
-    }
 }
 exports.default = UserModel;

@@ -146,14 +146,14 @@ export function debounce (func: () => any, delay = 400, immediate = false) {
   let timer: any = null
   const result = function (...args: any) {
     // @ts-ignore
-    const cxt = this
+    const ctx = this
     if (timer) { clearTimeout(timer) }
     if (immediate) {
       const callNow = !timer
       timer = setTimeout(() => timer = null, delay)
-      if (callNow) { func.apply(cxt, args) }
+      if (callNow) { func.apply(ctx, args) }
     } else {
-      timer = setTimeout(() => func.apply(cxt, args), delay)
+      timer = setTimeout(() => func.apply(ctx, args), delay)
     }
   }
   result.cancel = () => clearTimeout(timer)

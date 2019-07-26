@@ -173,7 +173,7 @@
       },
     }
     public handleClick () {
-      this.$router.push('/main/demo/form-detail/create')
+      this.$router.push({name: 'demo-form-detail'})
     }
     public del (row: any) {
       this.$req(this.$urls.demo.table.del, {id: row.id}).then((res: HttpRes) => {
@@ -188,7 +188,7 @@
       })
     }
     public toEdit (row: any) {
-      this.$router.push('/main/demo/form-detail/edit/' + row.id)
+      this.$router.push({name: 'demo-form-detail', params: {pattern: 'edit', id: row.id}})
     }
     public beforeList () {
       // 满足某些条件时才进行查询

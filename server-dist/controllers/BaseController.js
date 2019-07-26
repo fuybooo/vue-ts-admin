@@ -6,6 +6,7 @@ const common_1 = require("../common");
 const instance_1 = require("../utils/instance");
 const UserModel_1 = require("../models/UserModel");
 const shared_1 = require("../utils/shared");
+const jwt = require("jsonwebtoken");
 class BaseController {
     constructor(ctx) {
         this.roleMap = {
@@ -13,6 +14,8 @@ class BaseController {
             member: 'member',
         };
         this.$auth = false; // 是否拥有权限
+        this.$uid = null; // 当前验证过的用户id
+        this.$user = null; // 当前验证过的用户对象
         this.ctx = ctx;
     }
     async init(ctx) {
@@ -26,26 +29,38 @@ class BaseController {
         }
     }
     async checkLogin(ctx) {
-        const token = ctx.cookie.get(shared_1.KEY_TOKEN);
-        const uid = ctx.cookie.get(shared_1.KEY_UID);
+        const token = ctx.cookies.get(shared_1.KEY_TOKEN);
+        // @ts-ignore
+        const uid = +ctx.cookies.get(shared_1.KEY_UID);
         try {
-            if (!token || !uid) {
-                return false;
-            }
-            else {
+            if (token && uid) {
                 // 检查uid和token是否匹配
                 // 1. 根据uid查询user 是否能够查到有效的用户
                 // 2. 根据token解析出的uid 是否与uid相同
-                const userInstance = instance_1.default.getInstance(UserModel_1.default);
-                const user = userInstance.findById(uid);
-                console.log('checkLogin:', user);
-                this.$auth = true;
-                // if (user) {
-                // }
+                const userModel = instance_1.default.getInstance(UserModel_1.default);
+                const user = await userModel.get(uid);
+                if (user) {
+                    let decoded;
+                    try {
+                        decoded = jwt.verify(token, user.passSalt);
+                    }
+                    catch (err) {
+                        common_1.default.log(err, 'error');
+                        return false;
+                    }
+                    if (decoded.uid === uid) {
+                        this.$uid = uid;
+                        this.$user = user;
+                        this.$auth = true;
+                        return true;
+                    }
+                }
             }
+            return false;
         }
         catch (e) {
             common_1.default.log(e, 'error');
+            return false;
         }
     }
 }

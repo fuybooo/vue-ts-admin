@@ -37,7 +37,7 @@
 
     public logout () {
       dc(KEY_TOKEN)
-      this.$router.push('login')
+      this.$router.push({name: 'login'})
     }
   }
 </script>

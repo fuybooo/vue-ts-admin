@@ -28,17 +28,27 @@
 
   @Component({})
   export default class SystemUser extends Vue {
-    public schema: Schema[] = []
+    public schema: Schema[] = [
+      {
+        prop: 'keywords',
+        label: '搜索'
+      }
+    ]
     public form = fb(this.schema)
-    public url = this.$urls.demo.table.get
-    public columns: Column[] = []
+    public url = this.$urls.user.list
+    public columns: Column[] = [
+      {
+        prop: 'username',
+        label: '用户名',
+      }
+    ]
     // 跳转到创建页面
     public handleClick () {
       this.$router.push({name: 'system-user-detail', params: {pattern: 'create'}})
     }
     // 执行删除
     public del (row: any) {
-      this.$req(this.$urls.demo.table.del, {id: row.id}).then((res: HttpRes) => {
+      this.$req(this.$urls.user.delete, {id: row.id}).then((res: HttpRes) => {
         if (res.head.errCode === 0) {
           (this.$refs.table as any).search(true)
         }

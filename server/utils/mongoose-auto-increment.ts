@@ -1,7 +1,7 @@
 // Module Scope
 import * as mongoose from 'mongoose'
-let counterSchema
-let IdentityCounter
+let counterSchema: mongoose.Schema
+let IdentityCounter: mongoose.Model<any>
 
 // Initialize plugin by creating counter collection in database.
 function initialize () {
@@ -28,7 +28,7 @@ function initialize () {
 }
 
 // The function to use when invoking the plugin on a custom schema.
-function plugin (schema, options) {
+function plugin (schema: mongoose.Schema, options: any) {
 
   // If we don't have reference to the counterSchema or the IdentityCounter model then the plugin was most likely not
   // initialized properly so throw an error.
@@ -37,14 +37,14 @@ function plugin (schema, options) {
   }
 
   // Default settings and plugin scope variables.
-  let settings = {
+  let settings: any = {
       model: null, // The model to configure the plugin for.
       field: '_id', // The field the plugin should track.
       startAt: 0, // The number the count should start at.
       incrementBy: 1, // The number by which to increment the count each time.
       unique: true, // Should we create a unique index for the field
     }
-  const fields = {} // A hash of fields to add properties to in Mongoose.
+  const fields: any = {} // A hash of fields to add properties to in Mongoose.
   let ready = false // True if the counter collection has been updated and the document is ready to be saved.
 
   switch (typeof(options)) {
@@ -89,7 +89,7 @@ function plugin (schema, options) {
   )
 
   // Declare a function to get the next counter for the model/schema.
-  function nextCount (callback) {
+  function nextCount (callback: (err: Error | null, data?: any) => any) {
     IdentityCounter.findOne({
       model: settings.model,
       field: settings.field,
@@ -103,7 +103,7 @@ function plugin (schema, options) {
   schema.static('nextCount', nextCount)
 
   // Declare a function to reset counter at the start value - increment value.
-  function resetCount (callback) {
+  function resetCount (callback: (err: Error | null, data?: any) => any) {
     IdentityCounter.findOneAndUpdate(
       { model: settings.model, field: settings.field },
       { count: settings.startAt - settings.incrementBy },
@@ -120,7 +120,7 @@ function plugin (schema, options) {
   // Every time documents in this schema are saved, run this logic.
   schema.pre('save', function (next) {
     // Get reference to the document being saved.
-    const doc = this
+    const doc: any = this
 
     // Only do this if it is a new document (see http://mongoosejs.com/docs/api.html#document_Document-isNew)
     if (doc.isNew) {

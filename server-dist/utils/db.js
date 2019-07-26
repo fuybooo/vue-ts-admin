@@ -26,7 +26,9 @@ function connect(cb) {
         connectString += `?authSource=${base_1.default.config.db.authSource}`;
     }
     const db = mongoose.connect(connectString, options, err => {
-        common_1.default.log(err ? (err + ' [mongodb connect error]') : 'mongodb connect success', err ? 'error' : 'log');
+        if (err) {
+            common_1.default.log(err + ' [mongodb connect error]', 'error');
+        }
     });
     db.then(() => {
         common_1.default.log('mongodb load success');

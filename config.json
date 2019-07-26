@@ -1,6 +1,7 @@
 {
   "port": 3002,
   "projectPrefix": "FUYBOOO_",
+  "dev-origin": "http://localhost:4001",
   "db": {
     "servername": "127.0.0.1",
     "DATABASE": "vue-ts-admin",

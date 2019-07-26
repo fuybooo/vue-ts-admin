@@ -4,6 +4,7 @@ const Router = require("koa-router");
 const intercept_1 = require("./utils/intercept");
 const login_router_1 = require("./routers/login-router");
 const user_router_1 = require("./routers/user-router");
+// @ts-ignore
 const router = new Router();
 exports.baseUrl = '/api';
 exports.routeList = [

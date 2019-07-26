@@ -3,7 +3,7 @@ import {ExtendableContext, Request} from 'koa'
 interface Req extends Request {
   body: any,
 }
-export interface Cxt extends ExtendableContext {
+export interface Ctx extends ExtendableContext {
   request: Req | any,
 }
 export interface Route {

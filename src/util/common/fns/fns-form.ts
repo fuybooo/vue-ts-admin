@@ -5,6 +5,7 @@
  */
 import {Option, Schema} from '@/components/common-form/form.model'
 import {setProp} from '@/util/common/fns/fns'
+import {UUID} from '@/model/common/models'
 
 export function transferRules (rules: any) {
   const newRules: any = {}
@@ -37,7 +38,7 @@ export function transferRule (itemRule: any[]) {
   })
 }
 export function formBuilder (schema: Schema[]): any {
-  const form: any = {_uuid: ''}
+  const form: any = {[UUID]: ''}
   schema.forEach(item => {
     if (item.prop) {
       if (item.startProp && item.endProp) {

@@ -1,12 +1,12 @@
 import common from '../common'
 const instances = new Map()
-function getInstance (Model, ...args) {
+function getInstance (Model: any) {
   if (!instances.get(Model)) {
-    instances.set(Model, new Model(args))
+    instances.set(Model, new Model())
   }
   return instances.get(Model)
 }
-function delInstance (Model) {
+function delInstance (Model: any) {
   try {
     instances.delete(Model)
     common.log(Model, 'log', 'delete')

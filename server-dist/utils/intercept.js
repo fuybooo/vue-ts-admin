@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const router_1 = require("../router");
 function intercept(router, route) {
+    // @ts-ignore
     router[route.method || 'post'](getUrl(route), async (ctx) => {
         const controller = new route.controller(ctx);
         try {
@@ -13,13 +14,13 @@ function intercept(router, route) {
                 if (!validRes.valid) {
                     return (ctx.body = resReturn(null, 400, validRes.message));
                 }
-                if (controller.$auth) {
-                    await controller[route.action](ctx);
-                }
-                else {
-                    // todo 未来需要新增ws的情况
-                    ctx.body = resReturn(null, 40011, '请登录...');
-                }
+            }
+            if (controller.$auth) {
+                await controller[route.action](ctx);
+            }
+            else {
+                // todo 未来需要新增ws的情况
+                ctx.body = resReturn(null, 40011, '请登录...');
             }
         }
         catch (err) {
@@ -32,6 +33,7 @@ function validateParams(schema, params) {
     let message = '';
     for (const key in schema) {
         if (schema.hasOwnProperty(key)) {
+            // @ts-ignore
             const fieldConfig = schema[key];
             const value = params[key];
             const valueType = typeof value;
@@ -101,7 +103,7 @@ exports.validateParams = validateParams;
 function resReturn(data = {}, code = 0, msg = '') {
     const message = msg || (code === 500 ? '服务器出错...' : (code === 400 ? '参数异常...' : ''));
     return {
-        data,
+        data: data || {},
         code,
         head: {
             errCode: code,

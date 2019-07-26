@@ -14,68 +14,70 @@ class LoginController extends BaseController_1.default {
         this.createSchema();
     }
     async login(ctx) {
-        const username = ctx.request.body.username;
-        const password = ctx.request.body.password;
-        const result = await this.Model.findByUsername(username);
+        const username = ctx.params.username;
+        const password = ctx.params.password;
+        const result = await this.Model.findBy({ username });
         if (!result) {
             return (ctx.body = intercept_1.resReturn(null, 404, '该用户不存在'));
         }
         else if (common_1.default.generatePassword(password, result.passSalt) === result.password) {
-            this.setCookie(result._id, result.password);
-            return (ctx.body = intercept_1.resReturn(result));
+            const uid = result._id;
+            const passSalt = result.passSalt;
+            const token = jwt.sign({ uid }, passSalt, { expiresIn: '7 days' });
+            this.setCookie(uid + '', token);
+            return (ctx.body = intercept_1.resReturn({
+                username: result.username,
+                uid,
+                token,
+            }));
         }
         else {
-            return (ctx.body = intercept_1.resReturn(null, 405, '密码错误'));
+            return (ctx.body = intercept_1.resReturn(null, 403, '密码错误'));
         }
     }
     async register(ctx) {
-        const params = ctx.request.body;
-        if (!params.username) {
-            return (ctx.body = intercept_1.resReturn(null, 400, 'username 不能为空'));
-        }
-        if (!params.password) {
-            return (ctx.body = intercept_1.resReturn(null, 400, 'password 不能为空'));
-        }
+        const params = ctx.params;
         const passSalt = common_1.default.randomStr();
         try {
-            const user = await this.Model.save({
+            const user = await this.Model.create({
                 username: params.username,
                 password: common_1.default.generatePassword(params.password, passSalt),
                 passSalt,
             });
-            ctx.body = intercept_1.resReturn(user);
+            ctx.body = intercept_1.resReturn({ name: user.name });
         }
         catch (e) {
-            ctx.body = intercept_1.resReturn(null, 401, e.message);
+            ctx.body = intercept_1.resReturn(null, 500, e.message);
         }
     }
-    setCookie(uid, passSalt) {
-        const token = jwt.sign({ uid }, passSalt, { expiresIn: '7 days' });
+    setCookie(uid, token) {
         const expires = new Date();
         expires.setDate(expires.getTime() + 7 * 24 * 60 * 60 * 1000);
-        this.ctx.cookie.set(shared_1.KEY_TOKEN, token, {
+        this.ctx.cookies.set(shared_1.KEY_UID, uid, {
             expires, httpOnly: true,
         });
-        this.ctx.cookie.set(shared_1.KEY_UID, uid, {
+        this.ctx.cookies.set(shared_1.KEY_TOKEN, token, {
             expires, httpOnly: true,
         });
     }
     createSchema() {
-        this.schemaMap = {
-            login: {
-                username: {
-                    type: 'string',
-                    max: 20,
-                    min: 2,
-                    required: true,
-                },
-                password: {
-                    type: 'string',
-                    max: 20,
-                    min: 6,
-                    required: true,
-                },
+        const commonLoginRegister = {
+            username: {
+                type: 'string',
+                max: 20,
+                min: 2,
+                required: true,
             },
+            password: {
+                type: 'string',
+                max: 20,
+                min: 6,
+                required: true,
+            },
+        };
+        this.schemaMap = {
+            login: Object.assign({}, commonLoginRegister),
+            register: Object.assign({}, commonLoginRegister),
         };
     }
 }

@@ -8,7 +8,7 @@
     "l": "lite-server",
     "g": "gulp",
     "n": "node server-dist/app.js",
-    "w": "nodemon --inspect --watch server-dist server-dist/app.js",
+    "w": "export APP_MODE=dev&& nodemon --inspect --watch server-dist server-dist/app.js",
     "d": "export BUILD_MODE=dev&& vue-cli-service build",
     "cm": "node scripts/dev-helper/create-module.js",
     "lint": "vue-cli-service lint",

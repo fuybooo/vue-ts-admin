@@ -28,3 +28,4 @@ export interface HttpRes {
     total?: number,
   }
 }
+export const UUID = '_uuid'

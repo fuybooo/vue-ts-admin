@@ -2,9 +2,11 @@ import Vue from 'vue'
 import axios, {AxiosInstance} from 'axios'
 import config from '@/config/base-config'
 import {IUrl, staticPath, urlType} from '@/util/project/urls/url-util'
-import {deepTrim, gc} from '@/util/common/fns/fns'
+import {dc, deepTrim, gc} from '@/util/common/fns/fns'
 import {debugReq} from '@/config/dev-config'
 import {KEY_TOKEN} from '@/model/project/local-storage-keys/keys'
+// tslint:disable-next-line:no-var-requires
+const ENV = require('../../shared/env')
 // 原始axios
 axios.interceptors.response.use((res) => {
   return res.data
@@ -14,11 +16,12 @@ function create (options?: any): AxiosInstance {
   const localAxios = axios.create({
     ...(options || {}),
     baseURL: config.baseURL,
+    withCredentials: true,
   })
   localAxios.interceptors.request.use((req) => {
     // 添加处理入参的代码
     // 针对不同的接口使用不同的环境
-    if (process.env.VUE_APP_MODE === 'dev') {
+    if (process.env.VUE_APP_MODE === ENV.APP_MODE.dev) {
       debugReq(req)
     }
     const token = gc(KEY_TOKEN)
@@ -28,7 +31,17 @@ function create (options?: any): AxiosInstance {
     return req
   })
   localAxios.interceptors.response.use((res) => {
-    // 添加返回结果的错误拦截等
+    if (res.data.msg) {
+      Vue.prototype.$tip(res.data)
+    }
+    // 若后端返回未登录的错误，则跳转到登录界面
+    if (res.data.head.errCode === 40011) {
+      if (process.env.VUE_APP_MODE === ENV.APP_MODE.prod) {
+        // 正式环境跳转到登录界面
+        dc(KEY_TOKEN)
+        window._vueInstance_.$router.push({name: 'login'})
+      }
+    }
     return res.data
   })
   return localAxios

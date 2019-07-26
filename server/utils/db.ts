@@ -3,14 +3,14 @@ import common from '../common'
 import autoIncrement from '../utils/mongoose-auto-increment'
 import base from '../base'
 
-function createModel (model, schema) {
+function createModel (model: string, schema: mongoose.Schema | mongoose.SchemaDefinition) {
   if (!(schema instanceof mongoose.Schema)) {
     schema = new mongoose.Schema(schema)
   }
-  schema.set('autoIndex', false)
-  return mongoose.model(model, schema, model)
+  (schema as mongoose.Schema).set('autoIndex', false)
+  return mongoose.model(model, schema as mongoose.Schema, model)
 }
-function connect (cb?) {
+function connect (cb?: (db: any) => any) {
   mongoose.set('useNewUrlParser', true)
   mongoose.set('useFindAndModify', false)
   mongoose.set('useCreateIndex', true)
@@ -28,7 +28,9 @@ function connect (cb?) {
     connectString,
     options,
     err => {
-      common.log(err ? (err + ' [mongodb connect error]') : 'mongodb connect success', err ? 'error' : 'log')
+      if (err) {
+        common.log(err + ' [mongodb connect error]', 'error')
+      }
     },
   )
   db.then(() => {

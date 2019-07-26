@@ -1,7 +1,9 @@
-import {FieldConfig, Route} from '../types'
+import {FieldConfig, Route, SchemaMap} from '../types'
 import {baseUrl} from '../router'
+import * as Router from 'koa-router'
 
-function intercept (router, route: Route) {
+function intercept (router: Router, route: Route) {
+  // @ts-ignore
   router[route.method || 'post'](getUrl(route), async ctx => {
     const controller = new route.controller(ctx)
     try {
@@ -13,23 +15,24 @@ function intercept (router, route: Route) {
         if (!validRes.valid) {
           return (ctx.body = resReturn(null, 400, validRes.message))
         }
-        if (controller.$auth) {
-          await controller[route.action](ctx)
-        } else {
-          // todo 未来需要新增ws的情况
-          ctx.body = resReturn(null, 40011, '请登录...')
-        }
+      }
+      if (controller.$auth) {
+        await controller[route.action](ctx)
+      } else {
+        // todo 未来需要新增ws的情况
+        ctx.body = resReturn(null, 40011, '请登录...')
       }
     } catch (err) {
       ctx.body = resReturn(null, 500)
     }
   })
 }
-export function validateParams (schema, params) {
+export function validateParams (schema: SchemaMap, params: any) {
   let valid = true
   let message = ''
   for (const key in schema) {
     if (schema.hasOwnProperty(key)) {
+      // @ts-ignore
       const fieldConfig: FieldConfig = schema[key]
       const value = params[key]
       const valueType = typeof value
@@ -94,10 +97,10 @@ export function validateParams (schema, params) {
     message,
   }
 }
-export function resReturn (data = {}, code = 0, msg = '') {
+export function resReturn (data: any = {}, code = 0, msg = '') {
   const message = msg || (code === 500 ? '服务器出错...' : (code === 400 ? '参数异常...' : ''))
   return {
-    data,
+    data: data || {},
     code,
     head: {
       errCode: code,

@@ -15,6 +15,15 @@ function getTime (type = 'yyyy-MM-dd HH:mm:ss') {
   }
   return date
 }
+function guid () {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    // tslint:disable-next-line:no-bitwise
+    const r = Math.random() * 16 | 0
+    // tslint:disable-next-line:no-bitwise
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+  })
+}
 module.exports = {
   getTime,
+  guid,
 }

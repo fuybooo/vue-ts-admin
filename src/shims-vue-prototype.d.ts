@@ -1,4 +1,3 @@
-// 垫片的正确写法：一定要有这句：import {Vue} from 'vue/types/vue'
 import {Vue} from 'vue/types/vue'
 import {urlType} from '@/util/project/urls/url-util'
 import {AxiosInstance} from 'axios'
@@ -15,5 +14,12 @@ declare module 'vue/types/vue' {
     readonly $error: (message: string, title?: string) => void
     readonly $success: (message: string, title?: string) => void
     readonly $tip: (res: HttpRes) => void
+  }
+}
+
+declare global {
+  interface Window {
+    _vueInstance_: Vue
+    _projectPrefix_: string
   }
 }

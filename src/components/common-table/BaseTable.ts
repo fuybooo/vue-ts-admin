@@ -4,7 +4,7 @@ import {debounce, deepClone, deepTrim, guid} from '@/util/common/fns/fns'
 import {getClientHeight, getSpaceHeight} from '@/util/common/fns/fns-dom'
 import {setProperty} from '@/util/common/fns/fns-common'
 import './BaseTable.less'
-import {HttpRes} from '@/model/common/models'
+import {HttpRes, UUID} from '@/model/common/models'
 import config from '@/config/base-config'
 
 Vue.component('BaseTable', {
@@ -103,7 +103,7 @@ Vue.component('BaseTable', {
       this.rememberRow = params._rememberRow
       this.rememberRowKey = params._rememberRowKey
     } else {
-      this.$emit('update:params', {...this.params, _uuid: guid()})
+      this.$emit('update:params', {...this.params, [UUID]: guid()})
     }
     if (this.autoHeight || this.fixedElements || this.fixedHeight) {
       // 添加监听事件
@@ -389,7 +389,7 @@ function getParams () {
   // @ts-ignore
   const me = this
   const params = deepClone(me.params)
-  delete params._uuid
+  delete params[UUID]
   delete params._first
   return {
     ...params,

@@ -6,7 +6,7 @@ const sha1 = require('sha1')
 const config = require('../config.json')
 // tslint:disable-next-line:no-var-requires
 const fns = require('../shared/fns.js')
-function isExist (filePath) {
+function isExist (filePath: string): boolean {
   return fs.existsSync(filePath)
 }
 declare type LogType = 'log' | 'error' | 'warn'
@@ -30,13 +30,13 @@ function log (msg: any, type: LogType = 'log', op = '') {
   const data = `[ ${fns.getTime()} ] [ ${type} ] ${op ? `[ ${op} ] ` : ' '}${msg}\n`
   fs.writeFileSync(logfile, data, {flag: 'a'})
 }
-function randomRange (min, max) {
+function randomRange (min: number, max: number): number {
   return Math.floor(Math.random() * (max - min)) + min
 }
-function randomStr () {
+function randomStr (): string {
   return Math.random().toString(36).slice(2)
 }
-function generatePassword (password, passSalt) {
+function generatePassword (password: string, passSalt: string): string {
   return sha1(password + sha1(passSalt))
 }
 export default {

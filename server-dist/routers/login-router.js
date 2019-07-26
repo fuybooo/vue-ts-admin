@@ -8,5 +8,11 @@ const routeList = [
         path: '/login',
         withoutToken: true,
     },
+    {
+        action: 'register',
+        controller: LoginController_1.default,
+        path: '/register',
+        withoutToken: true,
+    },
 ];
 exports.default = routeList;

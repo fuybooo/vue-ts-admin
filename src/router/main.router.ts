@@ -7,6 +7,7 @@ import systemRouter from '@/modules/system/router/router'
 export const mainRoute: ProRouteConfig = {
   path: '/main',
   name: 'main',
+  redirect: {name: 'home'},
   component: Main,
   children: [
     {

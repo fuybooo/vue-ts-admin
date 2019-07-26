@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("../common");
 const instances = new Map();
-function getInstance(Model, ...args) {
+function getInstance(Model) {
     if (!instances.get(Model)) {
-        instances.set(Model, new Model(args));
+        instances.set(Model, new Model());
     }
     return instances.get(Model);
 }

@@ -12,14 +12,13 @@ import {i18n} from '@/config/i18n-config'
 import '@/util/common/vue-prototype/vue-prototype'
 // 导入公共组件
 import '@/components/index'
-
+// tslint:disable-next-line:no-var-requires
 Vue.use(ElementUI, {
   size: 'small',
   zIndex: 3000,
 })
 Vue.config.productionTip = false
-
-new Vue({
+window._vueInstance_ = new Vue({
   i18n,
   router,
   store,

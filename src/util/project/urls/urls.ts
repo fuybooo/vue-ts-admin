@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import {prefix, urlType} from '@/util/project/urls/url-util'
+import {mode} from '@/config/base-config'
+// tslint:disable-next-line:no-var-requires
+const ENV = require('../../../../shared/env.js')
 // 该接口与urls保持一致，保证使用this.$urls时能够通过"."得到提示
 export interface Urls {
   demo: {
@@ -17,6 +20,16 @@ export interface Urls {
     register: urlType,
     logout: urlType,
   },
+  test: {
+    getRules: urlType,
+  },
+  user: {
+    list: urlType,
+    get: urlType,
+    create: urlType,
+    delete: urlType,
+    update: urlType,
+  },
 }
 const urls: Urls = {
   demo: {
@@ -29,10 +42,20 @@ const urls: Urls = {
     },
   },
   login: {
-    login: process.env.VUE_APP_SERVICE === 'LOCAL_NODE' ? 'login' : {url: 'unify/userLogin', isStatic: false, prefix: prefix.base},
+    login: mode === ENV.DEV_MODE.LOCAL_NODE ? 'login' : {url: 'unify/userLogin', isStatic: false, prefix: prefix.base},
     forgot: {url: 'forgot', isStatic: true, prefix: prefix.base},
-    register: {url: 'register', isStatic: true, prefix: prefix.base},
+    register: {url: 'register'},
     logout: {url: 'logout', isStatic: true, prefix: prefix.base},
+  },
+  test: {
+    getRules: 'platform-extend/rule/rule/search',
+  },
+  user: {
+    list: 'user/list',
+    get: 'user/get',
+    delete: 'user/delete',
+    create: 'user/create',
+    update: 'user/update',
   },
 }
 Vue.prototype.$urls = urls

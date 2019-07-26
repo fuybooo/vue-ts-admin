@@ -1,6 +1,6 @@
 import Vue, {VNodeChildren} from 'vue'
 import {childrenCompMap, compMap, Schema, Option, FormChangeEvent} from '@/components/common-form/form.model'
-import {debounce, getProp, setProp} from '@/util/common/fns/fns'
+import {debounce, getProp, guid, setProp} from '@/util/common/fns/fns'
 import {
   getLabelOfOption,
   getValueOfOption,
@@ -12,6 +12,7 @@ import {
 } from '@/util/common/fns/fns-form'
 import format from 'date-fns/format'
 import './BaseForm.less'
+import {UUID} from '@/model/common/models'
 
 Vue.component('BaseForm', {
   render (createElement) {
@@ -43,6 +44,10 @@ Vue.component('BaseForm', {
     }
     const formItems: VNodeChildren = createFormItems.bind(this)(createElement)
     if (this.showBtn) {
+      if (this.inline && this.showSearchBtn) {
+        // @ts-ignore
+        formItems.push(createInlineBtnItem.bind(this)(createElement))
+      }
       // @ts-ignore
       formItems.push(createBtnItem.bind(this)(createElement))
     }
@@ -118,6 +123,11 @@ Vue.component('BaseForm', {
     },
     // 是否显示base-form自定义的按钮，若为true，则按钮事件也是默认的
     showBtn: {
+      type: Boolean,
+      default: true,
+    },
+    // 是否显示默认的查询和重置按钮
+    showSearchBtn: {
       type: Boolean,
       default: true,
     },
@@ -441,7 +451,32 @@ function setExtraValue (item: Schema, val: any) {
     }
   }
 }
-// todo 操作按钮时，改变路由状态
+function createInlineBtnItem (createElement: typeof Vue.prototype.$createElement) {
+  // @ts-ignore
+  const me = this
+  return me.$slots.searchBtn || createElement('el-form-item', [
+    createElement('el-button', {
+      props: {
+        type: 'primary',
+      },
+      nativeOn: {
+        click () {
+          me.$emit('search')
+          setProp.bind(me.value)(UUID, guid())
+        },
+      },
+    }, '查询'),
+    createElement('el-button', {
+      nativeOn: {
+        click () {
+          me.$refs.form.resetFields()
+          setProp.bind(me.value)(UUID, guid())
+          me.$emit('reset')
+        },
+      },
+    }, '重置'),
+  ])
+}
 function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
   // @ts-ignore
   const me = this
