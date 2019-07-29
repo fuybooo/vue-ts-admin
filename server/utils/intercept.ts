@@ -100,7 +100,7 @@ export function validateParams (schema: SchemaMap, params: any) {
 export function resReturn (data: any = {}, code = 0, msg = '') {
   const message = msg || (code === 500 ? '服务器出错...' : (code === 400 ? '参数异常...' : ''))
   return {
-    data: data || {},
+    data: formatData(data),
     code,
     head: {
       errCode: code,
@@ -108,6 +108,32 @@ export function resReturn (data: any = {}, code = 0, msg = '') {
     },
     msg: message,
   }
+}
+export function formatData (data: any) {
+  if (data) {
+    if ('_id' in data) {
+      data = JSON.parse(JSON.stringify(data || {}))
+      const id = data._id
+      delete data._id
+      return {...data, id}
+    }
+    if ('results' in data) {
+      if (Array.isArray(data.results)) {
+        data = JSON.parse(JSON.stringify(data || {}))
+        if (data.results[0] && '_id' in (data.results[0])) {
+          return {
+            ...data,
+            results: data.results.map((item: any) => {
+              const id = item._id
+              delete item._id
+              return {...item, id}
+            }),
+          }
+        }
+      }
+    }
+  }
+  return data
 }
 export function getUrl (route: Route) {
   const url = `${baseUrl}${route.path}`

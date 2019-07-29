@@ -27,9 +27,14 @@
   @Component({})
   export default class SystemRoleDetail extends Vue {
     public formPattern: Pattern = 'create'
-    public id = ''
+    public id: any = null
     // 验证规则写在Schema中
-    public schema: Schema[] = []
+    public schema: Schema[] = [
+      {
+        prop: 'username',
+        label: '用户名',
+      },
+    ]
     public form = fb(this.schema)
     public created () {
       this.formPattern = this.$route.params.pattern as Pattern
@@ -40,7 +45,7 @@
     }
 
     public search () {
-      this.$req(this.$urls.demo.table.getById, {id: this.id}).then((res: HttpRes) => {
+      this.$req(this.$urls.user.get, {id: this.id}).then((res: HttpRes) => {
         if (res.head.errCode === 0) {
           this.updateForm(res.data)
         }
@@ -54,8 +59,14 @@
     public submit () {
       (this.$refs.form as any).$refs.form.validate((valid: boolean) => {
         if (valid) {
-          this.$router.push({name: 'system-role-detail', params: {pattern: 'view', id: this.id}})
-          this.formPattern = 'view'
+          this.$req(this.$urls.user[this.formPattern === 'create' ? 'create' : 'update'], {...this.form, ...(this.id ? {id: this.id} : {})}).then((res: HttpRes) => {
+            if (res.head.errCode === 0) {
+              this.id = res.data.id
+              this.$router.push({name: 'system-role-detail', params: {pattern: 'view', id: res.data.id}})
+              this.formPattern = 'view'
+            }
+            this.$tip(res)
+          })
         } else {
           return false
         }

@@ -80,7 +80,8 @@ Vue.component('BaseForm', {
       deep: true,
     },
     $route: {
-      handler (crtRoute) {
+      handler (crtRoute, oldRoute) {
+        console.log(oldRoute, crtRoute)
         const me = this
         debounce(() => {
           if (me.autoRouter) {
@@ -522,8 +523,8 @@ function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
                 name: me.$route.name,
                 params: {...(me.$route.params || {}), pattern: 'view'},
               })
+              me.$emit('update:formPattern', 'view')
             }
-            me.$emit('update:formPattern', 'view')
             me.$emit('cancel', 'edit')
             me.isEdited = false
           }
@@ -534,11 +535,13 @@ function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
             }).catch(() => {
             })
           } else {
+            me.isEdited = false
             goBack.bind(me)()
           }
         } else if (me.formPattern === 'view') {
           // 直接返回
           goBack.bind(me)()
+          me.isEdited = false
         }
       },
     },
@@ -588,6 +591,6 @@ function confirmLeave () {
 function goBack () {
   // @ts-ignore
   const me = this
-  // me.$router.push({name: me.$route.meta.parentName})
-  me.$router.back()
+  me.$router.push({name: me.$route.meta.parentName})
+  // me.$router.back()
 }

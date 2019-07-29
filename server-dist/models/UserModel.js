@@ -7,20 +7,16 @@ class UserModel extends BaseModel_1.default {
         return 'user';
     }
     getSchema() {
-        return {
-            username: {
+        return Object.assign({ username: {
                 type: mongoose.Schema.Types.String,
                 required: true,
-            },
-            password: {
+            }, password: {
                 type: mongoose.Schema.Types.String,
                 required: true,
-            },
-            passSalt: {
+            }, passSalt: {
                 type: mongoose.Schema.Types.String,
                 required: true,
-            },
-        };
+            } }, this.defaultSchema);
     }
 }
 exports.default = UserModel;

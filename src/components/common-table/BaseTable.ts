@@ -139,7 +139,7 @@ Vue.component('BaseTable', {
           me.total = me.handleTotal ? me.handleTotal(res.data) : res.data.total
         }
       })
-    }),
+    }, 300),
     resize () {
       debounce(calcHeight.bind(this), 100)()
     },

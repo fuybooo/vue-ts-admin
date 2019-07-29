@@ -21,7 +21,7 @@
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
-  import {Column} from '@/components/common-table/table.model'
+  import {Column, columnWidth} from '@/components/common-table/table.model'
   import {Schema} from '@/components/common-form/form.model'
   import {fb} from '@/util/common/fns/fns-form'
   import {HttpRes} from '@/model/common/models'
@@ -40,6 +40,13 @@
       {
         prop: 'username',
         label: '用户名',
+      },
+      {
+        contentSlot: 'op',
+        label: '操作',
+        props: {
+          width: columnWidth.w180,
+        }
       }
     ]
     // 跳转到创建页面

@@ -142,7 +142,7 @@ export function isEmptyObject (obj: any) {
  * @return 返回一个新的可取消的防抖函数
  * @example const d = debounce(function () {}) 执行该函数 d() 取消执行 d.cancel()
  */
-export function debounce (func: () => any, delay = 400, immediate = false) {
+export function debounce (func: (...args: any) => any, delay = 100, immediate = false) {
   let timer: any = null
   const result = function (...args: any) {
     // @ts-ignore

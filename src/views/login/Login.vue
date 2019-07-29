@@ -82,7 +82,7 @@
           this.$error(this.$t('login.tip.userNameOrPasswordError') as string)
           return false
         } else {
-          login(this.form.username, this.form.password)
+          login.bind(this)(this.form.username, this.form.password)
         }
       })
     }

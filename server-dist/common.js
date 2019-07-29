@@ -8,6 +8,8 @@ const sha1 = require('sha1');
 const config = require('../config.json');
 // tslint:disable-next-line:no-var-requires
 const fns = require('../shared/fns.js');
+// tslint:disable-next-line:no-var-requires
+const ENV = require('../shared/env');
 function isExist(filePath) {
     return fs.existsSync(filePath);
 }
@@ -15,7 +17,9 @@ function log(msg, type = 'log', op = '') {
     if (!msg) {
         return;
     }
-    console[type](type, msg);
+    if (process.env.APP_MODE === ENV.APP_MODE.dev) {
+        console[type](type, msg);
+    }
     const logDir = path.resolve(__dirname, '../..', config.projectPrefix + 'log');
     if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir);

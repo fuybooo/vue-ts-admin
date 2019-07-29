@@ -14,7 +14,10 @@ export default interface BaseModelInterface {
   getName (): string
   getSchema (): mongoose.SchemaDefinition
   list? (listParams: ListParams): any
+  count? (countParams: any): any
   get? (id: string | number): any
-  create? (model: any): any
   findBy? (map: any): any
+  create? (model: any): any
+  update? (map: any): any
+  delete? (id: string | number, really: boolean): any
 }

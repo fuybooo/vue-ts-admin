@@ -21,24 +21,41 @@
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
-  import {Column} from '@/components/common-table/table.model'
+  import {Column, columnWidth} from '@/components/common-table/table.model'
   import {Schema} from '@/components/common-form/form.model'
   import {fb} from '@/util/common/fns/fns-form'
   import {HttpRes} from '@/model/common/models'
 
   @Component({})
   export default class SystemMenu extends Vue {
-    public schema: Schema[] = []
+    public schema: Schema[] = [
+      {
+        prop: 'keywords',
+        label: '搜索'
+      }
+    ]
     public form = fb(this.schema)
-    public url = this.$urls.demo.table.get
-    public columns: Column[] = []
+    public url = this.$urls.user.get
+    public columns: Column[] = [
+      {
+        prop: 'username',
+        label: '用户名',
+      },
+      {
+        contentSlot: 'op',
+        label: '操作',
+        props: {
+          width: columnWidth.w180,
+        }
+      }
+    ]
     // 跳转到创建页面
     public handleClick () {
       this.$router.push({name: 'system-menu-detail', params: {pattern: 'create'}})
     }
     // 执行删除
     public del (row: any) {
-      this.$req(this.$urls.demo.table.del, {id: row.id}).then((res: HttpRes) => {
+      this.$req(this.$urls.user.delete, {id: row.id}).then((res: HttpRes) => {
         if (res.head.errCode === 0) {
           (this.$refs.table as any).search(true)
         }

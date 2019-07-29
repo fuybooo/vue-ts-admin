@@ -27,7 +27,7 @@ const router: ProRouteConfig = {
       },
     },
     {
-      path: 'system-user-detail',
+      path: 'system-user-detail/:pattern/:id?',
       name: 'system-user-detail',
       component: SystemUserDetail,
       meta: {

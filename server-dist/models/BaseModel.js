@@ -12,6 +12,8 @@ class BaseModel {
         this.defaultSchema = {
             createTime: mongoose.Schema.Types.Number,
             updateTime: mongoose.Schema.Types.Number,
+            isDeleted: mongoose.Schema.Types.Boolean,
+            isDisabled: mongoose.Schema.Types.Boolean,
         };
         this.schema = new mongoose.Schema(this.getSchema());
         this.name = this.getName();
@@ -76,21 +78,39 @@ class BaseModel {
     }
     list(listParams = {}) {
         return this.model
-            .find(...(listParams.findParams ? (Array.isArray(listParams.findParams) ? listParams.findParams : [listParams.findParams]) : []))
+            .find(...(listParams.findParams ? (Array.isArray(listParams.findParams) ? listParams.findParams : [Object.assign({ isDeleted: { $ne: true } }, listParams.findParams)]) : [{ isDeleted: { $ne: true } }]))
             .sort(this.getSortParams(listParams))
             .skip(((listParams.currentPage || this.currentPage) - 1) * (listParams.pageSize || this.pageSize))
             .limit(listParams.pageSize || this.pageSize)
             .select(this.getFields(listParams))
             .exec();
     }
+    count(countParams = {}) {
+        return this.model.countDocuments(Object.assign({ isDeleted: { $ne: true } }, countParams));
+    }
     get(id) {
-        return this.model.findOne({ _id: id });
+        return this.model.findById(id);
     }
     findBy(map) {
-        return this.model.findOne(map);
+        return this.model.findOne(Object.assign({ isDeleted: { $ne: true } }, map));
     }
     create(data) {
         return new this.model(data).save();
+    }
+    update(map) {
+        if ('id' in map) {
+            const id = map.id;
+            delete map.id;
+            return this.model.findByIdAndUpdate(id, map);
+        }
+    }
+    delete(id, really = false) {
+        if (really) {
+            return this.model.findByIdAndRemove(id);
+        }
+        else {
+            return this.update({ id, isDeleted: true });
+        }
     }
 }
 exports.default = BaseModel;

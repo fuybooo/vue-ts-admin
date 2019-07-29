@@ -14,6 +14,8 @@ export default abstract class BaseModel implements BaseModelInterface {
   public defaultSchema = {
     createTime: mongoose.Schema.Types.Number,
     updateTime: mongoose.Schema.Types.Number,
+    isDeleted: mongoose.Schema.Types.Boolean,
+    isDisabled: mongoose.Schema.Types.Boolean,
   }
   constructor () {
     this.schema = new mongoose.Schema(this.getSchema())
@@ -57,6 +59,7 @@ export default abstract class BaseModel implements BaseModelInterface {
       __v: 0,
       password: 0,
       passSalt: 0,
+      // isDisabled: 1,
     }
     if (typeof listParams.fields === 'undefined') {
       if (!listParams.notExcludesDefaultFields) {
@@ -80,20 +83,38 @@ export default abstract class BaseModel implements BaseModelInterface {
   }
   public list (listParams: ListParams = {}) {
     return this.model
-      .find(...(listParams.findParams ? (Array.isArray(listParams.findParams) ? listParams.findParams : [listParams.findParams]) : []))
+      .find(...(listParams.findParams ? (Array.isArray(listParams.findParams) ? listParams.findParams : [{isDeleted: {$ne: true}, ...listParams.findParams}]) : [{isDeleted: {$ne: true}}]))
       .sort(this.getSortParams(listParams))
       .skip(((listParams.currentPage || this.currentPage) - 1) * (listParams.pageSize || this.pageSize))
       .limit(listParams.pageSize || this.pageSize)
       .select(this.getFields(listParams))
       .exec()
   }
+  public count (countParams: any = {}): any {
+    return this.model.countDocuments({isDeleted: {$ne: true}, ...countParams})
+  }
+
   public get (id: number | string) {
-    return this.model.findOne({_id: id})
+    return this.model.findById(id)
   }
   public findBy (map: any) {
-    return this.model.findOne(map)
+    return this.model.findOne({isDeleted: {$ne: true}, ...map})
   }
   public create (data: any) {
     return new this.model(data).save()
+  }
+  public update (map: any): any {
+    if ('id' in map) {
+      const id = map.id
+      delete map.id
+      return this.model.findByIdAndUpdate(id, map)
+    }
+  }
+  public delete (id: string | number, really: boolean = false): any {
+    if (really) {
+      return this.model.findByIdAndRemove(id)
+    } else {
+      return this.update({id, isDeleted: true})
+    }
   }
 }
