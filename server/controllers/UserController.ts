@@ -29,7 +29,8 @@ export default class UserController extends BaseController {
           ],
         },
       })
-    return (ctx.body = resReturn({results}))
+    const total = await this.Model.count()
+    return (ctx.body = resReturn({results, total}))
   }
   private async create (ctx: Ctx, isRegister = false) {
     const result: UserInstance = await this.Model.findBy({username: ctx.params.username})

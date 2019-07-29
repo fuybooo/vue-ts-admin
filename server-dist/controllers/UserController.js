@@ -22,7 +22,8 @@ class UserController extends BaseController_1.default {
                     },
                 ],
             } }));
-        return (ctx.body = intercept_1.resReturn({ results }));
+        const total = await this.Model.count();
+        return (ctx.body = intercept_1.resReturn({ results, total }));
     }
     async create(ctx, isRegister = false) {
         const result = await this.Model.findBy({ username: ctx.params.username });
