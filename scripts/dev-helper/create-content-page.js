@@ -40,7 +40,7 @@ function getContent (item) {
       }
     ]
     public form = fb(this.schema)
-    public url = this.$urls.user.get
+    public url = this.$urls.user.list
     public columns: Column[] = [
       {
         prop: 'username',
