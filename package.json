@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "s": "export BUILD_MODE=dev&& vue-cli-service serve",
-    "b": "vue-cli-service build && bash ./scripts/commit-helper/commit-gh-page.sh",
+    "s": "export BUILD_MODE=dev&&npx --max_old_space_size=6096 vue-cli-service serve",
+    "b": "npx --max_old_space_size=6096 vue-cli-service build && bash ./scripts/commit-helper/commit-gh-page.sh",
     "l": "lite-server",
     "g": "gulp",
     "n": "node server-dist/app.js",

@@ -1,6 +1,5 @@
 const util = require('./util')
-const moduleConfig = require('./create-config')
-function getContent (item) {
+function getContent (moduleConfig, item) {
   const mn = util.getLineName(moduleConfig.module.name)
   const itemName = util.getLineName(item.name)
   return `<template>

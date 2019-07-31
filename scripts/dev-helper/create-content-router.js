@@ -1,6 +1,5 @@
 const util = require('./util')
-const moduleConfig = require('./create-config')
-function getContent () {
+function getContent (moduleConfig) {
   const mn = util.getLineName(moduleConfig.module.name)
   const mt = moduleConfig.module.title
   const importInfo = moduleConfig.pages.map(item => (
@@ -27,12 +26,12 @@ import ${util.getClassName(mn, util.getLineName(item.name))}Detail from '@/modul
     },`))).join('\n')
   return (
     `import {ProRouteConfig} from '@/model/project/route/route.model'
-import ${util.upperCaseFirst(mn)} from '@/modules/${mn}/views/${util.upperCaseFirst(mn)}.vue'
+import ${util.getCamelName(mn)} from '@/modules/${mn}/views/${util.getCamelName(mn)}.vue'
 ${importInfo}
 const router: ProRouteConfig = {
   path: '${mn}',
   name: '${mn}',
-  component: ${util.upperCaseFirst(mn)},
+  component: ${util.getCamelName(mn)},
   children: [
     ${childrenInfo}
   ],
