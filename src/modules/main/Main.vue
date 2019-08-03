@@ -16,7 +16,7 @@
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
-  import MainHeader from '@/views/main/MainHeader.vue'
+  import MainHeader from '@/modules/main/MainHeader.vue'
 
   @Component({components: {MainHeader}})
   export default class Main extends Vue {

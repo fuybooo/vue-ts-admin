@@ -3,9 +3,9 @@ function getContent (moduleConfig) {
   const mn = util.getLineName(moduleConfig.module.name)
   const mt = moduleConfig.module.title
   const importInfo = moduleConfig.pages.map(item => (
-    `import ${util.getClassName(mn, util.getLineName(item.name))} from '@/modules/${mn}/views/${mn}-${util.getLineName(item.name)}/${util.getClassName(mn, util.getLineName(item.name))}.vue'` +
+    `const ${util.getClassName(mn, util.getLineName(item.name))} = () => import(/* webpackChunkName: "${mn}" */ '@/modules/${mn}/views/${mn}-${util.getLineName(item.name)}/${util.getClassName(mn, util.getLineName(item.name))}.vue')` +
     (item.dialogDetail ? '' : `
-import ${util.getClassName(mn, util.getLineName(item.name))}Detail from '@/modules/${mn}/views/${mn}-${util.getLineName(item.name)}/${util.getClassName(mn, util.getLineName(item.name))}Detail.vue'
+const ${util.getClassName(mn, util.getLineName(item.name))}Detail = () => import(/* webpackChunkName: "${mn}" */ '@/modules/${mn}/views/${mn}-${util.getLineName(item.name)}/${util.getClassName(mn, util.getLineName(item.name))}Detail.vue')
 `))).join('')
   const childrenInfo = moduleConfig.pages.map(item => (`{
       path: '${mn}-${util.getLineName(item.name)}',
@@ -26,7 +26,7 @@ import ${util.getClassName(mn, util.getLineName(item.name))}Detail from '@/modul
     },`))).join('\n')
   return (
     `import {ProRouteConfig} from '@/model/project/route/route.model'
-import ${util.getCamelName(mn)} from '@/modules/${mn}/views/${util.getCamelName(mn)}.vue'
+const ${util.getCamelName(mn)} = () => import(/* webpackChunkName: "${mn}" */ '@/modules/${mn}/views/${util.getCamelName(mn)}.vue')
 ${importInfo}
 const router: ProRouteConfig = {
   path: '${mn}',

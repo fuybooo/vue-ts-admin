@@ -1,6 +1,6 @@
 import {ProRouteConfig} from '@/model/project/route/route.model'
-import Main from '@/views/main/Main.vue'
-import MainHome from '@/views/main/MainHome.vue'
+import Main from '@/modules/main/Main.vue'
+import MainHome from '@/modules/main/MainHome.vue'
 import demoRouter from '@/demo/router/router'
 import systemRouter from '@/modules/system/router/router'
 

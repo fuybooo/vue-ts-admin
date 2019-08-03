@@ -81,7 +81,6 @@ Vue.component('BaseForm', {
     },
     $route: {
       handler (crtRoute, oldRoute) {
-        console.log(oldRoute, crtRoute)
         const me = this
         debounce(() => {
           if (me.autoRouter) {

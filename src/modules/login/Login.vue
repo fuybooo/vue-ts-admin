@@ -48,7 +48,7 @@
   import {transferRules} from '@/util/common/fns/fns-form'
   import {gc} from '@/util/common/fns/fns'
   import {KEY_TOKEN} from '@/model/project/local-storage-keys/keys'
-  import {login} from '@/views/login/login.service'
+  import {login} from '@/modules/login/login.service'
 
   const rules = {
     username: [

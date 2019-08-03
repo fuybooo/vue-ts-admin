@@ -1,17 +1,17 @@
 import {ProRouteConfig} from '@/model/project/route/route.model'
-import System from '@/modules/system/views/System.vue'
-import SystemUser from '@/modules/system/views/system-user/SystemUser.vue'
-import SystemUserDetail from '@/modules/system/views/system-user/SystemUserDetail.vue'
-import SystemRole from '@/modules/system/views/system-role/SystemRole.vue'
-import SystemRoleDetail from '@/modules/system/views/system-role/SystemRoleDetail.vue'
-import SystemAuth from '@/modules/system/views/system-auth/SystemAuth.vue'
-import SystemAuthDetail from '@/modules/system/views/system-auth/SystemAuthDetail.vue'
-import SystemOrganization from '@/modules/system/views/system-organization/SystemOrganization.vue'
-import SystemOrganizationDetail from '@/modules/system/views/system-organization/SystemOrganizationDetail.vue'
-import SystemMenu from '@/modules/system/views/system-menu/SystemMenu.vue'
-import SystemMenuDetail from '@/modules/system/views/system-menu/SystemMenuDetail.vue'
-import SystemDictionary from '@/modules/system/views/system-dictionary/SystemDictionary.vue'
-import SystemDictionaryDetail from '@/modules/system/views/system-dictionary/SystemDictionaryDetail.vue'
+const System = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/System.vue')
+const SystemUser = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-user/SystemUser.vue')
+const SystemUserDetail = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-user/SystemUserDetail.vue')
+const SystemRole = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-role/SystemRole.vue')
+const SystemRoleDetail = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-role/SystemRoleDetail.vue')
+const SystemAuth = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-auth/SystemAuth.vue')
+const SystemAuthDetail = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-auth/SystemAuthDetail.vue')
+const SystemOrganization = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-organization/SystemOrganization.vue')
+const SystemOrganizationDetail = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-organization/SystemOrganizationDetail.vue')
+const SystemMenu = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-menu/SystemMenu.vue')
+const SystemMenuDetail = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-menu/SystemMenuDetail.vue')
+const SystemDictionary = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-dictionary/SystemDictionary.vue')
+const SystemDictionaryDetail = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-dictionary/SystemDictionaryDetail.vue')
 
 const router: ProRouteConfig = {
   path: 'system',
@@ -27,7 +27,7 @@ const router: ProRouteConfig = {
       },
     },
     {
-      path: 'system-user-detail/:pattern/:id?',
+      path: 'system-user-detail',
       name: 'system-user-detail',
       component: SystemUserDetail,
       meta: {
