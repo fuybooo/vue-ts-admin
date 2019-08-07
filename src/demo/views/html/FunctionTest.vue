@@ -65,13 +65,12 @@
       // console.log(v3)
       // console.log(v2)
       // 测试请求
-      this.$req(this.$urls.test.getRules, {offset: 0, pagesize: 20}, 'get').then((res: HttpRes) => {
-        console.log(res)
-        if (res.head.errCode === 0) {
-
-        }
-        this.$tip(res)
-      })
+      // this.$req(this.$urls.test.getRules, {offset: 0, pagesize: 20}, 'get').then((res: HttpRes) => {
+      //   // console.log(res)
+      //   if (res.head.errCode === 0) {
+      //   }
+      //   this.$tip(res)
+      // })
     }
   }
 </script>

@@ -38,7 +38,7 @@ class BaseController {
                 // 1. 根据uid查询user 是否能够查到有效的用户
                 // 2. 根据token解析出的uid 是否与uid相同
                 const userModel = instance_1.default.getInstance(UserModel_1.default);
-                const user = await userModel.get(uid);
+                const user = await userModel.get(uid, false);
                 if (user) {
                     let decoded;
                     try {

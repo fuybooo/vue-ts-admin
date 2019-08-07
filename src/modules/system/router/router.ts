@@ -1,4 +1,5 @@
 import {ProRouteConfig} from '@/model/project/route/route.model'
+
 const System = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/System.vue')
 const SystemUser = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-user/SystemUser.vue')
 const SystemUserDetail = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-user/SystemUserDetail.vue')
@@ -27,7 +28,7 @@ const router: ProRouteConfig = {
       },
     },
     {
-      path: 'system-user-detail',
+      path: 'system-user-detail/:pattern/:id?',
       name: 'system-user-detail',
       component: SystemUserDetail,
       meta: {
@@ -35,7 +36,7 @@ const router: ProRouteConfig = {
         parentName: 'system-user',
       },
     },
-{
+    {
       path: 'system-role',
       name: 'system-role',
       component: SystemRole,
@@ -44,7 +45,7 @@ const router: ProRouteConfig = {
       },
     },
     {
-      path: 'system-role-detail',
+      path: 'system-role-detail/:pattern/:id?',
       name: 'system-role-detail',
       component: SystemRoleDetail,
       meta: {
@@ -52,7 +53,7 @@ const router: ProRouteConfig = {
         parentName: 'system-role',
       },
     },
-{
+    {
       path: 'system-auth',
       name: 'system-auth',
       component: SystemAuth,
@@ -61,7 +62,7 @@ const router: ProRouteConfig = {
       },
     },
     {
-      path: 'system-auth-detail',
+      path: 'system-auth-detail/:pattern/:id?',
       name: 'system-auth-detail',
       component: SystemAuthDetail,
       meta: {
@@ -69,7 +70,7 @@ const router: ProRouteConfig = {
         parentName: 'system-auth',
       },
     },
-{
+    {
       path: 'system-organization',
       name: 'system-organization',
       component: SystemOrganization,
@@ -78,7 +79,7 @@ const router: ProRouteConfig = {
       },
     },
     {
-      path: 'system-organization-detail',
+      path: 'system-organization-detail/:pattern/:id?',
       name: 'system-organization-detail',
       component: SystemOrganizationDetail,
       meta: {
@@ -86,7 +87,7 @@ const router: ProRouteConfig = {
         parentName: 'system-organization',
       },
     },
-{
+    {
       path: 'system-menu',
       name: 'system-menu',
       component: SystemMenu,
@@ -95,7 +96,7 @@ const router: ProRouteConfig = {
       },
     },
     {
-      path: 'system-menu-detail',
+      path: 'system-menu-detail/:pattern/:id',
       name: 'system-menu-detail',
       component: SystemMenuDetail,
       meta: {
@@ -103,7 +104,7 @@ const router: ProRouteConfig = {
         parentName: 'system-menu',
       },
     },
-{
+    {
       path: 'system-dictionary',
       name: 'system-dictionary',
       component: SystemDictionary,
@@ -112,7 +113,7 @@ const router: ProRouteConfig = {
       },
     },
     {
-      path: 'system-dictionary-detail',
+      path: 'system-dictionary-detail/:pattern/:id?',
       name: 'system-dictionary-detail',
       component: SystemDictionaryDetail,
       meta: {

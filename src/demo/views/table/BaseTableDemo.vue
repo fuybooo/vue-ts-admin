@@ -16,7 +16,7 @@
         <template v-slot:address="{row}">
           <span>{{row.address}}</span>
         </template>
-<!--        此处一般不需要作用域，根据需要进行解构 v-slot:ageHeader={column}-->
+        <!--        此处一般不需要作用域，根据需要进行解构 v-slot:ageHeader={column}-->
         <template v-slot:ageHeader>
           <span>不仅仅是标题</span>
         </template>
@@ -32,7 +32,7 @@
         <template v-slot:op="{row}">
           <el-button type="primary" plain @click="toEdit(row)">编辑</el-button>
           <base-confirm class="ml10" @confirm="del(row)"></base-confirm>
-<!--          <el-button type="danger" plain @click="toDel(row)">删除</el-button>-->
+          <!--          <el-button type="danger" plain @click="toDel(row)">删除</el-button>-->
         </template>
       </base-table>
     </el-main>
@@ -89,7 +89,7 @@
           type: 'link',
           route (row: any) {
             return `/main/demo/form-detail/view/${row.id}`
-          }
+          },
         },
       },
       {
@@ -118,7 +118,7 @@
             {text: 1, value: 11 + defaultFilterSplit + 'gender'},
             {text: 2, value: 22 + defaultFilterSplit + 'gender'},
           ],
-        }
+        },
       },
       {
         prop: 'age',
@@ -130,7 +130,7 @@
         prop: 'customAge',
         label: 'custom年龄',
         props: {
-          width: columnWidth.w120
+          width: columnWidth.w120,
         },
       },
       {
@@ -158,23 +158,25 @@
         label: '操作',
         contentSlot: 'op',
         props: {
-          width: columnWidth.w160
-        }
-      }
+          width: columnWidth.w160,
+        },
+      },
     ]
-    public handleResult = (data: any) => {
-      return data.results.map((item: any) => ({...item, customAge: item.age}))
-    }
     // 监听表格的各种事件
     public tableAttrs = {
       on: {
         'row-click' () {
-        }
+        },
       },
     }
+    public handleResult = (data: any) => {
+      return data.results.map((item: any) => ({...item, customAge: item.age}))
+    }
+
     public handleClick () {
       this.$router.push({name: 'demo-form-detail'})
     }
+
     public del (row: any) {
       this.$req(this.$urls.demo.table.del, {id: row.id}).then((res: HttpRes) => {
         if (res.head.errCode === 0) {
@@ -187,9 +189,11 @@
         this.$tip(res)
       })
     }
+
     public toEdit (row: any) {
       this.$router.push({name: 'demo-form-detail', params: {pattern: 'edit', id: row.id}})
     }
+
     public beforeList () {
       // 满足某些条件时才进行查询
       return this.form.keyword.length < 10

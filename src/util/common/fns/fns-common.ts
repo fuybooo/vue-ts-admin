@@ -5,6 +5,7 @@ export function findItem (list: Schema[] | Column[], prop: string) {
   // @ts-ignore
   return list.find(item => item.prop === prop || item.filterProp === prop)
 }
+
 /**
  * @Description: 设置表格项或者表单项属性
  * @param list 要设置的集合

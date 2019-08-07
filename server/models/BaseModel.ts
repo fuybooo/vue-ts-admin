@@ -3,7 +3,6 @@ import common from '../common'
 import autoIncrement from '../utils/mongoose-auto-increment'
 import db from '../utils/db'
 import BaseModelInterface, {ListParams} from './BaseModelInterface'
-// import {SchemaDefinition} from 'mongoose'
 
 export default abstract class BaseModel implements BaseModelInterface {
   public name: string
@@ -53,13 +52,15 @@ export default abstract class BaseModel implements BaseModelInterface {
       return {_id: -1}
     }
   }
-  public getFields (listParams: ListParams = {}) {
+  public getFields (listParams: ListParams = {}, withoutPwd: boolean = true) {
     const defaultExcludes = {
       ...Object.keys(this.defaultSchema).map(p => ({[p]: 0})).reduce((p, c) => ({...p, ...c}), {}),
       __v: 0,
-      password: 0,
-      passSalt: 0,
-      // isDisabled: 1,
+      ...(withoutPwd ? {
+        password: 0,
+        passSalt: 0,
+      } : {}),
+      // isDeleted: 1,
     }
     if (typeof listParams.fields === 'undefined') {
       if (!listParams.notExcludesDefaultFields) {
@@ -94,11 +95,11 @@ export default abstract class BaseModel implements BaseModelInterface {
     return this.model.countDocuments({isDeleted: {$ne: true}, ...countParams})
   }
 
-  public get (id: number | string) {
-    return this.model.findById(id)
+  public get (id: number | string, withoutPwd: boolean = true) {
+    return this.model.findById(id).select(this.getFields({}, withoutPwd))
   }
-  public findBy (map: any) {
-    return this.model.findOne({isDeleted: {$ne: true}, ...map})
+  public findBy (map: any, withoutPwd: boolean = true) {
+    return this.model.findOne({isDeleted: {$ne: true}, ...map}).select(this.getFields({}, withoutPwd))
   }
   public create (data: any) {
     return new this.model(data).save()

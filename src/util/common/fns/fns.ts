@@ -13,17 +13,20 @@ export function lg (key: string): string {
 export function ls (key: string, value: string): void {
   localStorage.setItem(key, value)
 }
+
 /* 存取cookie */
-export function sc (key: string, value: string, expMs: number = 3650  * 24 * 60 * 60 * 1000) {
+export function sc (key: string, value: string, expMs: number = 3650 * 24 * 60 * 60 * 1000) {
   const expires = new Date()
   expires.setTime(expires.getTime() + expMs)
   document.cookie = `${key}=${escape(value)};expires=${expires.toUTCString()};path=/;`
 }
+
 export function gc (key: string) {
   const reg = new RegExp('(^| )' + key + '=([^;]*)(;|$)')
   const res = document.cookie.match(reg)
   return res ? unescape(res[2]) : null
 }
+
 export function dc (key: string) {
   sc(key, '', -1)
 }
@@ -50,6 +53,7 @@ export function getProp (prop: string): any {
   // @ts-ignore
   return prop.split('.').reduce((p, c) => (p && p[c] && typeof p[c] === 'string') ? p[c] : ((p && typeof p[c] !== 'undefined') ? p[c] : null), this)
 }
+
 // 根据属性set值
 export function setProp (prop: string | undefined, value: any): void {
   if (!prop) {
@@ -76,6 +80,7 @@ export function setProp (prop: string | undefined, value: any): void {
     this[path[0]] = value
   }
 }
+
 /**
  * @Description: 深度trim对象
  * @param obj 原对象
@@ -121,17 +126,32 @@ export function deepTrim (obj: any, filterNone = false, onlyClone = false) {
   }
   return newObj
 }
+
 // 深克隆
 export function deepClone (obj: any) {
   return deepTrim(obj, false, true)
 }
+
 export function isEmptyObject (obj: any) {
-  if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+  if (typeof obj === 'object' && obj && !Array.isArray(obj)) {
     if (Object.keys({}).length === 0) {
       return true
     }
   }
   return false
+}
+
+export function isEmpty (value: any) {
+  if (value === null) {
+    return true
+  }
+  if (Array.isArray(value)) {
+    return !!value.length
+  }
+  if (typeof value === 'object') {
+    return isEmptyObject(value)
+  }
+  return value === '' || value === undefined
 }
 
 /**
@@ -147,11 +167,15 @@ export function debounce (func: (...args: any) => any, delay = 100, immediate = 
   const result = function (...args: any) {
     // @ts-ignore
     const ctx = this
-    if (timer) { clearTimeout(timer) }
+    if (timer) {
+      clearTimeout(timer)
+    }
     if (immediate) {
       const callNow = !timer
       timer = setTimeout(() => timer = null, delay)
-      if (callNow) { func.apply(ctx, args) }
+      if (callNow) {
+        func.apply(ctx, args)
+      }
     } else {
       timer = setTimeout(() => func.apply(ctx, args), delay)
     }

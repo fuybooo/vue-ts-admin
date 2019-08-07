@@ -14,6 +14,7 @@ export function transferRules (rules: any) {
   keys.forEach(item => newRules[item] = transferRule.bind(this)(rules[item]))
   return newRules
 }
+
 export function transferRule (itemRule: any[]) {
   // @ts-ignore
   const me = this
@@ -37,8 +38,9 @@ export function transferRule (itemRule: any[]) {
     }
   })
 }
-export function formBuilder (schema: Schema[]): any {
-  const form: any = {[UUID]: ''}
+
+export function formBuilder (schema: Schema[], extra: any = {}): any {
+  const form: any = {[UUID]: '', ...extra}
   schema.forEach(item => {
     if (item.prop) {
       if (item.startProp && item.endProp) {
@@ -52,6 +54,7 @@ export function formBuilder (schema: Schema[]): any {
     }
   })
   return form
+
   function getInitValue (item: Schema) {
     if (item.initValue === undefined) {
       // 该控件没有设置默认值，则根据其组件设置相应的初始值
@@ -70,6 +73,7 @@ export function formBuilder (schema: Schema[]): any {
     }
   }
 }
+
 export {
   formBuilder as fb, // 重命名一个简写的名称
 }
@@ -86,6 +90,7 @@ export function getValueOfOption (option: Option, item: Schema) {
   }
   return res
 }
+
 export function getLabelOfOption (option: Option, item: Schema) {
   let res
   if ('label' in option) {
@@ -102,27 +107,42 @@ export function getLabelOfOption (option: Option, item: Schema) {
 export function isCheckbox (item: Schema) {
   return item.comp === 'checkbox'
 }
+
 export function isSelect (item: Schema) {
   return item.comp === 'select'
 }
+
 export function isRadio (item: Schema) {
   return item.comp === 'radio'
 }
+
 export function isDate (item: Schema) {
   return item.comp === 'date'
 }
+
 export function isDateButNotRange (item: Schema) {
   return item.comp === 'date' && item.props && item.props.type && !item.props.type.includes('range')
 }
+
 export function isDateRange (item: Schema) {
   return item.comp === 'date' && item.props && item.props.type && item.props.type.includes('range')
 }
+
 // 基础设值 如果后端返回的结果与前端表单的字段名一一对应则直接调用该方法即可
-export function setFormData (form: any, formData?: any) {
-  const localForm = formData || {}
-  for (const p in form) {
-    if (form.hasOwnProperty(p)) {
-      form[p] = localForm[p]
+export function setFormData (form: any, formData: any = {}, clear: boolean = false) {
+  if (clear) {
+    for (const p in form) {
+      if (form.hasOwnProperty(p)) {
+        form[p] = ''
+      }
+    }
+  } else {
+    for (const p in formData) {
+      if (formData.hasOwnProperty(p)) {
+        if (formData[p] !== undefined) {
+          form[p] = formData[p]
+        }
+      }
     }
   }
 }

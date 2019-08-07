@@ -38,14 +38,14 @@ export function validateParams (schema: SchemaMap, params: any) {
       const valueType = typeof value
       if (fieldConfig.required) {
         if (fieldConfig.type !== 'boolean') {
-          if (!value) {
+          if (value === undefined || value === null || value === '') {
             valid = false
             message = `【${key}】是必填字段`
             break
           }
         }
       }
-      if (value) {
+      if (!(value === undefined || value === null || value === '')) {
         if (fieldConfig.type === 'array') {
           if (!(valueType === 'object' && Array.isArray(value))) {
             valid = false

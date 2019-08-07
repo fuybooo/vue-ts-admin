@@ -36,6 +36,7 @@
       },
     ]
     public form = fb(this.schema)
+
     public created () {
       this.formPattern = this.$route.params.pattern as Pattern
       if (this.formPattern === 'view' || this.formPattern === 'edit') {

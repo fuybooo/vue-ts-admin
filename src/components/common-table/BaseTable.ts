@@ -412,11 +412,15 @@ function changeRouteParams () {
       ...query,
       [me.queryKey]: JSON.stringify(deepTrim({
         ...params,
-        ...(me.recordRow ? (me.rememberRow ? {_rememberRow: me.rememberRow, _rememberRowKey: me.rememberRowKey} : {}) : {}),
+        ...(me.recordRow ? (me.rememberRow ? {
+          _rememberRow: me.rememberRow,
+          _rememberRowKey: me.rememberRowKey,
+        } : {}) : {}),
       }, true)),
     },
   })
 }
+
 function getContent (createElement: typeof Vue.prototype.$CreateElement, col: Column, props: any): VNodeChildren {
   // @ts-ignore
   const me = this
@@ -439,6 +443,7 @@ function getContent (createElement: typeof Vue.prototype.$CreateElement, col: Co
   }
   return [vNode]
 }
+
 function getContentEvent (type: ContentType, col: Column, props: any) {
   // @ts-ignore
   const me = this
@@ -463,6 +468,7 @@ function getContentEvent (type: ContentType, col: Column, props: any) {
   }
   return eventObj
 }
+
 function mergeTableFunctionProps () {
   // @ts-ignore
   const me = this

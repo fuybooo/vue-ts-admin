@@ -1,13 +1,15 @@
 import Vue from 'vue'
 import './BaseViewHtml.less'
+import {isEmpty} from '@/util/common/fns/fns'
+
 Vue.component('BaseViewHtml', {
   render (createElement) {
     return createElement('span', {
-      class: (this.formItem.viewClassName || (this.value === '' || this.value === undefined || this.value === null) ? 'base-view-none' : '') + ' base-view-html',
+      class: getHtmlClass.bind(this)(),
     }, [getHtmlValue.bind(this)()])
   },
   props: {
-    value: [Object, String, Number, Boolean],
+    value: [Array, Object, String, Number, Boolean],
     formItem: {
       type: Object,
       default () {
@@ -20,10 +22,10 @@ Vue.component('BaseViewHtml', {
 function getHtmlValue () {
   // @ts-ignore
   const me = this
-  if (me.formItem.viewValue) {
+  if (!isEmpty(me.formItem.viewValue)) {
     return me.formItem.viewValue
   } else {
-    if (me.value === '' || me.value === undefined || me.value === null) {
+    if (isEmpty(me.value)) {
       return me.formItem.viewDefaultValue === undefined ? '无' : me.formItem.viewDefaultValue
     } else {
       if (me.formItem.viewFilter) {
@@ -31,6 +33,21 @@ function getHtmlValue () {
       } else {
         return me.value
       }
+    }
+  }
+}
+
+function getHtmlClass () {
+  // @ts-ignore
+  const me = this
+  const className = 'base-view-html'
+  if (me.formItem.viewClassName) {
+    return `${className} ${me.formItem.viewClassName}`
+  } else {
+    if (isEmpty(me.formItem.viewValue) && isEmpty(me.value)) {
+      return `${className} base-view-none`
+    } else {
+      return className
     }
   }
 }

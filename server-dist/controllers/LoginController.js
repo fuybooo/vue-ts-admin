@@ -16,7 +16,7 @@ class LoginController extends BaseController_1.default {
     async login(ctx) {
         const username = ctx.params.username;
         const password = ctx.params.password;
-        const result = await this.Model.findBy({ username });
+        const result = await this.Model.findBy({ username }, false);
         if (!result) {
             return (ctx.body = intercept_1.resReturn(null, 404, '该用户不存在'));
         }

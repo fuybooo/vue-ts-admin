@@ -4,6 +4,7 @@ import {mode} from '@/config/base-config'
 import {HttpRes} from '@/model/common/models'
 // tslint:disable-next-line:no-var-requires
 const ENV = require('../../../shared/env.js')
+
 export function login (username: string, password: string) {
   // @ts-ignore
   const me = this

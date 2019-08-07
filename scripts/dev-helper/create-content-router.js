@@ -16,7 +16,7 @@ const ${util.getClassName(mn, util.getLineName(item.name))}Detail = () => import
       },
     },` + (item.dialogDetail ? '' : `
     {
-      path: '${mn}-${util.getLineName(item.name)}-detail',
+      path: '${mn}-${util.getLineName(item.name)}-detail/:pattern/:id?',
       name: '${mn}-${util.getLineName(item.name)}-detail',
       component: ${util.getClassName(mn, util.getLineName(item.name))}Detail,
       meta: {

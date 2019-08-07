@@ -31,8 +31,8 @@
     public schema: Schema[] = [
       {
         prop: 'keywords',
-        label: '搜索'
-      }
+        label: '搜索',
+      },
     ]
     public form = fb(this.schema)
     public url = this.$urls.user.list
@@ -46,13 +46,15 @@
         label: '操作',
         props: {
           width: columnWidth.w180,
-        }
-      }
+        },
+      },
     ]
+
     // 跳转到创建页面
     public handleClick () {
       this.$router.push({name: 'system-user-detail', params: {pattern: 'create'}})
     }
+
     // 执行删除
     public del (row: any) {
       this.$req(this.$urls.user.delete, {id: row.id}).then((res: HttpRes) => {
@@ -63,6 +65,7 @@
         this.$tip(res)
       })
     }
+
     // 跳转到编辑页面
     public toEdit (row: any) {
       this.$router.push({name: 'system-user-detail', params: {pattern: 'edit', id: row.id}})

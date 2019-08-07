@@ -9,6 +9,7 @@ let debugMap: any = {
   // 'login': 'http://api.dev4.everjiankang.com.cn/',
   'platform-': 'http://api.dev4.everjiankang.com.cn/',
 }
+
 export function debugReq (req: any) {
   // 从localStorage中匹配
   /**

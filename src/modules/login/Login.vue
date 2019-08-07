@@ -69,7 +69,7 @@
     }
     public rules: any = rules
 
-    private created () {
+    public created () {
       if (gc(KEY_TOKEN)) {
         this.$router.push({name: 'main'})
       }

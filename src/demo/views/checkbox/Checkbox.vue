@@ -16,7 +16,7 @@
 
   @Component({})
   export default class Checkbox extends Vue {
-    checkList = []
+    public checkList = []
   }
 </script>
 <style scoped lang="less">

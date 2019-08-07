@@ -20,7 +20,7 @@ export default class LoginController extends BaseController {
   private async login (ctx: Ctx) {
     const username = ctx.params.username
     const password = ctx.params.password
-    const result: UserInstance = await this.Model.findBy({username})
+    const result: UserInstance = await this.Model.findBy({username}, false)
     if (!result) {
       return (ctx.body = resReturn(null, 404, '该用户不存在'))
     } else if (common.generatePassword(password, result.passSalt) === result.password) {

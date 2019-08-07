@@ -1,4 +1,5 @@
 import {RouteConfig} from 'vue-router'
+
 // 规定meta中的属性
 export interface RouteMeta {
   title?: string // 页面标题 & 菜单名称
@@ -10,6 +11,7 @@ export interface RouteMeta {
   hideBread?: boolean // 是否隐藏面包屑
   needNotToken?: boolean // 不需要token的路由
 }
+
 export interface ProRouteConfig extends RouteConfig {
   meta: RouteMeta
   name: string

@@ -27,6 +27,7 @@
       },
     ]
     public form = fb(this.schema)
+
     public created () {
       // 赋值
       this.form.name = 3

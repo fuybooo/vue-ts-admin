@@ -1,4 +1,5 @@
 export declare type ContentType = 'link' | 'event' | 'btn'
+
 export interface Column {
   prop?: string
   label?: string
@@ -14,6 +15,7 @@ export interface Column {
     value? (row: any): string | number, // 当传该值时，优先用该值渲染，否则用当前列当值渲染
   }
 }
+
 // baseTable中tableProps
 export interface TableProps {
   data?: [],
@@ -52,6 +54,7 @@ export interface TableProps {
   lazy?: boolean,
   load?: any
 }
+
 // 列的属性
 export interface ColumnProps {
   type?: '' | 'index' | 'selection' | null | undefined
@@ -82,6 +85,7 @@ export interface ColumnProps {
   index?: number | any
   sortOrders?: null | 'ascending' | 'descending'
 }
+
 export const defaultFilterSplit = '____'
 // 在表格内容出现换行时需要考虑将列的宽度限制一下
 export const columnWidth = {

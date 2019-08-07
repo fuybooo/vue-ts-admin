@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const common_1 = require("../common");
 const mongoose_auto_increment_1 = require("../utils/mongoose-auto-increment");
 const db_1 = require("../utils/db");
-// import {SchemaDefinition} from 'mongoose'
 class BaseModel {
     constructor() {
         this.currentPage = 1;
@@ -49,8 +48,11 @@ class BaseModel {
             return { _id: -1 };
         }
     }
-    getFields(listParams = {}) {
-        const defaultExcludes = Object.assign({}, Object.keys(this.defaultSchema).map(p => ({ [p]: 0 })).reduce((p, c) => (Object.assign({}, p, c)), {}), { __v: 0, password: 0, passSalt: 0 });
+    getFields(listParams = {}, withoutPwd = true) {
+        const defaultExcludes = Object.assign({}, Object.keys(this.defaultSchema).map(p => ({ [p]: 0 })).reduce((p, c) => (Object.assign({}, p, c)), {}), { __v: 0 }, (withoutPwd ? {
+            password: 0,
+            passSalt: 0,
+        } : {}));
         if (typeof listParams.fields === 'undefined') {
             if (!listParams.notExcludesDefaultFields) {
                 return defaultExcludes;
@@ -88,11 +90,11 @@ class BaseModel {
     count(countParams = {}) {
         return this.model.countDocuments(Object.assign({ isDeleted: { $ne: true } }, countParams));
     }
-    get(id) {
-        return this.model.findById(id);
+    get(id, withoutPwd = true) {
+        return this.model.findById(id).select(this.getFields({}, withoutPwd));
     }
-    findBy(map) {
-        return this.model.findOne(Object.assign({ isDeleted: { $ne: true } }, map));
+    findBy(map, withoutPwd = true) {
+        return this.model.findOne(Object.assign({ isDeleted: { $ne: true } }, map)).select(this.getFields({}, withoutPwd));
     }
     create(data) {
         return new this.model(data).save();

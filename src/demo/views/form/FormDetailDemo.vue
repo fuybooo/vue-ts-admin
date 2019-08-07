@@ -58,7 +58,7 @@
         comp: 'radio',
         initValue: 1,
         props: {
-          options: genderList
+          options: genderList,
         },
         formItemProps: {
           rules: [
@@ -76,8 +76,7 @@
       },
     ]
     public form = fb(this.schema)
-    public formProps = {
-    }
+    public formProps = {}
 
     public created () {
       this.formPattern = this.$route.params.pattern as Pattern

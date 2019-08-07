@@ -26,7 +26,7 @@ const getConfigContent = function (i) {
     })
   })
 }
-const max = 10
+const max = 50
 const configData = `[${Array(max).fill(0).map((_i, i) => getConfigContent(i)).join()}]`
 
 fs.writeFileSync(configPath, configData)

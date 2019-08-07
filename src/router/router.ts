@@ -82,6 +82,7 @@ export default router
 function toggleLangSettingByTo (to: Route) {
   store.commit(toggleLangSetting, to.meta.langSetting)
 }
+
 export function setTitle (to: Route) {
   const defaultTitle = 'title.THC'
   const title = to.meta ? to.meta.title || defaultTitle : defaultTitle

@@ -2,18 +2,18 @@
   <el-container class="h">
     <el-main class="h">
       <el-row class="mt30">
-       <el-col :offset="6" :span="8">
-         <base-form :schema="schema" v-model="form" :inline="false" is-row :span="24">
-           <template v-slot:default>
-             <el-col>
-               <el-form-item>
-                 <el-button type="primary" @click="register">立即注册</el-button>
-                 <el-button @click="back">返回</el-button>
-               </el-form-item>
-             </el-col>
-           </template>
-         </base-form>
-       </el-col>
+        <el-col :offset="6" :span="8">
+          <base-form :schema="schema" v-model="form" :inline="false" is-row :span="24">
+            <template v-slot:default>
+              <el-col>
+                <el-form-item>
+                  <el-button type="primary" @click="register">立即注册</el-button>
+                  <el-button @click="back">返回</el-button>
+                </el-form-item>
+              </el-col>
+            </template>
+          </base-form>
+        </el-col>
       </el-row>
     </el-main>
   </el-container>
@@ -39,9 +39,10 @@
         props: {
           type: 'password',
         },
-      }
+      },
     ]
     public form = fb(this.schema)
+
     public register () {
       this.$req(this.$urls.login.register, this.form).then((res: HttpRes) => {
         if (res.head.errCode === 0) {
@@ -51,6 +52,7 @@
         this.$tip(res)
       })
     }
+
     public back () {
       this.$router.push({name: 'login'})
     }

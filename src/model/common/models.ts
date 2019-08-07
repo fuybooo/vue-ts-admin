@@ -16,6 +16,7 @@ export const langList = [
 ]
 // 模式
 export declare type Pattern = 'create' | 'view' | 'edit'
+
 // 返回结果的结构
 export interface HttpRes {
   code: string | number
@@ -28,4 +29,5 @@ export interface HttpRes {
     total?: number,
   }
 }
+
 export const UUID = '_uuid'

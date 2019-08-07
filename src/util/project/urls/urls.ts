@@ -3,6 +3,7 @@ import {prefix, urlType} from '@/util/project/urls/url-util'
 import {mode} from '@/config/base-config'
 // tslint:disable-next-line:no-var-requires
 const ENV = require('../../../../shared/env.js')
+
 // 该接口与urls保持一致，保证使用this.$urls时能够通过"."得到提示
 export interface Urls {
   demo: {
@@ -30,7 +31,15 @@ export interface Urls {
     delete: urlType,
     update: urlType,
   },
+  menu: {
+    list: urlType,
+    get: urlType,
+    create: urlType,
+    delete: urlType,
+    update: urlType,
+  },
 }
+
 const urls: Urls = {
   demo: {
     table: {
@@ -56,6 +65,13 @@ const urls: Urls = {
     delete: 'user/delete',
     create: 'user/create',
     update: 'user/update',
+  },
+  menu: {
+    list: 'menu/list',
+    get: 'menu/get',
+    delete: 'menu/delete',
+    create: 'menu/create',
+    update: 'menu/update',
   },
 }
 Vue.prototype.$urls = urls

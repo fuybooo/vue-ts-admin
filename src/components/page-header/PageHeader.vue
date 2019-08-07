@@ -2,7 +2,9 @@
   <el-page-header v-if="!hidden" @back="goBack">
     <template v-slot:content>
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item v-for="item of breadList"><router-link :to="{ name: item.name }">{{item.title}}</router-link></el-breadcrumb-item>
+        <el-breadcrumb-item v-for="item of breadList">
+          <router-link :to="{ name: item.name }">{{item.title}}</router-link>
+        </el-breadcrumb-item>
       </el-breadcrumb>
     </template>
   </el-page-header>
@@ -18,15 +20,17 @@
 
   @Component({})
   export default class PageHeader extends Vue {
-    hidden = true
-    baseBread = [{name: 'home', title: '首页'}]
-    breadList = [...this.baseBread]
+    public hidden = true
+    public baseBread = [{name: 'home', title: '首页'}]
+    public breadList = [...this.baseBread]
+
     public created () {
     }
+
     @Watch('$route', {immediate: true})
-    routeChange (crtRoute: Route) {
+    public routeChange (crtRoute: Route) {
       const me = this
-      debounce(function () {
+      debounce(() => {
         // 自动根据路由关系生成面包屑导航只能展示简单的通用的导航信息，如果导航信息过于复杂，则需要通过自定义实现
         me.hidden = !!crtRoute.meta.hideBread
         me.breadList = [...me.baseBread, ...((crtRoute.meta.pagePath && crtRoute.meta.pagePath.length) ? crtRoute.meta.pagePath.map((item: ProRouteConfig, i: number) => {
@@ -38,10 +42,11 @@
           {
             name: crtRoute.name,
             title: crtRoute.meta.title,
-          }
+          },
         ])]
       }, 100)()
     }
+
     public goBack () {
       this.$router.back()
     }

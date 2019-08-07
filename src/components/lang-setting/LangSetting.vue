@@ -19,6 +19,7 @@
   export default class LangSetting extends Vue {
     public value = getLanguage()
     public options = langList
+
     public changeLang (val: string) {
       loadLanguageAsync(val).then(() => setTitle(this.$route))
     }

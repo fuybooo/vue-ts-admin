@@ -2,7 +2,7 @@
   <el-container class="h">
     <el-main class="h">
       {{form}}
-      <base-form :schema="schema" v-model="form" :inline="false" is-row :span="8" :form-props="formProps"></base-form>
+      <base-form :schema="schema" v-model="form" :inline="false" is-row :span="8"></base-form>
       <div class="h"></div>
     </el-main>
   </el-container>
@@ -25,6 +25,12 @@
         label: '名称',
         prop: 'name',
         placeholder: '这是placeholder',
+        formItemProps: {
+          rules: [
+            {required: true},
+            {max: 6, min: 2},
+          ],
+        },
       },
       {
         label: '文本域',
@@ -91,8 +97,8 @@
         endProp: 'endMonthRange',
         props: {
           type: 'monthrange',
-          'start-placeholder': '开始',
-          'end-placeholder': '结束',
+          startPlaceholder: '开始',
+          endPlaceholder: '结束',
         },
       },
       {
@@ -103,8 +109,8 @@
         endProp: 'endDate',
         props: {
           type: 'daterange',
-          'start-placeholder': '开始',
-          'end-placeholder': '结束',
+          startPlaceholder: '开始',
+          endPlaceholder: '结束',
         },
       },
       {
@@ -115,8 +121,8 @@
         endProp: 'endDateTime',
         props: {
           type: 'datetimerange',
-          'start-placeholder': '开始',
-          'end-placeholder': '结束',
+          startPlaceholder: '开始',
+          endPlaceholder: '结束',
         },
       },
       {
@@ -124,8 +130,8 @@
         prop: 'select',
         comp: 'select',
         props: {
-          options: []
-        }
+          options: [],
+        },
       },
       {
         label: '多选框',
@@ -134,7 +140,7 @@
         props: {
           options: [],
           multiple: true,
-        }
+        },
       },
       {
         label: '单选组',
@@ -142,8 +148,8 @@
         comp: 'radio',
         initValue: '1',
         props: {
-          options: []
-        }
+          options: [],
+        },
       },
       {
         label: '多选组',
@@ -151,16 +157,16 @@
         comp: 'checkbox',
         // initValue: ['1'],
         props: {
-          options: []
-        }
+          options: [],
+        },
       },
       {
         label: '级联选择',
         prop: 'cascader',
         comp: 'cascader',
         props: {
-          options: []
-        }
+          options: [],
+        },
       },
       {
         label: '开关',
@@ -178,7 +184,7 @@
         prop: 'upload',
         comp: 'upload',
         props: {
-          action: 'https://jsonplaceholder.typicode.com/posts/'
+          action: 'https://jsonplaceholder.typicode.com/posts/',
         },
       },
       {
@@ -203,36 +209,38 @@
       const options: Option[] = [
         {
           id: '1',
-          label: '选项一'
+          label: '选项一',
         },
         {
           id: '2',
-          label: '选项二'
+          label: '选项二',
         },
       ]
-      setProperty(this.schema, 'select', {props: {options: options.map(item => ({id: item.id, label: `${item.label}(${item.id})`}))}})
+      setProperty(this.schema, 'select', {
+        props: {
+          options: options.map(item => ({
+            id: item.id,
+            label: `${item.label}(${item.id})`,
+          })),
+        },
+      })
       setProperty(this.schema, 'mulSelect', {props: {options}})
       setProperty(this.schema, 'radio', {props: {options}})
       setProperty(this.schema, 'checkbox', {props: {options}})
       setProperty(this.schema, 'cascader', {props: {options: cascaderOptions}})
-      setProperty(this.schema, 'transfer', {props: {data: Array(15).fill(0).map((item, i) => ({
-            key: i, label: `备选项${i}`, disabled: i % 4 === 0
-          }))}})
+      setProperty(this.schema, 'transfer', {
+        props: {
+          data: Array(15).fill(0).map((item, i) => ({
+            key: i, label: `备选项${i}`, disabled: i % 4 === 0,
+          })),
+        },
+      })
       // 赋值
       // this.form.name = 3
       // this.form.date = '2019-06-23'
       // this.form.datetimeRange = ['2019-06-11 12:00:00', '2019-06-13 13:13:13']
     }
-    public formProps = {
-      rules: {
-        name: [
-          {
-            required: true,
-            message: '必填'
-          }
-        ]
-      }
-    }
+
   }
 </script>
 <style scoped lang="less">

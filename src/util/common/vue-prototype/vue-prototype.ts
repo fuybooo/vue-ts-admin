@@ -6,11 +6,13 @@ import {MessageType} from 'element-ui/types/message'
 import {i18n} from '@/config/i18n-config'
 import {HttpRes} from '@/model/common/models'
 import {debounce} from '@/util/common/fns/fns'
+
 // notify 通知
 function notify (type: MessageType, message: string, title?: string | undefined) {
   // @ts-ignore
-  Notification[type]({message, title:  title || i18n.t('common.Tip')})
+  Notification[type]({message, title: title || i18n.t('common.Tip')})
 }
+
 Vue.prototype.$error = (message: string, title?: string) => {
   notify('error', message, title)
 }

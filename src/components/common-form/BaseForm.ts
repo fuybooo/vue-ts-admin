@@ -1,13 +1,13 @@
 import Vue, {VNodeChildren} from 'vue'
 import {childrenCompMap, compMap, Schema, Option, FormChangeEvent} from '@/components/common-form/form.model'
-import {debounce, getProp, guid, setProp} from '@/util/common/fns/fns'
+import {debounce, deepClone, getProp, guid, setProp} from '@/util/common/fns/fns'
 import {
   getLabelOfOption,
   getValueOfOption,
   isCheckbox,
   isDate,
   isDateRange,
-  isSelect,
+  isSelect, setFormData,
   transferRule,
 } from '@/util/common/fns/fns-form'
 import format from 'date-fns/format'
@@ -63,24 +63,23 @@ Vue.component('BaseForm', {
   },
   methods: {},
   watch: {
+    // 当其变更为true时说明赋值操作已经完成
+    formChangeDone: {
+      handler () {
+        const me: any = this
+        me.isEdited = false
+        me.originValue = deepClone(me.value)
+      },
+    },
     value: {
       handler () {
         const me: any = this
-        if (me.formPattern === 'edit') {
-          // isFirstChange 表示是否第一次变化（第一次一般是赋值）
-          if (!me.isFirstChange) {
-            // isEdited 表示form是否被编辑过
-            me.isEdited = true
-          }
-        } else {
-          me.isEdited = true
-        }
-        me.isFirstChange = false
+        me.isEdited = true
       },
       deep: true,
     },
     $route: {
-      handler (crtRoute, oldRoute) {
+      handler (crtRoute) {
         const me = this
         debounce(() => {
           if (me.autoRouter) {
@@ -93,9 +92,8 @@ Vue.component('BaseForm', {
   },
   data () {
     return {
-      isFirstChange: true,
       isEdited: false,
-      fromRoute: {},
+      originValue: null,
     }
   },
   props: {
@@ -163,6 +161,24 @@ Vue.component('BaseForm', {
     autoRouter: {
       type: Boolean,
       default: true,
+    },
+    // 表单是否已经赋值完成，用于控制哪些数据变更是赋值操作，哪些是用户操作
+    formChangeDone: {
+      type: Boolean,
+      default: true,
+    },
+    // 当页面编辑时，填写了编辑内容后又点击了取消时的操作
+    leaveEdited: {
+      type: Function,
+    },
+    // 是否将当前页面的query参数当作来时的页面的参数使用
+    isFromQuery: {
+      type: Boolean,
+      default: true,
+    },
+    // 当isFromQuery为false时，使用该值作为来时的参数
+    fromQuery: {
+      type: Object,
     },
   },
 })
@@ -233,10 +249,8 @@ function createFormItem (createElement: typeof Vue.prototype.$createElement, ite
 function createFormControl (createElement: typeof Vue.prototype.$createElement, item: Schema): VNodeChildren {
   // @ts-ignore
   const me = this
-  let vNodeChildren: VNodeChildren
-  vNodeChildren = createFormControlVNodeChildren.bind(me)(createElement, item)
   let formControl: VNodeChildren
-  if (me.formPattern === 'view') {
+  if (me.formPattern === 'view' || item.pattern === 'view') {
     formControl = createElement(item.viewComponent || 'base-view-html', {
       props: {
         formItem: item,
@@ -251,7 +265,7 @@ function createFormControl (createElement: typeof Vue.prototype.$createElement, 
       props: getFormControlProps.bind(me)(item),
       attrs: getFormControlAttrs.bind(me)(item),
       ...getElementDataObject.bind(me)(item),
-    }, vNodeChildren)
+    }, createFormControlVNodeChildren.bind(me)(createElement, item))
   }
   return formControl
 }
@@ -302,6 +316,7 @@ function getFormControlProps (item: Schema) {
     ...(item.props || {}),
   }
 }
+
 /**
  * 根据单个Schema 获取当前表单控件的attrs属性
  * @param item
@@ -360,7 +375,6 @@ function getElementDataObject (item: Schema) {
 function onInput (val: any, item: Schema) {
   // @ts-ignore
   const me = this
-  // console.log('input', val, me, item)
   // todo 判断输入框的类型
   if (!isCheckbox(item)) {
     setProp.bind(me.value)(item.prop, val)
@@ -451,6 +465,7 @@ function setExtraValue (item: Schema, val: any) {
     }
   }
 }
+
 function createInlineBtnItem (createElement: typeof Vue.prototype.$createElement) {
   // @ts-ignore
   const me = this
@@ -477,9 +492,10 @@ function createInlineBtnItem (createElement: typeof Vue.prototype.$createElement
     }, '重置'),
   ])
 }
+
 function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
   // @ts-ignore
-  const me = this
+  const me: any = this
   const btnFormItem = createElement('el-form-item', {class: me.btn.class || (me.inline ? 'fr mr0i' : '')}, [createElement('el-button', {
     props: {
       type: me.btn.type || 'primary',
@@ -511,21 +527,17 @@ function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
           // 如果页面被编辑过，则进行询问
           if (me.isEdited) {
             confirmLeave.bind(me)().then(() => {
-              me.$emit('update:formPattern', 'view')
-              // 取消编辑，发送事件之后，在外部进行跳转逻辑，并且重新给form赋值
-              me.$emit('cancel', 'edited')
+              if (me.leaveEdited) {
+                me.leaveEdited()
+              } else {
+                // defaultLeaveEdited.bind(me)()
+                goBack.bind(me)()
+              }
             }).catch(() => {
             })
           } else {
-            if (me.autoRouter) {
-              me.$router.replace({
-                name: me.$route.name,
-                params: {...(me.$route.params || {}), pattern: 'view'},
-              })
-              me.$emit('update:formPattern', 'view')
-            }
-            me.$emit('cancel', 'edit')
-            me.isEdited = false
+            // leaveEdit.bind(me)()
+            goBack.bind(me)()
           }
         } else if (me.formPattern === 'create') {
           if (me.isEdited) {
@@ -547,6 +559,7 @@ function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
   }, me.formPattern === 'view' ? '返回' : '取消')])])
   return me.$slots.default || (me.isRow ? [createElement('el-col', {}, [btnFormItem])] : btnFormItem)
 }
+
 function getFormControlClassType (item: Schema) {
   let type = ''
   let fixedHeight = false
@@ -578,18 +591,45 @@ function getFormControlClassType (item: Schema) {
     fixedHeight,
   }
 }
+
 function getClassName (item: Schema, prefix = 'base-form-control') {
   const classType = getFormControlClassType(item)
   return ` ${prefix} ${prefix}-${classType.type}${classType.fixedHeight ? ` ${prefix}-fixed-height` : ''}`
 }
+
 function confirmLeave () {
   // @ts-ignore
   const me = this
   return me.$confirm('离开页面将会丢失未保存的数据，请确认是否离开', '确认提示')
 }
+
+function leaveEdit () {
+  // @ts-ignore
+  const me = this
+  if (me.autoRouter) {
+    me.$router.replace({
+      name: me.$route.name,
+      params: {...(me.$route.params || {}), pattern: 'view'},
+    })
+    me.$emit('update:formPattern', 'view')
+  }
+  me.$emit('cancel', 'edit')
+  me.isEdited = false
+}
+
+// 该方法中originValue的值来源于 formChangeDone 属性的设置
+function defaultLeaveEdited () {
+  // @ts-ignore
+  const me = this
+  setFormData(me.value, me.originValue)
+  me.$emit('update:formPattern', 'view')
+  // 取消编辑，发送事件之后，在外部进行跳转逻辑，并且重新给form赋值
+  me.$emit('cancel', 'edited')
+}
+
 function goBack () {
   // @ts-ignore
   const me = this
-  me.$router.push({name: me.$route.meta.parentName})
+  me.$router.push({name: me.$route.meta.parentName, query: (me.isFromQuery ? me.$route.query : me.fromQuery)})
   // me.$router.back()
 }

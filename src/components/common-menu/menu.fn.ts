@@ -22,6 +22,7 @@ export function transferRoutesToMenus (routes: ProRouteConfig[], parentRoute?: P
     }
   })
 }
+
 export function getDefaultMenus () {
   return transferRoutesToMenus(mainRoute.children || [])
 }

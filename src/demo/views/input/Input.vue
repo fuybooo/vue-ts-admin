@@ -20,21 +20,21 @@
   @Component({})
   export default class Input extends Vue {
     public row = {
-      width: 'auto'
+      width: 'auto',
     }
     public list = [
       {
-        width: '1'
+        width: '1',
+      },
+      {},
+      {
+        width: 'auto',
       },
       {
-      },
-      {
-        width: 'auto'
-      },
-      {
-        width: ''
+        width: '',
       },
     ]
+
     public changeInput (value: string) {
       if (isNaN(+value)) {
         this.row.width = 'auto'
@@ -42,6 +42,7 @@
         this.row.width = value || 'auto'
       }
     }
+
     public changeListInput (item: any, value: string) {
       if (isNaN(+value)) {
         item.width = 'auto'

@@ -42,6 +42,7 @@
         value: '#909399',
       },
     ]
+
     public created () {
     }
   }
@@ -50,6 +51,7 @@
   /deep/ .el-carousel__container {
     height: 100%;
   }
+
   .medium-item {
     height: 100%;
     color: #fff;

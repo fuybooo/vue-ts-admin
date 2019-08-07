@@ -1,11 +1,13 @@
 <template>
   <el-row type="flex" justify="center" align="middle">
-   <el-col :span="18">
-     <el-menu :default-active="activeIndex" class="main-header-menu" mode="horizontal" @select="handleSelect">
-       <base-menu :menus="menus"></base-menu>
-     </el-menu>
-   </el-col>
-    <el-col :span="6" class="tar"><el-button type="text" @click="logout">{{$t('sys.logout')}}</el-button></el-col>
+    <el-col :span="18">
+      <el-menu :default-active="activeIndex" class="main-header-menu" mode="horizontal" @select="handleSelect">
+        <base-menu :menus="menus"></base-menu>
+      </el-menu>
+    </el-col>
+    <el-col :span="6" class="tar">
+      <el-button type="text" @click="logout">{{$t('sys.logout')}}</el-button>
+    </el-col>
   </el-row>
 </template>
 
@@ -23,10 +25,11 @@
 
     public created () {
     }
+
     @Watch('$route', {immediate: true})
-    routeChange (crtRoute: ProRouteConfig) {
+    public routeChange (crtRoute: ProRouteConfig) {
       const me = this
-      debounce(function () {
+      debounce(() => {
         me.activeIndex = crtRoute.meta.parentName || crtRoute.name
       }, 100)()
     }

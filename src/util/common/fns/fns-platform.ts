@@ -76,7 +76,6 @@ export function getIPs () {
       // @ts-ignore
       const ipAddr = regExp.ip.exec(ice.candidate.candidate)[1]
       if (ipDups[ipAddr] === undefined) {
-        console.log(ipAddr)
       }
       ipDups[ipAddr] = true
     }

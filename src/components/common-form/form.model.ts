@@ -15,6 +15,7 @@ export declare type ItemComp =
   'color' |
   'transfer' |
   'slot'
+
 export interface Schema {
   // 最常用的字段
   prop?: string // 字段属性名
@@ -41,6 +42,7 @@ export interface Schema {
   aliasProp?: string
   // 栅格化时当前列占的宽
   span?: number
+  pattern?: 'view' | undefined
   // 当formPattern为view时使用的组件
   viewComponent?: string
   viewValue?: any
@@ -48,6 +50,7 @@ export interface Schema {
   viewFilter?: any
   viewDefaultValue?: string | number
 }
+
 export const compMap = {
   input: 'el-input',
   date: 'el-date-picker',
@@ -71,6 +74,7 @@ export const childrenCompMap = {
   checkbox: 'el-checkbox',
   radio: 'el-radio',
 }
+
 // 创建虚拟DOM时，第二个参数的可选参数
 export interface ElementDataObject {
   // 与 `v-bind:class` 的 API 相同，
@@ -116,6 +120,7 @@ export interface Option {
   text?: string | number | boolean
   name?: string | number | boolean
 }
+
 export declare type FormChangeEventType =
   'input' | // formControl的输入事件
   'change' | // 元素的change事件
@@ -126,6 +131,7 @@ export interface FormChangeEvent {
   value: any
   option?: Option
 }
+
 export interface FormProps {
   model?: any
   rules?: any
@@ -141,6 +147,7 @@ export interface FormProps {
   validateOnRuleChange?: boolean
   hideRequiredAsterisk?: boolean
 }
+
 export interface FormItemProps {
   label?: string
   labelWidth?: string

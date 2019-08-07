@@ -6,40 +6,38 @@
 
 /**
  * 将数组转换为树
- * @param array
+ * @param list
  * @returns {any[]}
  */
-function convertListToTree (array: any[]) {
-  const list = []
-  for (const item of array) {
-    if (isRoot(item, array)) {
-      const children = getChildren(item, array)
+export function convertListToTree (list: any[]): any[] {
+  const array = []
+  for (const item of list) {
+    if (isRoot(list, item)) {
+      item._level = 1
+      const children = getChildren(list, item)
       if (children.length > 0) {
         item.children = children
-        item.isLeaf = false
+        item._isLeaf = false
       } else {
-        item.isLeaf = true
+        item._isLeaf = true
       }
-      list.push(item)
+      array.push(item)
     }
   }
-  return list
+  return array
 }
 
 
 /**
  * 判断节点是否为根
+ * @param list
  * @param item
- * @param array
  * @returns {boolean}
  */
-function isRoot (item: any, array: any[]): boolean {
-  const parentString = getParentIdStr(item)
-  if (parentString && item[parentString]) {
-    for (const a of array) {
-      if (a.id === item[parentString]) {
-        return false
-      }
+export function isRoot (list: any[], item: any): boolean {
+  for (const a of list) {
+    if (a.id === item.parentId) {
+      return false
     }
   }
   return true
@@ -47,21 +45,22 @@ function isRoot (item: any, array: any[]): boolean {
 
 /**
  * 获取所有的子元素
+ * @param list
  * @param item
- * @param array
  * @returns {any[]}
  */
-export function getChildren (item: any, array: any[]) {
+export function getChildren (list: any[], item: any) {
   const children = []
-  for (const data of array) {
-    const parentId = getParentIdStr(data)
-    if (item.id === data[parentId]) {
-      const childList = getChildren(data, array)
+  for (const data of list) {
+    if (item.id === data.parentId) {
+      data._level = item._level + 1
+      data._parent = item
+      const childList = getChildren(list, data)
       if (childList.length > 0) {
         data.children = childList
-        data.isLeaf = false
+        data._isLeaf = false
       } else {
-        data.isLeaf = true
+        data._isLeaf = true
       }
       children.push(data)
     }
@@ -69,43 +68,88 @@ export function getChildren (item: any, array: any[]) {
   return children
 }
 
-let resNode
+/**
+ * 获取所有的铺平的子元素
+ * @param list
+ * @param id
+ * @returns {any[]}
+ */
+export function getFlatChildren (list: any[], id: number) {
+  const children: any[] = []
+  for (const data of list) {
+    if (id === data.parentId) {
+      const childList = getFlatChildren(list, data.id)
+      if (childList.length) {
+        children.push(...childList)
+      }
+      children.push(data)
+    }
+  }
+  return children
+}
+
+export function getRoot (list: any[]) {
+  return list.find(item => item.parentId === 0)
+}
+
+export function getParentById (list: any[], id: number) {
+  const crt = list.find(item => item.id === id)
+  if (crt) {
+    const parent = list.find(item => item.id === crt.parentId)
+    if (parent) {
+      return parent
+    }
+  }
+  return null
+}
+
+export function getParentId (list: any[], id: number) {
+  const parent = getParentById(list, id)
+  return parent ? parent.id : null
+}
+
+export function getAllParentId (list: any[], id: number): any[] {
+  return getAllParentById(list, id).map(item => item.id)
+}
+
+export function getAllParentById (list: any[], id: number, parents: any[] = []): any[] {
+  const parent = getParentById(list, id)
+  if (parent) {
+    parents.unshift(parent)
+    const paParent = getParentById(list, parent.id)
+    if (paParent) {
+      return getAllParentById(list, paParent.id, parents)
+    }
+  }
+  return parents
+}
+
+export function getAllParentAndChildren (list: any[], id: number): any[] {
+  const allParent = getAllParentById(list, id)
+  const self = list.find(item => item.id === id)
+  const children = getFlatChildren(list, id)
+  return [...allParent, self, ...children]
+}
 
 /**
  * 根据 value 和 key 获取当前树中的节点
  */
-export function getNodeByValue (nodes: any[], value: any, key = 'id') {
-  resNode = null
-  reGetNodeByValue(nodes, value, key)
+export function getNodeById (treeData: any[], nodeId: number) {
+  let resNode = null
+  reGetNodeByValue(treeData, nodeId)
   return resNode
-}
 
-function reGetNodeByValue (nodes: any[], value: any, key = 'id') {
-  for (let i = 0, l = nodes.length; i < l; i++) {
-    const node = nodes[i]
-    if (node.origin[key] === value) {
-      resNode = node
-      break
-    } else {
-      if (node.children && node.children.length) {
-        reGetNodeByValue(node.children, value, key)
+  function reGetNodeByValue (tree: any[], id: number) {
+    for (let i = 0, l = tree.length; i < l; i++) {
+      const node = tree[i]
+      if (node.id === id) {
+        resNode = node
+        break
+      } else {
+        if (node.children && node.children.length) {
+          reGetNodeByValue(node.children, id)
+        }
       }
     }
   }
-}
-
-
-/**
- * 获取父id的key
- * @param data
- * @returns {string}
- */
-function getParentIdStr (data: any): string {
-  const parentIds = ['pid', 'parentid', 'parentId', 'pId', 'parent_id']
-  for (const item of parentIds) {
-    if (item in data) {
-      return item
-    }
-  }
-  return ''
 }

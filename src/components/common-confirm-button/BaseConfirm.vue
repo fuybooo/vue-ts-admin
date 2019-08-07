@@ -8,7 +8,7 @@
       <el-button size="mini" plain @click="visible = false">取消</el-button>
       <el-button size="mini" type="primary" @click="handleOk">确定</el-button>
     </div>
-    <el-button slot="reference" type="danger" plain>{{btnText}}</el-button>
+    <el-button slot="reference" :type="btnType" :plain="btnPlain">{{btnText}}</el-button>
   </el-popover>
 </template>
 
@@ -17,11 +17,14 @@
 
   @Component({})
   export default class BaseConfirm extends Vue {
-    @Prop({default: 'top'}) placement!: string
-    @Prop({default: '160'}) width!: string
-    @Prop({default: '确认删除？'}) content!: string
-    @Prop({default: '删除'}) btnText!: string
+    @Prop({default: 'top'}) public placement!: string
+    @Prop({default: '160'}) public width!: string
+    @Prop({default: '确认删除？'}) public content!: string
+    @Prop({default: '删除'}) public btnText!: string
+    @Prop({default: 'danger'}) public btnType!: string
+    @Prop({default: true}) public btnPlain!: boolean
     public visible = false
+
     public handleOk () {
       this.$emit('confirm')
       this.visible = false
