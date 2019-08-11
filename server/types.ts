@@ -5,6 +5,7 @@ interface Req extends Request {
 }
 export interface Ctx extends ExtendableContext {
   request: Req | any,
+  params: any,
 }
 export interface Route {
   path: string
@@ -14,8 +15,9 @@ export interface Route {
   withoutToken?: boolean
 }
 export interface FieldConfig {
-  required: boolean
   type: 'string' | 'boolean' | 'object' | 'array' | 'number',
+  required?: boolean
+  requiredFields?: string[]
   max?: number
   min?: number
 }

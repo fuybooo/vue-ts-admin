@@ -13,7 +13,8 @@
     "di": "export APP_MODE=dev&& node server-dist/install.js",
     "i": "node server-dist/install.js",
     "w": "export APP_MODE=dev&& nodemon --inspect --watch server-dist server-dist/app.js",
-    "cm": "node scripts/dev-helper/create-module.js",
+    "cm": "node scripts/front-helper/create-module.js",
+    "csm": "node scripts/server-helper/create-module.js",
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit"

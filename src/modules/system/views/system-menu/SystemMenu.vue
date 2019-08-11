@@ -17,14 +17,18 @@
             @node-click="nodeClick"
             @node-expand="changeExpand"
             @node-collapse="changeCollapse"
+            draggable
+            @node-drop="handleDrop"
+            :allow-drop="allowDrop"
+            :allow-drag="allowDrag"
           >
             <template v-slot:default="{node, data}">
               <div class="tree-content">
                 <span class="node-label">{{node.label}}</span>
                 <span class="node-button">
-                <el-button class="ml20" type="text" @click="toNew(data.id)">创建子菜单</el-button>
-                <el-button v-if="node.level !== 1" type="text" @click="toEdit(data.id)">编辑</el-button>
-                <base-confirm v-if="data._isLeaf" class="ml10" btn-type="text" :btn-plain="false"
+                <el-button class="ml20" type="text" @click.prevent="toNew(data.id)">创建子菜单</el-button>
+                <el-button v-if="node.level !== 1" type="text" @click.prevent="toEdit(data.id)">编辑</el-button>
+                <base-confirm v-if="data._isLeaf && node.level !== 1" class="ml10" btn-type="text" :btn-plain="false"
                               @confirm="del(data.id)"></base-confirm>
               </span>
               </div>
@@ -60,6 +64,12 @@
     public currentKey: number | null = null
     public originData: any[] = []
 
+    public allowDrop = (draggingNode: any, dropNode: any, dropType: string) => {
+      return draggingNode.level === dropNode.level && dropType !== 'inner' && draggingNode.data.parentId === dropNode.data.parentId
+    }
+    public allowDrag = (draggingNode: any) => {
+      return draggingNode.level !== 1
+    }
     public created () {
       // 根据参数回显应该展开的节点
       if (this.$route.query && this.$route.query.q) {
@@ -96,11 +106,14 @@
     // 跳转到创建页面
     public toNew (id: string = '0') {
       this.pushExpandedKeys(+id)
-      setTimeout(() => this.$router.push({
-        name: 'system-menu-detail',
-        params: {pattern: 'create', id},
-        query: this.fromQuery,
-      }))
+      const query = this.fromQuery
+      setTimeout(() => {
+        this.$router.push({
+          name: 'system-menu-detail',
+          params: {pattern: 'create', id},
+          query,
+        })
+      })
     }
 
     // 执行删除
@@ -117,9 +130,10 @@
 
     // 跳转到编辑页面
     public toEdit (id: string) {
-      this.currentKey = +id
+      this.currentKey = null
+      const query = this.fromQuery
       setTimeout(() => {
-        this.$router.push({name: 'system-menu-detail', params: {pattern: 'edit', id}, query: this.fromQuery})
+        this.$router.push({name: 'system-menu-detail', params: {pattern: 'edit', id}, query})
       })
     }
 
@@ -128,8 +142,8 @@
       return getAllParentAndChildren(this.originData, data.id).some((l: any) => l.name.includes(value.trim()))
     }
 
-    public nodeClick ({id}: any) {
-      this.currentKey = +id
+    public nodeClick () {
+      this.currentKey = null
     }
 
     public pushExpandedKeys (key: number) {
@@ -179,6 +193,14 @@
         path: this.$route.path,
         query: this.fromQuery,
       })
+    }
+    public handleDrop (draggingNode: any, dropNode: any) {
+      this.$req(this.$urls.menu.updateSort, {sortList: dropNode.parent.data.children.map((item: any, i: number) => ({
+          id: item.id,
+          sort: i + 1,
+        }))}).then((res: HttpRes) => {
+          this.$tip(res)
+        })
     }
   }
 </script>

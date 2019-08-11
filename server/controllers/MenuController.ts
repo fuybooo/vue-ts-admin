@@ -72,6 +72,13 @@ export default class MenuController extends BaseController {
     const menu: MenuInstance = await this.Model.get(ctx.params.id)
     ctx.body = resReturn(menu)
   }
+  private async updateSort (ctx: Ctx) {
+    const sortList = ctx.params.sortList || []
+    sortList.forEach(async (item: any) => {
+      await this.Model.update(item)
+    })
+    ctx.body = resReturn(null, 0, '顺序更新成功')
+  }
   private createSchema () {
     const commonCreateUpdate: SchemaMap = {
       name: {
@@ -106,6 +113,22 @@ export default class MenuController extends BaseController {
         id : {
           type: 'string',
           required: true,
+        },
+      },
+      delete: {
+        id : {
+          type: 'string',
+          required: true,
+        },
+      },
+      updateSort: {
+        sortList: {
+          type: 'array',
+          required: true,
+          requiredFields: [
+            'id',
+            'sort',
+          ],
         },
       },
     }

@@ -18,6 +18,9 @@ export default class UserModel extends BaseModel {
         type: mongoose.Schema.Types.String,
         required: true,
       },
+      type: {
+        type: mongoose.Schema.Types.String,
+      },
       ...this.defaultSchema,
     }
   }

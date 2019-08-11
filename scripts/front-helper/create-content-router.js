@@ -1,4 +1,4 @@
-const util = require('./util')
+const util = require('../util/util')
 function getContent (moduleConfig) {
   const mn = util.getLineName(moduleConfig.module.name)
   const mt = moduleConfig.module.title

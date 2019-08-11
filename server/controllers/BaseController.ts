@@ -10,10 +10,6 @@ import {Ctx} from '../types'
 
 export default abstract class BaseController {
   public ctx: Ctx
-  public roleMap = {
-    admin: 'admin',
-    member: 'member',
-  }
   public $auth = false // 是否拥有权限
   public $uid: number | string | null = null // 当前验证过的用户id
   public $user: UserInstance | null = null // 当前验证过的用户对象

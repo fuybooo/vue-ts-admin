@@ -37,6 +37,7 @@ class UserController extends BaseController_1.default {
                 username: ctx.params.username,
                 password: common_1.default.generatePassword(password, passSalt),
                 passSalt,
+                type: ctx.params.type || '',
             });
             ctx.body = intercept_1.resReturn({ username: user.username, _id: user._id }, 0, isRegister ? '注册成功' : '创建成功');
         }

@@ -3,18 +3,26 @@
  * @author fuyongbo@everjiankang.com
  * @date 2019-06-27
  */
-
+declare type SortType = 0 | 1 | 2
+export interface TreeNode {
+  _level: number,
+  _isLeaf: boolean,
+  _parent: TreeNode,
+  children: TreeNode[],
+  [p: string]: any,
+}
 /**
  * 将数组转换为树
  * @param list
+ * @param sortType 1: 正序排序 2 倒序排序 0 不排序
  * @returns {any[]}
  */
-export function convertListToTree (list: any[]): any[] {
+export function convertListToTree (list: any[], sortType: SortType = 1): TreeNode[] {
   const array = []
   for (const item of list) {
     if (isRoot(list, item)) {
       item._level = 1
-      const children = getChildren(list, item)
+      const children = getChildren(list, item, sortType)
       if (children.length > 0) {
         item.children = children
         item._isLeaf = false
@@ -24,7 +32,7 @@ export function convertListToTree (list: any[]): any[] {
       array.push(item)
     }
   }
-  return array
+  return sortType === 1 ? array.sort((a: any, b: any) => a.sort - b.sort) : array
 }
 
 
@@ -47,15 +55,16 @@ export function isRoot (list: any[], item: any): boolean {
  * 获取所有的子元素
  * @param list
  * @param item
+ * @param sortType
  * @returns {any[]}
  */
-export function getChildren (list: any[], item: any) {
+export function getChildren (list: any[], item: any, sortType: SortType = 1) {
   const children = []
   for (const data of list) {
     if (item.id === data.parentId) {
       data._level = item._level + 1
       data._parent = item
-      const childList = getChildren(list, data)
+      const childList = getChildren(list, data, sortType)
       if (childList.length > 0) {
         data.children = childList
         data._isLeaf = false
@@ -65,7 +74,7 @@ export function getChildren (list: any[], item: any) {
       children.push(data)
     }
   }
-  return children
+  return sortType === 1 ? children.sort((a: any, b: any) => a.sort - b.sort) : children
 }
 
 /**

@@ -1,8 +1,4 @@
-const util = require('./util')
-function getContent (moduleConfig, item) {
-    const mn = util.getLineName(moduleConfig.module.name)
-    const itemName = util.getLineName(item.name)
-    return `<template>
+<template>
   <el-container class="h">
     <el-main class="h">
       <div class="common-query">
@@ -31,35 +27,39 @@ function getContent (moduleConfig, item) {
   import {HttpRes} from '@/model/common/models'
 
   @Component({})
-  export default class ${util.getClassName(mn, itemName)} extends Vue {
+  export default class SystemTenant extends Vue {
     public schema: Schema[] = [
       {
         prop: 'keywords',
-        label: '搜索'
+        label: '搜索',
       }
     ]
     public form = fb(this.schema)
-    public url = this.$urls.user.list
+    public url = this.$urls.tenant.list
     public columns: Column[] = [
       {
-        prop: 'username',
-        label: '用户名',
+        prop: 'name',
+        label: '租户名称',
+      },
+      {
+        prop: 'code',
+        label: '编码',
       },
       {
         contentSlot: 'op',
         label: '操作',
         props: {
           width: columnWidth.w180,
-        }
-      }
+        },
+      },
     ]
     // 跳转到创建页面
     public handleClick () {
-      this.$router.push({name: '${mn}-${itemName}-detail', params: {pattern: 'create'}})
+      this.$router.push({name: 'system-tenant-detail', params: {pattern: 'create'}})
     }
     // 执行删除
     public del (row: any) {
-      this.$req(this.$urls.user.delete, {id: row.id}).then((res: HttpRes) => {
+      this.$req(this.$urls.tenant.delete, {id: row.id}).then((res: HttpRes) => {
         if (res.head.errCode === 0) {
           (this.$refs.table as any).search(true)
         }
@@ -69,13 +69,10 @@ function getContent (moduleConfig, item) {
     }
     // 跳转到编辑页面
     public toEdit (row: any) {
-      this.$router.push({name: '${mn}-${itemName}-detail', params: {pattern: 'edit', id: row.id}})
+      this.$router.push({name: 'system-tenant-detail', params: {pattern: 'edit', id: row.id}})
     }
   }
 </script>
 <style scoped lang="less">
 
 </style>
-`
-}
-module.exports = getContent

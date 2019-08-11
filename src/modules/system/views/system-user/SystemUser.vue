@@ -42,6 +42,10 @@
         label: '用户名',
       },
       {
+        prop: 'type',
+        label: '用户类型',
+      },
+      {
         contentSlot: 'op',
         label: '操作',
         props: {

@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const util = require('./util')
+const util = require('../util/util')
 const config = require('./create-config')
 function getContent () {
   let importStr = ''

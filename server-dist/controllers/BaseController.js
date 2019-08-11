@@ -9,10 +9,6 @@ const shared_1 = require("../utils/shared");
 const jwt = require("jsonwebtoken");
 class BaseController {
     constructor(ctx) {
-        this.roleMap = {
-            admin: 'admin',
-            member: 'member',
-        };
         this.$auth = false; // 是否拥有权限
         this.$uid = null; // 当前验证过的用户id
         this.$user = null; // 当前验证过的用户对象

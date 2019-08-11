@@ -5,7 +5,7 @@
  */
 const fs = require('fs')
 const path = require('path')
-const util = require('./util')
+const util = require('../util/util')
 const rootPath = path.resolve(__dirname, '../..')
 // 创建模块目录结构
 function createModule (moduleConfig) {

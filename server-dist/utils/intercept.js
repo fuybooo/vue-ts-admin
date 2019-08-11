@@ -38,7 +38,24 @@ function validateParams(schema, params) {
             const value = params[key];
             const valueType = typeof value;
             if (fieldConfig.required) {
-                if (fieldConfig.type !== 'boolean') {
+                if (fieldConfig.type === 'array') {
+                    if (fieldConfig.requiredFields) {
+                        if (Array.isArray(value)) {
+                            // @ts-ignore
+                            if (!value.every(item => fieldConfig.requiredFields.every(field => item[field] !== undefined))) {
+                                valid = false;
+                                message = `【${key}】数组中【${fieldConfig.requiredFields.join()}】必填字段`;
+                                break;
+                            }
+                        }
+                        else {
+                            valid = false;
+                            message = `【${key}】是必填字段，类型为数组`;
+                            break;
+                        }
+                    }
+                }
+                else if (fieldConfig.type !== 'boolean') {
                     if (value === undefined || value === null || value === '') {
                         valid = false;
                         message = `【${key}】是必填字段`;

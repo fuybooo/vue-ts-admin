@@ -44,6 +44,7 @@ export default class UserController extends BaseController {
         username: ctx.params.username,
         password: common.generatePassword(password, passSalt),
         passSalt,
+        type: ctx.params.type || '',
       })
       ctx.body = resReturn({username: user.username, _id: user._id}, 0, isRegister ? '注册成功' : '创建成功')
     } catch (e) {

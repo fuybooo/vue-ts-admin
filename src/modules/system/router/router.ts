@@ -13,6 +13,8 @@ const SystemMenu = () => import(/* webpackChunkName: "system" */ '@/modules/syst
 const SystemMenuDetail = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-menu/SystemMenuDetail.vue')
 const SystemDictionary = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-dictionary/SystemDictionary.vue')
 const SystemDictionaryDetail = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-dictionary/SystemDictionaryDetail.vue')
+const SystemTenant = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-tenant/SystemTenant.vue')
+const SystemTenantDetail = () => import(/* webpackChunkName: "system" */ '@/modules/system/views/system-tenant/SystemTenantDetail.vue')
 
 const router: ProRouteConfig = {
   path: 'system',
@@ -113,12 +115,29 @@ const router: ProRouteConfig = {
       },
     },
     {
-      path: 'system-dictionary-detail/:pattern/:id?',
+      path: 'system-dictionary-detail/:pattern/:type/:id?',
       name: 'system-dictionary-detail',
       component: SystemDictionaryDetail,
       meta: {
         title: '字典管理详情',
         parentName: 'system-dictionary',
+      },
+    },
+    {
+      path: 'system-tenant',
+      name: 'system-tenant',
+      component: SystemTenant,
+      meta: {
+        title: '租户管理',
+      },
+    },
+    {
+      path: 'system-tenant-detail/:pattern/:id?',
+      name: 'system-tenant-detail',
+      component: SystemTenantDetail,
+      meta: {
+        title: '租户管理详情',
+        parentName: 'system-tenant',
       },
     },
   ],

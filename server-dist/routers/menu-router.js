@@ -27,5 +27,10 @@ const routeList = [
         controller: MenuController_1.default,
         path: '/menu/get',
     },
+    {
+        action: 'updateSort',
+        controller: MenuController_1.default,
+        path: '/menu/updateSort',
+    },
 ];
 exports.default = routeList;

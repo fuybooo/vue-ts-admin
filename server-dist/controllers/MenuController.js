@@ -67,6 +67,13 @@ class MenuController extends BaseController_1.default {
         const menu = await this.Model.get(ctx.params.id);
         ctx.body = intercept_1.resReturn(menu);
     }
+    async updateSort(ctx) {
+        const sortList = ctx.params.sortList || [];
+        sortList.forEach(async (item) => {
+            await this.Model.update(item);
+        });
+        ctx.body = intercept_1.resReturn(null, 0, '顺序更新成功');
+    }
     createSchema() {
         const commonCreateUpdate = {
             name: {
@@ -96,6 +103,22 @@ class MenuController extends BaseController_1.default {
                 id: {
                     type: 'string',
                     required: true,
+                },
+            },
+            delete: {
+                id: {
+                    type: 'string',
+                    required: true,
+                },
+            },
+            updateSort: {
+                sortList: {
+                    type: 'array',
+                    required: true,
+                    requiredFields: [
+                        'id',
+                        'sort',
+                    ],
                 },
             },
         };

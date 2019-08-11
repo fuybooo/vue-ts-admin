@@ -23,32 +23,52 @@
   import {Pattern, HttpRes} from '@/model/common/models'
   import {Schema} from '@/components/common-form/form.model'
   import {fb, setFormData} from '@/util/common/fns/fns-form'
+  import {setProperty} from '@/util/common/fns/fns-common'
 
   @Component({})
   export default class SystemDictionaryDetail extends Vue {
     public formPattern: Pattern = 'create'
     public id: any = null
+    public type: string = 'item'
     // 验证规则写在Schema中
     public schema: Schema[] = [
       {
-        prop: 'username',
-        label: '用户名',
+        prop: 'typeCode',
+        label: '类别编码',
+      },
+      {
+        prop: 'typeName',
+        label: '类别名称',
+      },
+      {
+        prop: 'code',
+        label: '编码',
+      },
+      {
+        prop: 'name',
+        label: '名称',
       },
     ]
     public form = fb(this.schema)
-
     public created () {
       this.formPattern = this.$route.params.pattern as Pattern
-      if (this.formPattern === 'view' || this.formPattern === 'edit') {
+      this.type = this.$route.params.type
+      if (this.formPattern === 'view' || this.formPattern === 'edit' || (this.formPattern === 'create' && this.type === 'item')) {
         this.id = this.$route.params.id
         this.search()
       }
     }
 
     public search () {
-      this.$req(this.$urls.user.get, {id: this.id}).then((res: HttpRes) => {
+      this.$req(this.$urls.dictionary.get, {id: this.id}).then((res: HttpRes) => {
         if (res.head.errCode === 0) {
           this.updateForm(res.data)
+          setProperty(this.schema, 'typeCode', {pattern: 'view'})
+          setProperty(this.schema, 'typeName', {pattern: 'view'})
+          if (this.formPattern === 'create' && this.type === 'item') {
+            this.form.code = ''
+            this.form.name = ''
+          }
         }
       })
     }
@@ -60,11 +80,9 @@
     public submit () {
       (this.$refs.form as any).$refs.form.validate((valid: boolean) => {
         if (valid) {
-          this.$req(this.$urls.user[this.formPattern === 'create' ? 'create' : 'update'], {...this.form, ...(this.id ? {id: this.id} : {})}).then((res: HttpRes) => {
+          this.$req(this.$urls.dictionary[this.formPattern === 'create' ? 'create' : 'update'], {...this.form, ...(this.id ? {id: this.id} : {})}).then((res: HttpRes) => {
             if (res.head.errCode === 0) {
-              this.id = res.data.id
-              this.$router.push({name: 'system-dictionary-detail', params: {pattern: 'view', id: res.data.id}})
-              this.formPattern = 'view'
+              this.$router.back()
             }
             this.$tip(res)
           })

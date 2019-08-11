@@ -43,12 +43,12 @@
         viewValue: '',
       },
       {
-        prop: 'name',
-        label: '名称',
-      },
-      {
         prop: 'code',
         label: '唯一编码',
+      },
+      {
+        prop: 'name',
+        label: '名称',
       },
     ]
     public form = fb(this.schema, {parentId: 0})
@@ -74,6 +74,7 @@
         this.id = +this.$route.params.id
         this.form.parentId = getParentId(this.originData, this.id)
         const parentList = getAllParentById(this.originData, this.id)
+        setProperty(this.schema, 'code', {pattern: 'view'})
         this.setParentList(parentList)
         this.search()
       } else if (this.formPattern === 'create') {
@@ -127,6 +128,11 @@
               let fromQuery: any = {}
               if (this.$route.query && this.$route.query.q) {
                 fromQuery = JSON.parse(this.$route.query.q as string)
+              }
+              if (fromQuery.expandKeys) {
+                if (!fromQuery.expandKeys.includes(this.form.parentId)) {
+                  fromQuery.expandKeys.push(this.form.parentId)
+                }
               }
               fromQuery.currentKey = res.data.id
               this.$router.push({name: 'system-menu', query: {q: JSON.stringify(fromQuery)}})

@@ -27,5 +27,10 @@ const routeList: Route[] = [
     controller: MenuController,
     path: '/menu/get',
   },
+  {
+    action: 'updateSort',
+    controller: MenuController,
+    path: '/menu/updateSort',
+  },
 ]
 export default routeList

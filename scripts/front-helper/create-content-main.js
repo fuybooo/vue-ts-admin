@@ -1,4 +1,4 @@
-const util = require('./util')
+const util = require('../util/util')
 function getContent (moduleConfig) {
   const mn = util.getCamelName(moduleConfig.module.name)
   return (

@@ -11,6 +11,7 @@
         :params.sync="form"
       >
         <template v-slot:op="{row}">
+          <el-button type="primary" plain @click="toNew(row)">创建</el-button>
           <el-button type="primary" plain @click="toEdit(row)">编辑</el-button>
           <base-confirm class="ml10" @confirm="del(row)"></base-confirm>
         </template>
@@ -32,14 +33,26 @@
       {
         prop: 'keywords',
         label: '搜索',
-      },
+      }
     ]
     public form = fb(this.schema)
-    public url = this.$urls.user.list
+    public url = this.$urls.dictionary.list
     public columns: Column[] = [
       {
-        prop: 'username',
-        label: '用户名',
+        prop: 'typeCode',
+        label: '类别编码',
+      },
+      {
+        prop: 'typeName',
+        label: '类别名称',
+      },
+      {
+        prop: 'code',
+        label: '编码',
+      },
+      {
+        prop: 'name',
+        label: '名称',
       },
       {
         contentSlot: 'op',
@@ -49,15 +62,17 @@
         },
       },
     ]
-
-    // 跳转到创建页面
+    // 跳转到创建类别页面
     public handleClick () {
-      this.$router.push({name: 'system-dictionary-detail', params: {pattern: 'create'}})
+      this.$router.push({name: 'system-dictionary-detail', params: {pattern: 'create', type: 'type'}})
     }
-
+    // 跳转到创建条目的页面
+    public toNew ({id}: any) {
+      this.$router.push({name: 'system-dictionary-detail', params: {pattern: 'create', type: 'item', id}})
+    }
     // 执行删除
     public del (row: any) {
-      this.$req(this.$urls.user.delete, {id: row.id}).then((res: HttpRes) => {
+      this.$req(this.$urls.dictionary.delete, {id: row.id}).then((res: HttpRes) => {
         if (res.head.errCode === 0) {
           (this.$refs.table as any).search(true)
         }
@@ -65,10 +80,9 @@
         this.$tip(res)
       })
     }
-
     // 跳转到编辑页面
     public toEdit (row: any) {
-      this.$router.push({name: 'system-dictionary-detail', params: {pattern: 'edit', id: row.id}})
+      this.$router.push({name: 'system-dictionary-detail', params: {pattern: 'edit', type: 'item', id: row.id}})
     }
   }
 </script>

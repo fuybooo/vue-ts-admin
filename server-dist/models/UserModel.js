@@ -16,6 +16,8 @@ class UserModel extends BaseModel_1.default {
             }, passSalt: {
                 type: mongoose.Schema.Types.String,
                 required: true,
+            }, type: {
+                type: mongoose.Schema.Types.String,
             } }, this.defaultSchema);
     }
 }

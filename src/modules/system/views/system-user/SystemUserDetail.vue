@@ -34,6 +34,10 @@
         prop: 'username',
         label: '用户名',
       },
+      {
+        prop: 'type',
+        label: '用户类型',
+      },
     ]
     public form = fb(this.schema)
 
@@ -62,9 +66,7 @@
         if (valid) {
           this.$req(this.$urls.user[this.formPattern === 'create' ? 'create' : 'update'], {...this.form, ...(this.id ? {id: this.id} : {})}).then((res: HttpRes) => {
             if (res.head.errCode === 0) {
-              this.id = res.data.id
-              this.$router.push({name: 'system-user-detail', params: {pattern: 'view', id: res.data.id}})
-              this.formPattern = 'view'
+              this.$router.back()
             }
             this.$tip(res)
           })

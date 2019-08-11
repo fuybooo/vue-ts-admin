@@ -1,4 +1,7 @@
+const fs = require('fs')
+const path = require('path')
 const getTime = require('../../shared/fns').getTime
+const rootPath = path.resolve(__dirname, '../..')
 function upperCaseFirst (str) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
@@ -15,10 +18,23 @@ function getSmallCamelName (str) {
 }
 // 得到中划线名称
 function getLineName (str) {
-  return str.split('').map(item => item === item.toUpperCase() ? `-${item.toLowerCase()}` : item).join('')
+  return getSmallCamelName(str).split('').map(item => item === item.toUpperCase() ? `-${item.toLowerCase()}` : item).join('')
 }
 function getClassName (mn, itemName) {
   return `${upperCaseFirst(getCamelName(mn))}${upperCaseFirst(getCamelName(itemName))}`
+}
+function createDir (...paths) {
+  const dirPath = path.resolve(rootPath, ...paths)
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath)
+  }
+}
+function createFile (moduleConfig, content, ...paths) {
+  const filePath = path.resolve(rootPath, ...paths)
+  // 为了安全起见，这里如果文件存在，则不做处理
+  if (moduleConfig.test || !fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, content)
+  }
 }
 module.exports = {
   upperCaseFirst,
@@ -27,4 +43,6 @@ module.exports = {
   getSmallCamelName,
   getLineName,
   getClassName,
+  createDir,
+  createFile,
 }

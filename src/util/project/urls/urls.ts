@@ -37,6 +37,21 @@ export interface Urls {
     create: urlType,
     delete: urlType,
     update: urlType,
+    updateSort: urlType,
+  },
+  tenant: {
+    list: urlType,
+    get: urlType,
+    create: urlType,
+    delete: urlType,
+    update: urlType,
+  },
+  dictionary: {
+    list: urlType,
+    get: urlType,
+    create: urlType,
+    delete: urlType,
+    update: urlType,
   },
 }
 
@@ -72,6 +87,21 @@ const urls: Urls = {
     delete: 'menu/delete',
     create: 'menu/create',
     update: 'menu/update',
+    updateSort: 'menu/updateSort',
+  },
+  tenant: {
+    list: 'tenant/list',
+    get: 'tenant/get',
+    delete: 'tenant/delete',
+    create: 'tenant/create',
+    update: 'tenant/update',
+  },
+  dictionary: {
+    list: 'dictionary/list',
+    get: 'dictionary/get',
+    delete: 'dictionary/delete',
+    create: 'dictionary/create',
+    update: 'dictionary/update',
   },
 }
 Vue.prototype.$urls = urls

@@ -13,17 +13,25 @@
 
 <script lang="ts">
   import {Component, Vue, Watch} from 'vue-property-decorator'
-  import {getDefaultMenus} from '@/components/common-menu/menu.fn'
   import {ProRouteConfig} from '@/model/project/route/route.model'
   import {debounce, dc} from '@/util/common/fns/fns'
   import {KEY_TOKEN} from '@/model/project/local-storage-keys/keys'
+  import {HttpRes} from '@/model/common/models'
+  import {setMenus} from '@/stores/mutation-types'
+  import {getMenus} from '@/components/common-menu/menu.fn'
 
   @Component({})
   export default class MainHeader extends Vue {
-    public menus = getDefaultMenus()
+    public menus: any[] = []
     public activeIndex: string = ''
 
     public created () {
+      this.$req(this.$urls.menu.list).then((res: HttpRes) => {
+        if (res.head.errCode === 0) {
+          this.menus = getMenus(res.data.results)
+          this.$store.commit(setMenus, res.data.results.filter((item: any) => item.parentId !== 0))
+        }
+      })
     }
 
     @Watch('$route', {immediate: true})
