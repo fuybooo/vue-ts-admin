@@ -496,6 +496,9 @@ function createInlineBtnItem (createElement: typeof Vue.prototype.$createElement
 function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
   // @ts-ignore
   const me: any = this
+  if (me.$slots.default) {
+    return me.$slots.default
+  }
   const btnFormItem = createElement('el-form-item', {class: me.btn.class || (me.inline ? 'fr mr0i' : '')}, [createElement('el-button', {
     props: {
       type: me.btn.type || 'primary',
@@ -557,7 +560,7 @@ function createBtnItem (createElement: typeof Vue.prototype.$createElement) {
       },
     },
   }, me.formPattern === 'view' ? '返回' : '取消')])])
-  return me.$slots.default || (me.isRow ? [createElement('el-col', {}, [btnFormItem])] : btnFormItem)
+  return me.isRow ? [createElement('el-col', {}, [btnFormItem])] : btnFormItem
 }
 
 function getFormControlClassType (item: Schema) {

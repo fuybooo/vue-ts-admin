@@ -32,6 +32,7 @@ export default class LoginController extends BaseController {
         username: result.username,
         uid,
         token,
+        type: result.type,
       }))
     } else {
       return (ctx.body = resReturn(null, 403, '密码错误'))

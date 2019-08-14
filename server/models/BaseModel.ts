@@ -47,6 +47,12 @@ export default abstract class BaseModel implements BaseModelInterface {
 
   public getSortParams (listParams: ListParams = {}) {
     if (listParams.sortField) {
+      if (listParams.sortField.includes(',')) {
+        return listParams.sortField.split(',').
+          // @ts-ignore
+          map((item: string, i: number) => ({[item]: listParams.sortOrder.split(',')[i]})).
+          reduce((p, c) => ({...p, ...c}), {})
+      }
       return {[listParams.sortField]: listParams.sortOrder}
     } else {
       return {_id: -1}
@@ -83,13 +89,14 @@ export default abstract class BaseModel implements BaseModelInterface {
     }
   }
   public list (listParams: ListParams = {}) {
-    return this.model
+    let query = this.model
       .find(...(listParams.findParams ? (Array.isArray(listParams.findParams) ? listParams.findParams : [{isDeleted: {$ne: true}, ...listParams.findParams}]) : [{isDeleted: {$ne: true}}]))
       .sort(this.getSortParams(listParams))
       .skip(((listParams.currentPage || this.currentPage) - 1) * (listParams.pageSize || this.pageSize))
-      .limit(listParams.pageSize || this.pageSize)
-      .select(this.getFields(listParams))
-      .exec()
+    if (listParams.pageSize) {
+      query = query.limit(Math.min(100, listParams.pageSize || this.pageSize))
+    }
+    return query.select(this.getFields(listParams)).exec()
   }
   public count (countParams: any = {}): any {
     return this.model.countDocuments({isDeleted: {$ne: true}, ...countParams})

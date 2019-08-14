@@ -6,6 +6,7 @@ interface Req extends Request {
 export interface Ctx extends ExtendableContext {
   request: Req | any,
   params: any,
+  body: any,
 }
 export interface Route {
   path: string

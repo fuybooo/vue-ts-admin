@@ -8,6 +8,7 @@ export const KEY_TOKEN = p + 'TOKEN'
 export const KEY_USERNAME = p + 'USERNAME'
 export const KEY_PASSWORD = p + 'PASSWORD'
 export const KEY_UID = p + 'UID'
+export const KEY_TYPE = p + 'TYPE'
 export const KEY_API = p + 'API'
 export const KEY_SUB_API = p + 'SUB_API_'
 // 通过localStorage调整请求方式

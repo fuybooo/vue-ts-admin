@@ -36,5 +36,6 @@ export function setProperty (list: Schema[] | Column[], prop: string, value: Sch
       })
     }
   }
+  return [...list]
 }
 

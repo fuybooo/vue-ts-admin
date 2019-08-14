@@ -26,12 +26,12 @@ class TenantController extends BaseController_1.default {
             return (ctx.body = intercept_1.resReturn(null, 405, '唯一编码重复'));
         }
         try {
-            const menu = await this.Model.create({
+            const tenant = await this.Model.create({
                 name: ctx.params.name,
                 code: ctx.params.code,
                 parentId: ctx.params.parentId,
             });
-            ctx.body = intercept_1.resReturn(menu, 0, '创建成功');
+            ctx.body = intercept_1.resReturn(tenant, 0, '创建成功');
         }
         catch (e) {
             ctx.body = intercept_1.resReturn(null, 500, e.message);
@@ -64,8 +64,8 @@ class TenantController extends BaseController_1.default {
         ctx.body = intercept_1.resReturn(null, 0, '删除成功');
     }
     async get(ctx) {
-        const menu = await this.Model.get(ctx.params.id);
-        ctx.body = intercept_1.resReturn(menu);
+        const tenant = await this.Model.get(ctx.params.id);
+        ctx.body = intercept_1.resReturn(tenant);
     }
     createSchema() {
         const commonCreateUpdate = {

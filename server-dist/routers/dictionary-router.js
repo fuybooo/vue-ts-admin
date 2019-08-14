@@ -8,6 +8,11 @@ const routeList = [
         path: '/dictionary/list',
     },
     {
+        action: 'listType',
+        controller: DictionaryController_1.default,
+        path: '/dictionary/listType',
+    },
+    {
         action: 'create',
         controller: DictionaryController_1.default,
         path: '/dictionary/create',

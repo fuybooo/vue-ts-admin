@@ -31,8 +31,8 @@ export interface Schema {
   formItemProps?: FormItemProps // FormItem 的props属性
   formItemNodeProperty?: any // FormItem 的虚拟节点属性
   // 备选字段 应尽量避免使用
-  labelKeyOfOption?: string // 自定义的labelKey
-  valueKeyOfOption?: string // 自定义的valueKey
+  labelKeyOfOption?: string // 自定义的labelKey 若labelKey 为 name 或者 label 则不需要指定
+  valueKeyOfOption?: string // 自定义的valueKey 若valueKey 为 code 或者 id 则不需要指定
   // 范围字段 如日期字段，可以给日期增加两个字段分别为开始日期和结束日期
   startProp?: string
   endProp?: string
@@ -119,6 +119,7 @@ export interface Option {
   value?: string | number | boolean
   text?: string | number | boolean
   name?: string | number | boolean
+  code?: string | number | boolean
 }
 
 export declare type FormChangeEventType =

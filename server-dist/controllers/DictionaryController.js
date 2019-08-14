@@ -11,13 +11,35 @@ class DictionaryController extends BaseController_1.default {
         this.createSchema();
     }
     async list(ctx) {
+        const keywordsReg = new RegExp(ctx.params.keywords, 'i');
         const results = await this.Model.list(Object.assign({}, ctx.params, { findParams: {
                 $or: [
                     {
-                        name: new RegExp(ctx.params.keywords, 'i'),
+                        name: keywordsReg,
+                        code: keywordsReg,
+                        typeName: keywordsReg,
+                        typeCode: keywordsReg,
                     },
                 ],
-            } }));
+            }, sortField: 'typeCode,code', sortOrder: '-1,-1' }));
+        return (ctx.body = intercept_1.resReturn({ results }));
+    }
+    async listType(ctx) {
+        const listParams = {
+            sortField: 'typeCode,code',
+            sortOrder: '-1,-1',
+        };
+        if (!ctx.params.type.includes(',')) {
+            listParams.findParams = {
+                typeCode: ctx.params.type,
+            };
+        }
+        else {
+            listParams.findParams = {
+                $or: ctx.params.type.map((item) => ({ typeCode: item })),
+            };
+        }
+        const results = await this.Model.list(listParams);
         return (ctx.body = intercept_1.resReturn({ results }));
     }
     async create(ctx) {
@@ -26,12 +48,13 @@ class DictionaryController extends BaseController_1.default {
             return (ctx.body = intercept_1.resReturn(null, 405, '唯一编码重复'));
         }
         try {
-            const instance = await this.Model.create({
+            const dictionary = await this.Model.create({
                 name: ctx.params.name,
                 code: ctx.params.code,
-                parentId: ctx.params.parentId,
+                typeName: ctx.params.typeName,
+                typeCode: ctx.params.typeCode,
             });
-            ctx.body = intercept_1.resReturn(instance, 0, '创建成功');
+            ctx.body = intercept_1.resReturn(dictionary, 0, '创建成功');
         }
         catch (e) {
             ctx.body = intercept_1.resReturn(null, 500, e.message);
@@ -64,8 +87,8 @@ class DictionaryController extends BaseController_1.default {
         ctx.body = intercept_1.resReturn(null, 0, '删除成功');
     }
     async get(ctx) {
-        const instance = await this.Model.get(ctx.params.id);
-        ctx.body = intercept_1.resReturn(instance);
+        const dictionary = await this.Model.get(ctx.params.id);
+        ctx.body = intercept_1.resReturn(dictionary);
     }
     createSchema() {
         const commonCreateUpdate = {
@@ -108,6 +131,12 @@ class DictionaryController extends BaseController_1.default {
             },
             delete: {
                 id: {
+                    type: 'string',
+                    required: true,
+                },
+            },
+            listType: {
+                type: {
                     type: 'string',
                     required: true,
                 },

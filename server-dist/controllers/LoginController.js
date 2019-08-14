@@ -29,6 +29,7 @@ class LoginController extends BaseController_1.default {
                 username: result.username,
                 uid,
                 token,
+                type: result.type,
             }));
         }
         else {

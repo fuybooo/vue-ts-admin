@@ -3,7 +3,6 @@
     <el-main class="h">
       <el-row>
         <el-col :span="8">
-          {{form}}{{testSchema()}}
           <base-form
             ref="form"
             :schema="schema"

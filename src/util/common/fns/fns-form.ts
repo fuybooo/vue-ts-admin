@@ -80,11 +80,13 @@ export {
 
 export function getValueOfOption (option: Option, item: Schema) {
   let res
-  if ('id' in option) {
-    res = option.id
-  } else if (item.valueKeyOfOption) {
+  if (item.valueKeyOfOption) {
     // @ts-ignore
     res = option[item.valueKeyOfOption]
+  } else if ('code' in option) {
+    res = option.code
+  } else if ('id' in option) {
+    res = option.id
   } else {
     throw Error('请正确定义option中的key或者value')
   }
@@ -93,11 +95,13 @@ export function getValueOfOption (option: Option, item: Schema) {
 
 export function getLabelOfOption (option: Option, item: Schema) {
   let res
-  if ('label' in option) {
-    res = option.label
-  } else if (item.labelKeyOfOption) {
+  if (item.labelKeyOfOption) {
     // @ts-ignore
     res = option[item.labelKeyOfOption]
+  } else if ('name' in option) {
+    res = option.name
+  } else if ('label' in option) {
+    res = option.label
   } else {
     throw Error('请正确定义option中的key或者value')
   }

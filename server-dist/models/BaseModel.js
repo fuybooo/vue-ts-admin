@@ -42,6 +42,12 @@ class BaseModel {
     }
     getSortParams(listParams = {}) {
         if (listParams.sortField) {
+            if (listParams.sortField.includes(',')) {
+                return listParams.sortField.split(',').
+                    // @ts-ignore
+                    map((item, i) => ({ [item]: listParams.sortOrder.split(',')[i] })).
+                    reduce((p, c) => (Object.assign({}, p, c)), {});
+            }
             return { [listParams.sortField]: listParams.sortOrder };
         }
         else {
@@ -79,13 +85,14 @@ class BaseModel {
         }
     }
     list(listParams = {}) {
-        return this.model
+        let query = this.model
             .find(...(listParams.findParams ? (Array.isArray(listParams.findParams) ? listParams.findParams : [Object.assign({ isDeleted: { $ne: true } }, listParams.findParams)]) : [{ isDeleted: { $ne: true } }]))
             .sort(this.getSortParams(listParams))
-            .skip(((listParams.currentPage || this.currentPage) - 1) * (listParams.pageSize || this.pageSize))
-            .limit(listParams.pageSize || this.pageSize)
-            .select(this.getFields(listParams))
-            .exec();
+            .skip(((listParams.currentPage || this.currentPage) - 1) * (listParams.pageSize || this.pageSize));
+        if (listParams.pageSize) {
+            query = query.limit(Math.min(100, listParams.pageSize || this.pageSize));
+        }
+        return query.select(this.getFields(listParams)).exec();
     }
     count(countParams = {}) {
         return this.model.countDocuments(Object.assign({ isDeleted: { $ne: true } }, countParams));

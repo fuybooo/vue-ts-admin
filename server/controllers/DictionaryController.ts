@@ -4,6 +4,7 @@ import DictionaryModel from '../models/DictionaryModel'
 import {resReturn} from '../utils/intercept'
 import DictionaryInstance from '../models/DictionaryInstance'
 import {Ctx, SchemaMap} from '../types'
+import {ListParams} from '../models/BaseModelInterface'
 
 export default class DictionaryController extends BaseController {
   public Model: DictionaryModel
@@ -14,17 +15,40 @@ export default class DictionaryController extends BaseController {
     this.createSchema()
   }
   private async list (ctx: Ctx) {
+    const keywordsReg = new RegExp(ctx.params.keywords, 'i')
     const results: DictionaryInstance[] = await this.Model.list(
       {
         ...ctx.params,
         findParams: {
           $or: [
             {
-              name: new RegExp(ctx.params.keywords, 'i'),
+              name: keywordsReg,
+              code: keywordsReg,
+              typeName: keywordsReg,
+              typeCode: keywordsReg,
             },
           ],
         },
+        sortField: 'typeCode,code',
+        sortOrder: '-1,-1',
       })
+    return (ctx.body = resReturn({results}))
+  }
+  private async listType (ctx: Ctx) {
+    const listParams: ListParams = {
+      sortField: 'typeCode,code',
+      sortOrder: '-1,-1',
+    }
+    if (!ctx.params.type.includes(',')) {
+      listParams.findParams = {
+        typeCode: ctx.params.type,
+      }
+    } else {
+      listParams.findParams = {
+        $or: ctx.params.type.map((item: string) => ({typeCode: item})),
+      }
+    }
+    const results: DictionaryInstance[] = await this.Model.list(listParams)
     return (ctx.body = resReturn({results}))
   }
   private async create (ctx: Ctx) {
@@ -33,12 +57,13 @@ export default class DictionaryController extends BaseController {
       return (ctx.body = resReturn(null, 405, '唯一编码重复'))
     }
     try {
-      const instance: DictionaryInstance = await this.Model.create({
+      const dictionary: DictionaryInstance = await this.Model.create({
         name: ctx.params.name,
         code: ctx.params.code,
-        parentId: ctx.params.parentId,
+        typeName: ctx.params.typeName,
+        typeCode: ctx.params.typeCode,
       })
-      ctx.body = resReturn(instance, 0, '创建成功')
+      ctx.body = resReturn(dictionary, 0, '创建成功')
     } catch (e) {
       ctx.body = resReturn(null, 500, e.message)
     }
@@ -69,8 +94,8 @@ export default class DictionaryController extends BaseController {
     ctx.body = resReturn(null, 0, '删除成功')
   }
   private async get (ctx: Ctx) {
-    const instance: DictionaryInstance = await this.Model.get(ctx.params.id)
-    ctx.body = resReturn(instance)
+    const dictionary: DictionaryInstance = await this.Model.get(ctx.params.id)
+    ctx.body = resReturn(dictionary)
   }
   private createSchema () {
     const commonCreateUpdate: SchemaMap = {
@@ -118,6 +143,12 @@ export default class DictionaryController extends BaseController {
       },
       delete: {
         id : {
+          type: 'string',
+          required: true,
+        },
+      },
+      listType: {
+        type : {
           type: 'string',
           required: true,
         },

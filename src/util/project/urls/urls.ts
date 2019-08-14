@@ -48,10 +48,19 @@ export interface Urls {
   },
   dictionary: {
     list: urlType,
+    listType: urlType,
     get: urlType,
     create: urlType,
     delete: urlType,
     update: urlType,
+  },
+  organization: {
+    list: urlType,
+    get: urlType,
+    create: urlType,
+    delete: urlType,
+    update: urlType,
+    upload: string,
   },
 }
 
@@ -98,10 +107,19 @@ const urls: Urls = {
   },
   dictionary: {
     list: 'dictionary/list',
+    listType: 'dictionary/listType', // 根据类型查询字典 入参可以是字符串，也可以是数组
     get: 'dictionary/get',
     delete: 'dictionary/delete',
     create: 'dictionary/create',
     update: 'dictionary/update',
+  },
+  organization: {
+    list: 'organization/list',
+    get: 'organization/get',
+    delete: 'organization/delete',
+    create: 'organization/create',
+    update: 'organization/update',
+    upload: 'organization/upload',
   },
 }
 Vue.prototype.$urls = urls

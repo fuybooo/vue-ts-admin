@@ -74,7 +74,7 @@
       // 根据参数回显应该展开的节点
       if (this.$route.query && this.$route.query.q) {
         const query = JSON.parse(this.$route.query.q as string)
-        this.expandedKeys = query.expandKeys
+        this.expandedKeys = query.expandKeys || this.expandedKeys
         if (query.currentKey) {
           this.currentKey = query.currentKey
         }

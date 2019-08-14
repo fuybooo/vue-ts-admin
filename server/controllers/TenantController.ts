@@ -33,12 +33,12 @@ export default class TenantController extends BaseController {
       return (ctx.body = resReturn(null, 405, '唯一编码重复'))
     }
     try {
-      const menu: TenantInstance = await this.Model.create({
+      const tenant: TenantInstance = await this.Model.create({
         name: ctx.params.name,
         code: ctx.params.code,
         parentId: ctx.params.parentId,
       })
-      ctx.body = resReturn(menu, 0, '创建成功')
+      ctx.body = resReturn(tenant, 0, '创建成功')
     } catch (e) {
       ctx.body = resReturn(null, 500, e.message)
     }
@@ -69,8 +69,8 @@ export default class TenantController extends BaseController {
     ctx.body = resReturn(null, 0, '删除成功')
   }
   private async get (ctx: Ctx) {
-    const menu: TenantInstance = await this.Model.get(ctx.params.id)
-    ctx.body = resReturn(menu)
+    const tenant: TenantInstance = await this.Model.get(ctx.params.id)
+    ctx.body = resReturn(tenant)
   }
   private createSchema () {
     const commonCreateUpdate: SchemaMap = {

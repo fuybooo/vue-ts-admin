@@ -15,7 +15,7 @@
   import {Component, Vue, Watch} from 'vue-property-decorator'
   import {ProRouteConfig} from '@/model/project/route/route.model'
   import {debounce, dc} from '@/util/common/fns/fns'
-  import {KEY_TOKEN} from '@/model/project/local-storage-keys/keys'
+  import {KEY_TOKEN, KEY_TYPE} from '@/model/project/local-storage-keys/keys'
   import {HttpRes} from '@/model/common/models'
   import {setMenus} from '@/stores/mutation-types'
   import {getMenus} from '@/components/common-menu/menu.fn'
@@ -48,6 +48,7 @@
 
     public logout () {
       dc(KEY_TOKEN)
+      dc(KEY_TYPE)
       this.$router.push({name: 'login'})
     }
   }

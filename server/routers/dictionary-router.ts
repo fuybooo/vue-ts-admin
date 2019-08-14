@@ -8,6 +8,11 @@ const routeList: Route[] = [
     path: '/dictionary/list',
   },
   {
+    action: 'listType',
+    controller: DictionaryController,
+    path: '/dictionary/listType',
+  },
+  {
     action: 'create',
     controller: DictionaryController,
     path: '/dictionary/create',

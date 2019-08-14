@@ -8,7 +8,7 @@ export interface ListParams {
   currentPage?: number
   pageSize?: number
   sortField?: string
-  sortOrder?: 'ascending' | 'descending' | null | undefined
+  sortOrder?: string | 'ascending' | 'descending'
 }
 export default interface BaseModelInterface {
   getName (): string

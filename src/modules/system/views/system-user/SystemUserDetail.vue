@@ -23,6 +23,11 @@
   import {Pattern, HttpRes} from '@/model/common/models'
   import {Schema} from '@/components/common-form/form.model'
   import {fb, setFormData} from '@/util/common/fns/fns-form'
+  import {setProperty} from '@/util/common/fns/fns-common'
+  import {dic} from '@/stores/action-types'
+  import {DIC, DicItem} from '@/model/project/dic/dic'
+  import {KEY_TYPE} from '@/model/project/local-storage-keys/keys'
+  import {gc} from '@/util/common/fns/fns'
 
   @Component({})
   export default class SystemUserDetail extends Vue {
@@ -37,16 +42,29 @@
       {
         prop: 'type',
         label: '用户类型',
+        comp: 'select',
       },
     ]
     public form = fb(this.schema)
 
-    public created () {
+    public async created () {
       this.formPattern = this.$route.params.pattern as Pattern
       if (this.formPattern === 'view' || this.formPattern === 'edit') {
         this.id = this.$route.params.id
         this.search()
       }
+      // 获取用户类型
+      await this.$store.dispatch(dic, DIC.SYS_USER_TYPE)
+      // 不允许创建god用户
+      let options = this.$store.state.dic.SYS_USER_TYPE.filter((item: DicItem) => item.code !== 'god')
+      // 不允许创建级别大于等于自己的用户
+      const userType = gc(KEY_TYPE)
+      if (userType === 'tenant') {
+        options = options.filter((item: DicItem) => item.code !== 'tenant')
+      } else if (userType === 'admin') {
+        options = options.filter((item: DicItem) => item.code !== 'tenant' && item.code !== 'admin')
+      }
+      this.schema = setProperty(this.schema, 'type', {props: {options}}) as Schema[]
     }
 
     public search () {

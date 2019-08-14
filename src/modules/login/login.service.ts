@@ -1,5 +1,5 @@
 import {sc} from '@/util/common/fns/fns'
-import {KEY_PASSWORD, KEY_TOKEN, KEY_USERNAME, KEY_UID} from '@/model/project/local-storage-keys/keys'
+import {KEY_PASSWORD, KEY_TOKEN, KEY_USERNAME, KEY_UID, KEY_TYPE} from '@/model/project/local-storage-keys/keys'
 import {mode} from '@/config/base-config'
 import {HttpRes} from '@/model/common/models'
 // tslint:disable-next-line:no-var-requires
@@ -20,6 +20,7 @@ export function login (username: string, password: string) {
       sc(KEY_TOKEN, res.data.token)
       sc(KEY_UID, res.data.uid)
       sc(KEY_USERNAME, username)
+      sc(KEY_TYPE, res.data.type)
       if (mode !== ENV.DEV_MODE.LOCAL_NODE) {
         sc(KEY_PASSWORD, password)
       }

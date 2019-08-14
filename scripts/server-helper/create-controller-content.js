@@ -1,6 +1,7 @@
 const util = require('../util/util')
 function getContent (moduleConfig) {
   const mn = util.getCamelName(moduleConfig.name)
+  const smn = util.getSmallCamelName(mn)
   return (
     `import BaseController from './BaseController'
 import instance from '../utils/instance'
@@ -37,12 +38,12 @@ export default class ${mn}Controller extends BaseController {
       return (ctx.body = resReturn(null, 405, '唯一编码重复'))
     }
     try {
-      const menu: ${mn}Instance = await this.Model.create({
+      const ${smn}: ${mn}Instance = await this.Model.create({
         name: ctx.params.name,
         code: ctx.params.code,
         parentId: ctx.params.parentId,
       })
-      ctx.body = resReturn(menu, 0, '创建成功')
+      ctx.body = resReturn(${smn}, 0, '创建成功')
     } catch (e) {
       ctx.body = resReturn(null, 500, e.message)
     }
@@ -73,8 +74,8 @@ export default class ${mn}Controller extends BaseController {
     ctx.body = resReturn(null, 0, '删除成功')
   }
   private async get (ctx: Ctx) {
-    const menu: ${mn}Instance = await this.Model.get(ctx.params.id)
-    ctx.body = resReturn(menu)
+    const ${smn}: ${mn}Instance = await this.Model.get(ctx.params.id)
+    ctx.body = resReturn(${smn})
   }
   private createSchema () {
     const commonCreateUpdate: SchemaMap = {
