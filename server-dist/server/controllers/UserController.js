@@ -6,8 +6,7 @@ const UserModel_1 = require("../models/UserModel");
 const common_1 = require("../common");
 const intercept_1 = require("../utils/intercept");
 const settings_1 = require("../utils/settings");
-// tslint:disable-next-line:no-var-requires
-const ENV = require('../../shared/env');
+const env_1 = require("../../shared/env");
 class UserController extends BaseController_1.default {
     constructor(ctx) {
         super(ctx);
@@ -69,7 +68,7 @@ class UserController extends BaseController_1.default {
     }
     async delete(ctx) {
         // 在测试环境下 做真实删除
-        await this.Model.delete(ctx.params.id, process.env.APP_MODE === ENV.APP_MODE.dev);
+        await this.Model.delete(ctx.params.id, env_1.isDev());
         ctx.body = intercept_1.resReturn(null, 0, '用户删除成功');
     }
     async get(ctx) {

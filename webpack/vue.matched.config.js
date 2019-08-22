@@ -1,6 +1,7 @@
 const devConfig = require('./vue.dev.config')
 const prodConfig = require('./vue.prod.config')
-const BUILD_MODE = process.env.BUILD_MODE
+// 打包时输入的参数 todo 判断其合法性
+const BUILD_MODE = process.env.mode
 function getConfig () {
   let config
   switch (BUILD_MODE) {

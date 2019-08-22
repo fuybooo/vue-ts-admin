@@ -6,8 +6,7 @@ import {resReturn} from '../utils/intercept'
 import UserInstance from '../models/UserInstance'
 import {Ctx, SchemaMap} from '../types'
 import settings from '../utils/settings'
-// tslint:disable-next-line:no-var-requires
-const ENV = require('../../shared/env')
+import {isDev} from '../../shared/env'
 
 export default class UserController extends BaseController {
   public Model: UserModel
@@ -74,7 +73,7 @@ export default class UserController extends BaseController {
   }
   private async delete (ctx: Ctx) {
     // 在测试环境下 做真实删除
-    await this.Model.delete(ctx.params.id, process.env.APP_MODE === ENV.APP_MODE.dev)
+    await this.Model.delete(ctx.params.id, isDev())
     ctx.body = resReturn(null, 0, '用户删除成功')
   }
   private async get (ctx: Ctx) {

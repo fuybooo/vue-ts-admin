@@ -11,6 +11,10 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "rootDirs": [
+      "shared",
+      "src"
+    ],
     "types": [
       "webpack-env",
       "mocha",
@@ -19,6 +23,9 @@
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "@shared/*": [
+        "shared/*"
       ]
     },
     "lib": [

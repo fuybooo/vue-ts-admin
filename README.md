@@ -1,3 +1,6 @@
+## 运行
+1. yarn
+2. 
 ## 2019-06-08
 1. npm -v
 2. npm install -g npm

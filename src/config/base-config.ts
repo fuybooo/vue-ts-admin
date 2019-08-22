@@ -1,17 +1,14 @@
 import {lg} from '@/util/common/fns/fns'
-import {KEY_API, KEY_MODE} from '@/model/project/local-storage-keys/keys'
-
-// tslint:disable-next-line:no-var-requires
-const ENV = require('../../shared/env.js')
+import {KEY_API} from '@/model/project/local-storage-keys/keys'
+import {isDev} from '../../shared/env'
 
 // 可以在这里切换调试的服务器【这里是整体切换，相对而言 dev-config中是局部切换】
 // const baseURL = 'http://api.testsyzx.everjiankang.com.cn' // 尚医至信测试环境
 let baseURL = 'http://localhost:3002/api' // nodejs 环境
-export const mode = lg(KEY_MODE) || process.env.VUE_APP_SERVICE
-if (mode === ENV.DEV_MODE.LOCAL_NODE) {
-  baseURL = 'http://localhost:3002/api' // nodejs 环境
-} else if (mode === ENV.DEV_MODE.THC) {
-  baseURL = 'http://api.testsyzx.everjiankang.com.cn'
+if (isDev()) {
+  baseURL = 'http://localhost:3002/api'
+} else {
+  baseURL = '/api'
 }
 // window的最小高度
 const MIN_WIN_HEIGHT = 450

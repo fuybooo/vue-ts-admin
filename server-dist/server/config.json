@@ -1,0 +1,13 @@
+{
+  "port": 3002,
+  "dev-origin": "http://localhost:4001",
+  "db": {
+    "servername": "127.0.0.1",
+    "DATABASE": "vue-ts-admin",
+    "port": 27017,
+    "user": "fuybooo",
+    "pass": "fuybooo",
+    "authSource": "admin",
+    "options": ""
+  }
+}

@@ -1,8 +1,5 @@
 import Vue from 'vue'
 import {prefix, urlType} from '@/util/project/urls/url-util'
-import {mode} from '@/config/base-config'
-// tslint:disable-next-line:no-var-requires
-const ENV = require('../../../../shared/env.js')
 
 // 该接口与urls保持一致，保证使用this.$urls时能够通过"."得到提示
 export interface Urls {
@@ -75,7 +72,7 @@ const urls: Urls = {
     },
   },
   login: {
-    login: mode === ENV.DEV_MODE.LOCAL_NODE ? 'login' : {url: 'unify/userLogin', isStatic: false, prefix: prefix.base},
+    login: 'login',
     forgot: {url: 'forgot', isStatic: true, prefix: prefix.base},
     register: {url: 'register'},
     logout: {url: 'logout', isStatic: true, prefix: prefix.base},

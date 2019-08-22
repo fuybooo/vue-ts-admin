@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const base_1 = require("../base");
-exports.prefix = base_1.default.config.projectPrefix;
+const model_1 = require("../../shared/model");
+exports.prefix = model_1.projectPrefix;
 exports.KEY_TOKEN = exports.prefix + 'TOKEN';
 exports.KEY_UID = exports.prefix + 'UID';

@@ -4,15 +4,14 @@ import * as koaStatic from 'koa-static'
 import * as cors from 'koa-cors'
 import common from './common'
 import base from './base'
-import router from './router'
 import db from './utils/db'
+import router from './router'
 import {Ctx} from './types'
+import {isDev} from '../shared/env'
+db.connect()
 
 // tslint:disable-next-line:no-var-requires
 const koaBody = require('koa-body')
-// tslint:disable-next-line:no-var-requires
-const ENV = require('../shared/env')
-db.connect()
 // @ts-ignore
 const app = new Koa()
 // const app = koaWebsocket(new Koa())
@@ -20,7 +19,7 @@ app.proxy = true
 app.use(koaBody({multipart: true}))
 // 设置 cors 使得 cookie 可以生效
 // @ts-ignore
-app.use(cors(process.env.APP_MODE === ENV.APP_MODE.dev ? {
+app.use(cors(isDev() ? {
   credentials: true,
   origin: base.config['dev-origin'],
   maxAge: 7 * 24 * 60 * 60 * 1000,

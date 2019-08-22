@@ -4,12 +4,11 @@ import base from './base'
 import db from './utils/db'
 import instance from './utils/instance'
 import MenuModel from './models/MenuModel'
-// tslint:disable-next-line:no-var-requires
-const fns = require('../shared/fns.js')
-const APP_MODE = process.env.APP_MODE
+import {isDev} from '../shared/env'
+import {getTime} from '../shared/fns'
 const initLockPath = common.path.join(base.runTime, 'init.lock')
 function install () {
-  const exist = APP_MODE === 'dev' ? false : common.fs.existsSync(initLockPath)
+  const exist = isDev() ? false : common.fs.existsSync(initLockPath)
   if (exist) {
     console.error('数据库已经初始化过了，不能再次初始化，如果确实要重新初始化，请删除init.lock文件后再次执行')
   } else {
@@ -40,7 +39,7 @@ function setupSql () {
         })
       }
     })
-    common.fs.writeFileSync(initLockPath, `${fns.getTime()} 初始化完成`)
+    common.fs.writeFileSync(initLockPath, `${getTime()} 初始化完成`)
   })
 }
 

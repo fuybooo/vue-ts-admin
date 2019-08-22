@@ -127,7 +127,7 @@ export function getAllParentById (list: any[], id: number, parents: any[] = []):
     parents.unshift(parent)
     const paParent = getParentById(list, parent.id)
     if (paParent) {
-      return getAllParentById(list, paParent.id, parents)
+      return getAllParentById(list, parent.id, parents)
     }
   }
   return parents

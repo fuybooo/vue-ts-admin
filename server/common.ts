@@ -1,13 +1,10 @@
 import * as path from 'path'
 import * as fs from 'fs'
+import {isDev} from '../shared/env'
+import {getTime} from '../shared/fns'
+import {projectPrefix} from '../shared/model'
 // tslint:disable-next-line:no-var-requires
 const sha1 = require('sha1')
-// tslint:disable-next-line:no-var-requires
-const config = require('../config.json')
-// tslint:disable-next-line:no-var-requires
-const fns = require('../shared/fns.js')
-// tslint:disable-next-line:no-var-requires
-const ENV = require('../shared/env')
 function isExist (filePath: string): boolean {
   return fs.existsSync(filePath)
 }
@@ -16,14 +13,14 @@ function log (msg: any, type: LogType = 'log', op = '') {
   if (!msg) {
     return
   }
-  if (process.env.APP_MODE === ENV.APP_MODE.dev) {
+  if (isDev()) {
     console[type](type, msg)
   }
-  const logDir = path.resolve(__dirname, '../..', config.projectPrefix + 'log')
+  const logDir = path.resolve(__dirname, '../../..', projectPrefix + 'log')
   if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir)
   }
-  const logfile = path.resolve(logDir, `${fns.getTime('yyyy-MM')}.log`)
+  const logfile = path.resolve(logDir, `${getTime('yyyy-MM')}.log`)
   if (typeof msg === 'object') {
     if (msg instanceof Error) {
       msg = msg.message
@@ -31,7 +28,7 @@ function log (msg: any, type: LogType = 'log', op = '') {
       msg = JSON.stringify(msg)
     }
   }
-  const data = `[ ${fns.getTime()} ] [ ${type} ] ${op ? `[ ${op} ] ` : ' '}${msg}\n`
+  const data = `[ ${getTime()} ] [ ${type} ] ${op ? `[ ${op} ] ` : ' '}${msg}\n`
   fs.writeFileSync(logfile, data, {flag: 'a'})
 }
 function randomRange (min: number, max: number): number {

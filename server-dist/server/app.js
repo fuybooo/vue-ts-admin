@@ -6,13 +6,12 @@ const koaStatic = require("koa-static");
 const cors = require("koa-cors");
 const common_1 = require("./common");
 const base_1 = require("./base");
-const router_1 = require("./router");
 const db_1 = require("./utils/db");
+const router_1 = require("./router");
+const env_1 = require("../shared/env");
+db_1.default.connect();
 // tslint:disable-next-line:no-var-requires
 const koaBody = require('koa-body');
-// tslint:disable-next-line:no-var-requires
-const ENV = require('../shared/env');
-db_1.default.connect();
 // @ts-ignore
 const app = new Koa();
 // const app = koaWebsocket(new Koa())
@@ -20,7 +19,7 @@ app.proxy = true;
 app.use(koaBody({ multipart: true }));
 // 设置 cors 使得 cookie 可以生效
 // @ts-ignore
-app.use(cors(process.env.APP_MODE === ENV.APP_MODE.dev ? {
+app.use(cors(env_1.isDev() ? {
     credentials: true,
     origin: base_1.default.config['dev-origin'],
     maxAge: 7 * 24 * 60 * 60 * 1000,

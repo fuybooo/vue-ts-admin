@@ -6,12 +6,11 @@ const base_1 = require("./base");
 const db_1 = require("./utils/db");
 const instance_1 = require("./utils/instance");
 const MenuModel_1 = require("./models/MenuModel");
-// tslint:disable-next-line:no-var-requires
-const fns = require('../shared/fns.js');
-const APP_MODE = process.env.APP_MODE;
+const env_1 = require("../shared/env");
+const fns_1 = require("../shared/fns");
 const initLockPath = common_1.default.path.join(base_1.default.runTime, 'init.lock');
 function install() {
-    const exist = APP_MODE === 'dev' ? false : common_1.default.fs.existsSync(initLockPath);
+    const exist = env_1.isDev() ? false : common_1.default.fs.existsSync(initLockPath);
     if (exist) {
         console.error('数据库已经初始化过了，不能再次初始化，如果确实要重新初始化，请删除init.lock文件后再次执行');
     }
@@ -43,7 +42,7 @@ function setupSql() {
                 });
             }
         });
-        common_1.default.fs.writeFileSync(initLockPath, `${fns.getTime()} 初始化完成`);
+        common_1.default.fs.writeFileSync(initLockPath, `${fns_1.getTime()} 初始化完成`);
     });
 }
 install();
