@@ -3,7 +3,13 @@ import {urlType} from '@/util/project/urls/url-util'
 import {AxiosInstance} from 'axios'
 import {Urls} from '@/util/project/urls/urls'
 import {HttpRes} from '@/model/common/models'
+import GlobalEvent from '@/util/project/models/global-event'
 
+interface VueEvent {
+  // tslint:disable-next-line:ban-types
+  $on (event: string | string[], callback: Function): this
+  $emit (event: string, ...args: any[]): this
+}
 declare module 'vue/types/vue' {
   // 需要扩展的属性
   interface Vue {
@@ -14,6 +20,8 @@ declare module 'vue/types/vue' {
     readonly $error: (message: string, title?: string) => void
     readonly $success: (message: string, title?: string) => void
     readonly $tip: (res: HttpRes) => void
+    readonly $globalEvent: VueEvent
+    readonly $event: GlobalEvent
   }
 }
 

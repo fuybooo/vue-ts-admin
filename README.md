@@ -1,6 +1,17 @@
+## 开发
+0. 安装环境 [参考这里](#install)
+1. 下载代码 git clone --branch menu-system https://github.com/fuybooo/vue-ts-admin.git
+## <span id="install">环境</span>
 ## 运行
-1. yarn
-2. 
+### 前提是环境装好，安装包什么的都准备就绪之后，依次运行
+1. yarn g 【监听后端ts文件的变化，编译成js】
+2. yarn s 【启动前端服务，监听前端文件的变化并重启服务】
+3. yarn d 【启动数据库服务】
+4. yarn w 【启动后端服务，监听后端文件变化并重启服务】
+## 部署
+1. yarn b
+2. yarn i
+3. yarn n
 ## 2019-06-08
 1. npm -v
 2. npm install -g npm
@@ -110,3 +121,17 @@
 3. 创建该租户的超管
 4. 使用超管创建该租户下等其他用户，字典，机构等
 5. 终极管理员可以对租户，等进行操作
+## 2019-08-22
+1. 建立前后端公共的空间 shared 文件夹，使得前后端可以公用同一份代码
+    1. 遇到的坑
+        1. ts的编译，编译过程会提示 shared 不在 rootDir中
+        2. 编译出来的文件夹的位置还不能随心所欲的控制，文件的相对路径不是很好解决
+2. 解决环境变量紊乱的问题
+    1. 通过 shared 中的 env 暴露出来的判断环境变量的方法进行统一的判断
+    2. 现在环境变量不会存在模糊的定义，只有两种
+        1. 判断当前是开发环境还是生产环境
+        2. 判断当前的运行环境是什么【只有在不同租户有不同需求时才会用到，这是为以后做的准备】
+## 2019-08-29
+1. 增加中央事件机制
+    1. 发布事件 示例： this.$globalEvent.$emit(this.$event.researchMenu)
+    2. 订阅事件 示例： this.$globalEvent.$on(this.$event.researchMenu, this.list)

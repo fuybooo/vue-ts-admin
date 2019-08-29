@@ -8,6 +8,7 @@ import FunctionTest from '@/demo/views/html/FunctionTest.vue'
 import Input from '@/demo/views/input/Input.vue'
 import FormDetailDemo from '@/demo/views/form/FormDetailDemo.vue'
 import ParentPage from '@/demo/views/html/iframe-test/ParentPage.vue'
+import BaseTreeDemo from '@/demo/views/tree/BaseTreeDemo.vue'
 
 const demoRouter: ProRouteConfig = {
   path: 'demo',
@@ -78,6 +79,14 @@ const demoRouter: ProRouteConfig = {
       component: ParentPage,
       meta: {
         title: 'iframe示例',
+      },
+    },
+    {
+      path: 'base-tree',
+      name: 'demo-base-tree',
+      component: BaseTreeDemo,
+      meta: {
+        title: '树组件示例',
       },
     },
   ],

@@ -26,6 +26,10 @@
     public activeIndex: string = ''
 
     public created () {
+      this.list()
+      this.$globalEvent.$on(this.$event.researchMenu, this.list)
+    }
+    public list () {
       this.$req(this.$urls.menu.list).then((res: HttpRes) => {
         if (res.head.errCode === 0) {
           this.menus = getMenus(res.data.results)

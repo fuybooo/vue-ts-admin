@@ -121,6 +121,8 @@
       this.$req(this.$urls.menu.delete, {id}).then((res: HttpRes) => {
         if (res.head.errCode === 0) {
           this.removeExpandedKeys(+id)
+          // 重新查询树
+          this.$globalEvent.$emit(this.$event.researchMenu)
           this.search()
         }
         // 根据请求结果进行提示
@@ -199,6 +201,8 @@
           id: item.id,
           sort: i + 1,
         }))}).then((res: HttpRes) => {
+          // 重新查询树
+          this.$globalEvent.$emit(this.$event.researchMenu)
           this.$tip(res)
         })
     }

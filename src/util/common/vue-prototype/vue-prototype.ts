@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import '@/util/project/urls/urls'
 import '@/api/base-axios'
+import '@/util/project/models/global-event'
 import {Notification} from 'element-ui'
 import {MessageType} from 'element-ui/types/message'
 import {i18n} from '@/config/i18n-config'
