@@ -135,3 +135,5 @@
 1. 增加中央事件机制
     1. 发布事件 示例： this.$globalEvent.$emit(this.$event.researchMenu)
     2. 订阅事件 示例： this.$globalEvent.$on(this.$event.researchMenu, this.list)
+## 2019-08-30
+1. 实现只打包指定模块

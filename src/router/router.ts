@@ -10,13 +10,14 @@ import store from '@/stores/store'
 import {toggleLangSetting} from '@/stores/mutation-types'
 import {ProRouteConfig} from '@/model/project/route/route.model'
 import {mainRoute} from '@/router/main.router'
+import landingRoute from '@/modules/landing/router/router'
 
 Vue.use(Router)
 
 const routes: ProRouteConfig[] = [
+  landingRoute,
   {
-    path: '/',
-    alias: '/login',
+    path: '/login',
     name: 'login',
     component: Login,
     meta: {
@@ -50,7 +51,7 @@ const routes: ProRouteConfig[] = [
   {
     path: '*',
     name: '*',
-    redirect: 'login',
+    redirect: {name: 'landing'},
     meta: {
       title: '*',
     },
@@ -73,7 +74,7 @@ router.beforeEach((to, from, next) => {
     if (isLogin || (!isLogin && to.meta.needNotToken)) {
       next()
     } else {
-      next('/login')
+      next({name: 'login'})
     }
   })
 })

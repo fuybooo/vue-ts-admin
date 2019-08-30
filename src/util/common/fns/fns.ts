@@ -183,3 +183,26 @@ export function debounce (func: (...args: any) => any, delay = 100, immediate = 
   result.cancel = () => clearTimeout(timer)
   return result
 }
+
+/**
+ * 由于某些函数的执行依赖一些从异步函数中获取的值，若该值未被赋值，则函数执行时会出错，因此使用该函数可以解决此问题
+ * @param conditionFn
+ * @param fn
+ */
+export function executeUntil (conditionFn: () => boolean, fn: () => any) {
+  const max = 500
+  let count = 0
+  function execute () {
+    count++
+    if (conditionFn()) {
+      clearInterval(timer)
+      fn()
+    } else if (count >= max) {
+      clearInterval(timer)
+    }
+  }
+  execute()
+  const timer = setInterval(() => {
+    execute()
+  }, 10)
+}
