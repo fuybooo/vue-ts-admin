@@ -85,3 +85,14 @@ export function getSpaceHeight (selector: string) {
 export function getUrlParams () {
   return window.location.search.slice(1).split('&').map(item => ({[item.split('=')[0]]: item.split('=')[1]})).reduce((p, c) => ({...p, ...c}), {})
 }
+
+/* 获取滚动条高度 */
+export function getScrollTop () {
+  let scrollTop = 0
+  if (document.documentElement) {
+    scrollTop = document.documentElement.scrollTop
+  } else if (document.body) {
+    scrollTop = document.body.scrollTop
+  }
+  return scrollTop
+}

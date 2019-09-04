@@ -1,16 +1,12 @@
 <template>
-  <el-container class="h">
-    <el-main class="h">
-      landing
-    </el-main>
-  </el-container>
+  <div>header</div>
 </template>
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
 
   @Component({})
-  export default class LandingMain extends Vue {
+  export default class LandingHeader extends Vue {
   }
 </script>
 <style scoped lang="less">

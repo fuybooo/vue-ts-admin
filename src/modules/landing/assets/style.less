@@ -1,0 +1,108 @@
+.landing-wrap {
+  // 头部
+  .header {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 10px;
+    z-index: 10;
+    transition: background-color 0.4s linear, opacity 0.4s linear;
+    // 当滚动到banner上时，背景色发生变化
+    &.header-banner {
+      background-color: rgba(48,166,254,0.8);
+    }
+    // todo 宽度应该根据屏幕大小响应式变化
+    .header-inner {
+      width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      .nav {
+        display: flex;
+        align-items: center;
+        .nav-menu-item {
+          padding: 0 20px;
+          a {
+            color: #fff;
+            font-size: 15px;
+            &:hover {
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+  }
+  // banner
+  .banner {
+    position: relative;
+    .container {
+      background-size: 50%;
+      background: url("./img/bg.jpg") no-repeat 100% 95%;
+      position: relative;
+      padding: 21.5% 0;
+      .left-content, .right-content {
+        position: absolute;
+      }
+      .scene-1 {
+        .left-content {
+          width: 68%;
+          top: 13%;
+          left: -11%;
+        }
+        .right-content {
+          width: 30%;
+          top: 32%;
+          right: 14%;
+        }
+      }
+      .scene-2 {
+        .left-content {
+          width: 23%;
+          left: 23%;
+          top: 30%;
+        }
+        .right-content {
+          width: 22%;
+          top: 13%;
+          right: 20%;
+        }
+      }
+    }
+    .switcher {
+      position: relative;
+      width: 100%;
+      .sliding-line {
+        position: absolute;
+        top: 5px;
+        left: 42%;
+        height: 3px;
+        width: 3%;
+        background-color: #26a2ff;
+        transition: left 0.4s 0.15s ease;
+      }
+      .switcher-1, .switcher-2 {
+        background-color: #f9fafc;
+        width: 50%;
+        float: left;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        img {
+          width: 6%;
+        }
+      }
+      .switcher-1 {
+        img {
+          float: right;
+          margin-right: 10%;
+        }
+      }
+      .switcher-2 {
+        img {
+          margin-left: 10%;
+        }
+      }
+    }
+  }
+}
