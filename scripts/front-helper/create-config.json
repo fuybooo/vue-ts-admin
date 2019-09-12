@@ -1,1 +1,1 @@
-{"module":{"name":"lottery","title":"抽奖系统","baseDir":"src/modules/"},"pages":[{"name":"setting","title":"设置"}]}
+{"module":{"name":"diary","title":"日记","baseDir":"src/modules/"},"pages":[{"name":"diary","title":"日记"}]}

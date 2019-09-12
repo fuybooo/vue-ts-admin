@@ -11,11 +11,13 @@ import {toggleLangSetting} from '@/stores/mutation-types'
 import {ProRouteConfig} from '@/model/project/route/route.model'
 import {mainRoute} from '@/router/main.router'
 import landingRoute from '@/modules/landing/router/router'
+import productListRoute from '@/router/product.router'
 
 Vue.use(Router)
 
 const routes: ProRouteConfig[] = [
   landingRoute,
+  ...productListRoute,
   {
     path: '/login',
     name: 'login',
@@ -79,7 +81,6 @@ router.beforeEach((to, from, next) => {
   })
 })
 export default router
-
 function toggleLangSettingByTo (to: Route) {
   store.commit(toggleLangSetting, to.meta.langSetting)
 }

@@ -56,3 +56,4 @@
 2019-08-30 10:03:01 MODULE {"module":{"name":"lottery","title":"抽奖系统","baseDir":"src/modules/"},"pages":[{"name":"lottery","title":"抽奖"}]}
 2019-08-30 10:25:52 MODULE {"module":{"name":"landing","title":"首页","baseDir":"src/modules/"},"pages":[{"name":"main","title":"主页"}]}
 2019-08-30 10:27:13 MODULE {"module":{"name":"lottery","title":"抽奖系统","baseDir":"src/modules/"},"pages":[{"name":"setting","title":"设置"}]}
+2019-09-12 16:24:24 MODULE {"module":{"name":"diary","title":"日记","baseDir":"src/modules/"},"pages":[{"name":"diary","title":"日记"}]}

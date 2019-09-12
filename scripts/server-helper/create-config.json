@@ -1,12 +1,6 @@
 [
   {
-    "name": "tenant",
+    "name": "diary",
     "test": false
-  },
-  {
-    "name": "dictionary"
-  },
-  {
-    "name": "organization"
   }
 ]

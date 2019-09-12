@@ -59,6 +59,12 @@ export interface Urls {
     update: urlType,
     upload: string,
   },
+  diary: {
+    list: urlType,
+    get: urlType,
+    create: urlType,
+    update: urlType,
+  },
 }
 
 const urls: Urls = {
@@ -117,6 +123,12 @@ const urls: Urls = {
     create: 'organization/create',
     update: 'organization/update',
     upload: 'organization/upload',
+  },
+  diary: {
+    list: 'diary/list',
+    get: 'diary/get',
+    create: 'diary/create',
+    update: 'diary/update',
   },
 }
 Vue.prototype.$urls = urls

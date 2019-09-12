@@ -8,6 +8,7 @@ const menu_router_1 = require("./routers/menu-router");
 const tenant_router_1 = require("./routers/tenant-router");
 const dictionary_router_1 = require("./routers/dictionary-router");
 const organization_router_1 = require("./routers/organization-router");
+const diary_router_1 = require("./routers/diary-router");
 // @ts-ignore
 const router = new Router();
 exports.baseUrl = '/api';
@@ -18,6 +19,7 @@ exports.routeList = [
     ...tenant_router_1.default,
     ...dictionary_router_1.default,
     ...organization_router_1.default,
+    ...diary_router_1.default,
 ];
 exports.routeList.forEach(route => intercept_1.default(router, route));
 exports.default = router;

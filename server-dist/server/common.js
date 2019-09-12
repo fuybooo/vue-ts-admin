@@ -17,7 +17,7 @@ function log(msg, type = 'log', op = '') {
     if (env_1.isDev()) {
         console[type](type, msg);
     }
-    const logDir = path.resolve(__dirname, '../..', model_1.projectPrefix + 'log');
+    const logDir = path.resolve(__dirname, '../../..', model_1.projectPrefix + 'log');
     if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir);
     }

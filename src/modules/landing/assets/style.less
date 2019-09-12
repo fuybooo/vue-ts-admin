@@ -1,16 +1,41 @@
 .landing-wrap {
+  color: #333;
   // 头部
   .header {
     position: fixed;
     left: 0;
     top: 0;
     width: 100%;
-    padding: 10px;
+    padding: 3px;
     z-index: 10;
     transition: background-color 0.4s linear, opacity 0.4s linear;
     // 当滚动到banner上时，背景色发生变化
     &.header-banner {
       background-color: rgba(48,166,254,0.8);
+    }
+    &.header-scene {
+      background-color: rgba(255,255,255);
+      .header-inner {
+        .nav {
+          .nav-menu-item {
+            a {
+              color: #333;
+              &:hover {
+                font-weight: 600;
+              }
+            }
+            .el-button--logo-down {
+              font-size: 14px;
+              padding: 0 15px;
+              line-height: 29.5px;
+              height: 30px;
+              font-weight: 100;
+              border-radius: 15px;
+              background: linear-gradient(to right,#0f92ff,#5dc7ff);
+            }
+          }
+        }
+      }
     }
     // todo 宽度应该根据屏幕大小响应式变化
     .header-inner {
@@ -41,6 +66,7 @@
       background-size: 50%;
       background: url("./img/bg.jpg") no-repeat 100% 95%;
       position: relative;
+      overflow: hidden;
       padding: 21.5% 0;
       .left-content, .right-content {
         position: absolute;
@@ -50,12 +76,33 @@
           width: 68%;
           top: 13%;
           left: -11%;
+          //left: -110%;
         }
         .right-content {
           width: 30%;
           top: 32%;
           right: 14%;
         }
+        // scene-1-left 的动画效果
+        .banner-scene-1-left-enter-active,
+        .banner-scene-1-left-leave-active {
+          animation: scene-1-slide-right 0.7s ease-in-out;
+        }
+        .banner-scene-1-left-enter,
+        .banner-scene-1-left-leave-to {
+          left: -100%;
+        }
+        // end
+        // scene-1-right 的动画效果
+        .banner-scene-1-right-enter-active,
+        .banner-scene-1-right-leave-active {
+          animation: scene-1-slide-left 0.6s ease-in-out;
+        }
+        .banner-scene-1-right-enter,
+        .banner-scene-1-right-leave-to {
+          right: -76%;
+        }
+        // end
       }
       .scene-2 {
         .left-content {
@@ -68,6 +115,26 @@
           top: 13%;
           right: 20%;
         }
+        // scene-2-left 的动画效果
+        .banner-scene-2-left-enter-active,
+        .banner-scene-2-left-leave-active {
+          animation: scene-2-slide-right 0.5s ease-in-out;
+        }
+        .banner-scene-2-left-enter,
+        .banner-scene-2-left-leave-to {
+          left: -100%;
+        }
+        // end
+        // scene-2-right 的动画效果
+        .banner-scene-2-right-enter-active,
+        .banner-scene-2-right-leave-active {
+          animation: scene-2-slide-left 0.6s ease-in-out;
+        }
+        .banner-scene-2-right-enter,
+        .banner-scene-2-right-leave-to {
+          right: -76%;
+        }
+        // end
       }
     }
     .switcher {
@@ -105,4 +172,154 @@
       }
     }
   }
+  .introduce {
+    clear: both;
+    &.introduce-1 {
+      padding-top: 120px;
+      overflow: hidden;
+      position: relative;
+      .side {
+        width: 45%;
+        float: left;
+        .side-content {
+          // todo 这里需要使用媒体查询控制小屏幕上的显示
+          padding-left: 177px;
+          padding-right: 100px;
+          h1 {
+            font-weight: 400;
+            font-size: 60px;
+            padding-left: 35px;
+          }
+          p {
+            margin-top: 63px;
+            font-size: 16px;
+            line-height: 38px;
+            padding-left: 35px;
+          }
+          .side-switcher {
+            margin-top: 75px;
+            .side-switcher-item {
+              float: left;
+              width: 33.33%;
+              text-align: center;
+              padding-top: 20px;
+              .doc-icon {
+                width: 40px;
+                height: 40px;
+                margin: 0 auto;
+                background: url("./img/office-logo.png") no-repeat;
+                &.Word {
+                  background-position: -51px -12px;
+                  &.active {
+                    background-position: -10px -12px;
+                  }
+                }
+                &.Excel {
+                  background-position: -131px -12px;
+                  &.active {
+                    background-position: -91px -12px;
+                  }
+                }
+                &.PDF {
+                  background-position: -211px -12px;
+                  &.active {
+                    background-position: -171px -12px;
+                  }
+                }
+              }
+              .doc-title {
+                font-size: 16px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+              }
+            }
+            .progress {
+              border-bottom: 1px solid #ccc;
+              position: relative;
+              padding-top: 140px;
+              .current {
+                position: absolute;
+                border-bottom: 1px solid #6c6c6c;
+              }
+            }
+          }
+        }
+      }
+      .main {
+        width: 55%;
+        float: left;
+        position: relative;
+        img {
+          width: 100%;
+          top: 0;
+          left: 0;
+          position: absolute;
+          opacity: 0;
+          transition: opacity 1s;
+          &.active {
+            position: relative;
+            opacity: 1;
+          }
+        }
+      }
+    }
+    &.introduce-2 {
+      .container {
+        height: 916px;
+        width: 100%;
+        background: url("./img/speed-banner.png") no-repeat center;
+      }
+    }
+  }
+}
+// banner 场景 移动进入页面动画
+@keyframes scene-1-slide-right {
+  0% {
+    left: -180%;
+  }
+  100% {
+    left: -11%;
+  }
+}
+@keyframes scene-1-slide-left {
+  0% {
+    right: -76%;
+  }
+  100% {
+    right: 14%;
+  }
+}
+@keyframes scene-2-slide-right {
+  0% {
+    left: -50%;
+  }
+  100% {
+    left: 23%;
+  }
+}
+@keyframes scene-2-slide-left {
+  0% {
+    right: -46%;
+  }
+  100% {
+    right: 20%;
+  }
+}
+.common-transform {
+  transition: all 0.6s ease-in;
+}
+.common-transform-2 {
+  transition: all 0.6s 0.6s ease-in;
+}
+.common-transform-3 {
+  transition: all 1.2s 0.6s ease-in;
+}
+.common-visible {
+  opacity: 1;
+  transform: translateY(0px);
+
+}
+.common-hidden {
+  opacity: 0;
+  transform: translateY(20px);
 }
