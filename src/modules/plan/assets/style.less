@@ -1,0 +1,20 @@
+.background-wrap {
+  position: absolute;
+  top: -200px;
+  width: 100%;
+  animation: 40s rollup linear infinite normal;
+}
+.background-item {
+  height: 50px;
+  &.background-item-even {
+    background-color: #f3efefc2;
+  }
+}
+@keyframes rollup {
+  0% {
+    transform: translate3d(0,0,0);
+  }
+  100% {
+    transform: translate3d(0,200px,0);
+  }
+}

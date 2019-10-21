@@ -22,6 +22,7 @@ declare module 'vue/types/vue' {
     readonly $tip: (res: HttpRes) => void
     readonly $globalEvent: VueEvent
     readonly $event: GlobalEvent
+    readonly $ws: WebSocket
   }
 }
 

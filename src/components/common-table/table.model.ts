@@ -8,6 +8,7 @@ export interface Column {
   contentSlot?: string
   // 用于过滤的字段名
   filterProp?: string
+  // 控制显示内容【优先级最高】
   content?: {
     type: ContentType,
     key?: string, // 默认为 id
@@ -57,7 +58,7 @@ export interface TableProps {
 
 // 列的属性
 export interface ColumnProps {
-  type?: '' | 'index' | 'selection' | null | undefined
+  type?: '' | 'index' | 'selection' | 'expand' | null | undefined
   className?: string
   labelClassName?: string
   property?: string

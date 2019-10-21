@@ -16,7 +16,7 @@
 
   document.getElementById('btn').addEventListener('click', function () {
     // console.log('click:btn')
-    // console.log('click:btnparams:', getUrlParams())
+    // console.log('click:btnparams:', getUrlParams(window.location.search))
     window.parent.postMessage({
       name: 'postMessage iframe name',
       type: 'postMessage iframe type',

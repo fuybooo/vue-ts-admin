@@ -10,6 +10,7 @@ if (isDev()) {
 } else {
   baseURL = '/api'
 }
+const baseWs = 'ws://localhost:3002/'
 // window的最小高度
 const MIN_WIN_HEIGHT = 450
 export default {
@@ -20,4 +21,5 @@ export default {
    */
   baseURL: lg(KEY_API) || baseURL,
   MIN_WIN_HEIGHT,
+  baseWs,
 }

@@ -12,7 +12,7 @@ import {
 } from '@/util/common/fns/fns-form'
 import format from 'date-fns/format'
 import './BaseForm.less'
-import {UUID} from '@/model/common/models'
+import {UUID_KEY} from '@/model/common/models'
 
 Vue.component('BaseForm', {
   render (createElement) {
@@ -477,7 +477,7 @@ function createInlineBtnItem (createElement: typeof Vue.prototype.$createElement
       nativeOn: {
         click () {
           me.$emit('search')
-          setProp.bind(me.value)(UUID, guid())
+          setProp.bind(me.value)(UUID_KEY, guid())
         },
       },
     }, '查询'),
@@ -485,7 +485,7 @@ function createInlineBtnItem (createElement: typeof Vue.prototype.$createElement
       nativeOn: {
         click () {
           me.$refs.form.resetFields()
-          setProp.bind(me.value)(UUID, guid())
+          setProp.bind(me.value)(UUID_KEY, guid())
           me.$emit('reset')
         },
       },

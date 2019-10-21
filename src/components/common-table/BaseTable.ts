@@ -4,7 +4,7 @@ import {debounce, deepClone, deepTrim, guid} from '@/util/common/fns/fns'
 import {getClientHeight, getSpaceHeight} from '@/util/common/fns/fns-dom'
 import {setProperty} from '@/util/common/fns/fns-common'
 import './BaseTable.less'
-import {HttpRes, UUID} from '@/model/common/models'
+import {HttpRes, UUID_KEY} from '@/model/common/models'
 import config from '@/config/base-config'
 
 Vue.component('BaseTable', {
@@ -19,11 +19,13 @@ Vue.component('BaseTable', {
       ref: defaultNodeAttrs.ref, // ref无法被覆盖
       class: (this.nodeAttrs.class || '') + ' ' + defaultNodeAttrs.class, // class 必须保持默认class名
     }
+    // getHeight.bind(this)()
     const defaultTableProps = {
       data: [],
       border: true,
       size: 'mini',
-      height: getHeight.bind(this)(),
+      // @ts-ignore
+      height: this.localHeight,
     }
     const tableProps = {
       ...defaultTableProps,
@@ -31,6 +33,8 @@ Vue.component('BaseTable', {
       // @ts-ignore
       ...(this.remoteData.length === 0 ? {} : {data: this.remoteData}),
       ...mergeTableFunctionProps.bind(this)(),
+      // @ts-ignore
+      key: guid(),
     }
     const me = this
     return createElement('div', {
@@ -103,11 +107,12 @@ Vue.component('BaseTable', {
       this.rememberRow = params._rememberRow
       this.rememberRowKey = params._rememberRowKey
     } else {
-      this.$emit('update:params', {...this.params, [UUID]: guid()})
+      this.$emit('update:params', {...this.params, [UUID_KEY]: guid()})
     }
     if (this.autoHeight || this.fixedElements || this.fixedHeight) {
       // 添加监听事件
       window.addEventListener('resize', this.resize)
+      this.resize()
     }
   },
   destroyed () {
@@ -135,8 +140,8 @@ Vue.component('BaseTable', {
         if (res.head.errCode === 0) {
           // 改变remoteData之后会自动执行render
           me.innerLoading = false
-          me.remoteData = me.handleResult ? me.handleResult(res.data) : res.data.results
-          me.total = me.handleTotal ? me.handleTotal(res.data) : res.data.total
+          me.remoteData = me.handleResult ? me.handleResult(res.data || res) : res.data[me.resultKey]
+          me.total = me.handleTotal ? me.handleTotal(res.data || res) : res.data.total
         }
       })
     }, 300),
@@ -169,6 +174,7 @@ Vue.component('BaseTable', {
       rememberRow: '', // 要记住的行的值
       rememberRowKey: '', // 要记住的行的key
       rememberRowStatus: true, // 初次为true，点击行之后变为false
+      key: guid(),
     }
   },
   props: {
@@ -230,7 +236,7 @@ Vue.component('BaseTable', {
       type: String,
       default: defaultFilterSplit,
     },
-    tableKey: {
+    resultKey: {
       type: String,
       default: 'results',
     },
@@ -280,6 +286,14 @@ function createColumns (createElement: typeof Vue.prototype.$CreateElement): VNo
         },
       })
     } else if (col.prop) {
+      if (col.props && col.props.type === 'expand') {
+        return createElement('el-table-column', {
+          props: getColumnProps.bind(me)(col),
+          scopedSlots: {
+            default: (props: any) => createElement('div', me.$scopedSlots.expand({...props})),
+          },
+        })
+      }
       return createElement('el-table-column', {
         props: getColumnProps.bind(me)(col),
       })
@@ -352,12 +366,18 @@ function getTableEvent () {
 function getHeight () {
   // @ts-ignore
   const me = this
+  // if (me.autoHeight || me.fixedElements || me.fixedHeight) {
+  //   // 计算表格高度
+  //   calcHeight.bind(me)()
+  //   return me.localHeight
+  // } else {
+  //   return null
+  // }
   if (me.autoHeight || me.fixedElements || me.fixedHeight) {
     // 计算表格高度
     calcHeight.bind(me)()
-    return me.localHeight
   } else {
-    return null
+    me.localHeight = null
   }
 }
 
@@ -389,7 +409,7 @@ function getParams () {
   // @ts-ignore
   const me = this
   const params = deepClone(me.params)
-  delete params[UUID]
+  delete params[UUID_KEY]
   delete params._first
   return {
     ...params,

@@ -30,4 +30,4 @@ export interface HttpRes {
   }
 }
 
-export const UUID = '_uuid'
+export const UUID_KEY = '_uuid'

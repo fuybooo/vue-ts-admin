@@ -63,6 +63,14 @@ export interface Urls {
     list: urlType,
     get: urlType,
     create: urlType,
+    delete: urlType,
+    update: urlType,
+  },
+  plan: {
+    list: urlType,
+    get: urlType,
+    create: urlType,
+    delete: urlType,
     update: urlType,
   },
 }
@@ -128,7 +136,15 @@ const urls: Urls = {
     list: 'diary/list',
     get: 'diary/get',
     create: 'diary/create',
+    delete: 'diary/delete',
     update: 'diary/update',
+  },
+  plan: {
+    list: 'plan/list',
+    get: 'plan/get',
+    create: 'plan/create',
+    delete: 'plan/delete',
+    update: 'plan/update',
   },
 }
 Vue.prototype.$urls = urls

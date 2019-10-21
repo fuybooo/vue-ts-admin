@@ -2,19 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Koa = require("koa");
 const koaStatic = require("koa-static");
-// import * as koaWebsocket from 'koa-websocket'
+const koaWebsocket = require("koa-websocket");
 const cors = require("koa-cors");
 const common_1 = require("./common");
 const base_1 = require("./base");
 const db_1 = require("./utils/db");
 const router_1 = require("./router");
+const websocket_1 = require("./websocket");
 const env_1 = require("../shared/env");
 db_1.default.connect();
 // tslint:disable-next-line:no-var-requires
 const koaBody = require('koa-body');
 // @ts-ignore
-const app = new Koa();
-// const app = koaWebsocket(new Koa())
+// const app = new Koa()
+const app = koaWebsocket(new Koa());
 app.proxy = true;
 app.use(koaBody({ multipart: true }));
 // 设置 cors 使得 cookie 可以生效
@@ -44,6 +45,7 @@ app.use(async (ctx, next) => {
 });
 app.use(router_1.default.routes());
 app.use(router_1.default.allowedMethods());
+app.ws.use(websocket_1.default);
 // @ts-ignore
 app.use(koaStatic(base_1.default.staticDir, {
     gzip: true,

@@ -8,6 +8,7 @@ import tenantRouteList from './routers/tenant-router'
 import dictionaryRouteList from './routers/dictionary-router'
 import organizationRouteList from './routers/organization-router'
 import diaryRouteList from './routers/diary-router'
+import planRouteList from './routers/plan-router'
 // @ts-ignore
 const router = new Router()
 export const baseUrl = '/api'
@@ -19,6 +20,7 @@ export const routeList: Route[] = [
   ...dictionaryRouteList,
   ...organizationRouteList,
   ...diaryRouteList,
+  ...planRouteList,
 ]
 routeList.forEach(route => intercept(router, route))
 export default router

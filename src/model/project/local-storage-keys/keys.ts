@@ -11,4 +11,5 @@ export const KEY_UID = p + 'UID'
 export const KEY_TYPE = p + 'TYPE'
 export const KEY_API = p + 'API'
 export const KEY_SUB_API = p + 'SUB_API_'
+export const KEY_WS_USERNAME = p + 'WS_USERNAME'
 

@@ -9,7 +9,11 @@
         :url="url"
         :columns.sync="columns"
         :params.sync="form"
+        :handle-result="handleResult"
       >
+        <template v-slot:expand="props">
+          {{testProps(props)}}
+        </template>
       </base-table>
     </el-main>
   </el-container>
@@ -34,14 +38,43 @@
     public url = this.$urls.diary.list
     public columns: Column[] = [
       {
-        prop: 'name',
-        label: '名称',
+        prop: 'expand',
+        props: {
+          type: 'expand'
+        },
       },
       {
-        prop: 'code',
-        label: '编码',
+        prop: 'date',
+        label: '日期',
+        props: {
+          width: columnWidth.date,
+        },
+      },
+      {
+        prop: 'content',
+        label: '内容',
       },
     ]
+    // 测试
+    public handleResult = () => {
+      return [
+        {
+          date: '2019-01-01',
+          content: '今天加入了一个群聊',
+        },
+        {
+          date: '2019-01-02',
+          content: '今天加入了一个群聊',
+        },
+        {
+          date: '2019-01-03',
+          content: '今天加入了一个群聊',
+        },
+      ]
+    }
+    public testProps (p: any) {
+      console.log(p)
+    }
   }
 </script>
 <style scoped lang="less">

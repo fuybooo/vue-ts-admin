@@ -137,3 +137,5 @@
     2. 订阅事件 示例： this.$globalEvent.$on(this.$event.researchMenu, this.list)
 ## 2019-08-30
 1. 实现只打包指定模块
+## 2019-09-20
+1. 开始使用websocket 实现即时通讯

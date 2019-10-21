@@ -32,3 +32,13 @@ function guid() {
     });
 }
 exports.guid = guid;
+/* 将查询参数转化为对象 */
+function getUrlParams(search) {
+    if (search.startsWith('?')) {
+        return search.slice(1).split('&').map(item => ({ [item.split('=')[0]]: item.split('=')[1] })).reduce((p, c) => (Object.assign({}, p, c)), {});
+    }
+    else {
+        throw new Error('参数不正确');
+    }
+}
+exports.getUrlParams = getUrlParams;

@@ -27,3 +27,11 @@ export function guid () {
     return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
   })
 }
+/* 将查询参数转化为对象 */
+export function getUrlParams (search: string) {
+  if (search.startsWith('?')) {
+    return search.slice(1).split('&').map(item => ({[item.split('=')[0]]: item.split('=')[1]})).reduce((p, c) => ({...p, ...c}), {})
+  } else {
+    throw new Error('参数不正确')
+  }
+}

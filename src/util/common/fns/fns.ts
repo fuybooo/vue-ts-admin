@@ -13,6 +13,10 @@ export function lg (key: string): string {
 export function ls (key: string, value: string): void {
   localStorage.setItem(key, value)
 }
+// 简化localStorage.removeItem的写法
+export function lr (key: string): void {
+  localStorage.removeItem(key)
+}
 
 /* 存取cookie */
 export function sc (key: string, value: string, expMs: number = 3650 * 24 * 60 * 60 * 1000) {
@@ -205,4 +209,13 @@ export function executeUntil (conditionFn: () => boolean, fn: () => any) {
   const timer = setInterval(() => {
     execute()
   }, 10)
+}
+export function once (fn: () => void): () => void {
+  let isFirst = true
+  return () => {
+    if (isFirst) {
+      isFirst = false
+      return fn
+    }
+  }
 }

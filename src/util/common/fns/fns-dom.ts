@@ -81,11 +81,6 @@ export function getSpaceHeight (selector: string) {
     getStyle(selector, 'margin-bottom')
 }
 
-/* 获取浏览器URL的参数 */
-export function getUrlParams () {
-  return window.location.search.slice(1).split('&').map(item => ({[item.split('=')[0]]: item.split('=')[1]})).reduce((p, c) => ({...p, ...c}), {})
-}
-
 /* 获取滚动条高度 */
 export function getScrollTop () {
   let scrollTop = 0

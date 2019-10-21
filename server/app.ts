@@ -1,11 +1,12 @@
 import * as Koa from 'koa'
 import * as koaStatic from 'koa-static'
-// import * as koaWebsocket from 'koa-websocket'
+import * as koaWebsocket from 'koa-websocket'
 import * as cors from 'koa-cors'
 import common from './common'
 import base from './base'
 import db from './utils/db'
 import router from './router'
+import websocket from './websocket'
 import {Ctx} from './types'
 import {isDev} from '../shared/env'
 db.connect()
@@ -13,8 +14,8 @@ db.connect()
 // tslint:disable-next-line:no-var-requires
 const koaBody = require('koa-body')
 // @ts-ignore
-const app = new Koa()
-// const app = koaWebsocket(new Koa())
+// const app = new Koa()
+const app = koaWebsocket(new Koa())
 app.proxy = true
 app.use(koaBody({multipart: true}))
 // 设置 cors 使得 cookie 可以生效
@@ -44,6 +45,8 @@ app.use(async (ctx: Ctx, next: () => any) => {
 })
 app.use(router.routes())
 app.use(router.allowedMethods())
+
+app.ws.use(websocket)
 // @ts-ignore
 app.use(koaStatic(base.staticDir, {
   gzip: true,
@@ -51,3 +54,4 @@ app.use(koaStatic(base.staticDir, {
 app.listen(base.config.port)
 // tslint:disable-next-line:no-console
 console.log(`Server running on port ${base.config.port}`)
+
